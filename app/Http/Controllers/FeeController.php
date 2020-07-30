@@ -346,7 +346,7 @@ public function StudentListPayment(Request $request)
 
             // dd($fee_structure_amount);
 
-        return view('fee.search-fee-payment', compact('student','readStudentTransaction','data','fee_structure1',
+        return view('fee.search-fee-payment', compact('readStudentTransaction','data','fee_structure1',
                                                 'readStudentFee','semester','faculty','rolls','all_fees',
                                                 'totalTransaction','invoice_id','classes','student_name','fee_structure','fee_structure_amount'));
     }
