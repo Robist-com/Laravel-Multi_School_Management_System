@@ -8,8 +8,9 @@ $institute = Institute::first();
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    @if(isset($institute))
     <title>{{$institute->name}} | (AIS) </title>
-
+    @endif
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -23,8 +24,9 @@ $institute = Institute::first();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 
     <!-- Favicon -->
+    @if(isset($institute))
     <link rel="icon" href="{{ asset('institute_logo/' .$institute->image) }}">
-
+    @endif
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/skins/_all-skins.min.css">
@@ -42,7 +44,9 @@ $institute = Institute::first();
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
+@if(isset($institute))
 <img src="{{asset('institute_logo/' .$institute->image)}}" style="margin-left:40%;  border-radius: 50%;" width="60px" class="rounded" alt="" srcset="">
+@endif
     <div class="login-logo">
         <a href="{{ url('/home') }}"><b>{{__("language.login_page_message") }}</b>{{__("language.pages") }}</a>
     </div>
