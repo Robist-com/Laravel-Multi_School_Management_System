@@ -16,20 +16,21 @@ class Courses extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('course_name')->nullable();
+            $table->string('course_code')->nullable();
             $table->string('class')->nullable();
             $table->unsignedBigInteger('department');
             $table->string('semester')->nullable();
-            $table->integer('gradeSystem')->nullable();
-            $table->integer('totalfull')->nullable();
-            $table->integer('totalpass')->nullable();
-            $table->integer('wfull')->nullable();
-            $table->integer('wpass')->nullable();
-            $table->integer('mfull')->nullable();
-            $table->integer('mpass')->nullable();
-            $table->integer('sfull')->nullable();
-            $table->integer('spass')->nullable();
-            $table->integer('pfull')->nullable();
-            $table->integer('ppass')->nullable();
+            $table->integer('gradeSystem');
+            $table->integer('totalfull');
+            $table->integer('totalpass');
+            $table->integer('wfull');
+            $table->integer('wpass');
+            $table->integer('mfull');
+            $table->integer('mpass');
+            $table->integer('sfull');
+            $table->integer('spass');
+            $table->integer('pfull');
+            $table->integer('ppass');
             $table->string('description')->nullable();
             $table->tinyInteger('status')->default(1);
 

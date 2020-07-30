@@ -88,7 +88,7 @@ class CourseController extends AppBaseController
     public function store(Request $request)
     {
         $input = $request->all();
-            // dd($input); die;
+            dd($input); die;
         // $course = $this->courseRepository->create($input);
 
         $classes =  $request->get('class');
@@ -100,16 +100,16 @@ class CourseController extends AppBaseController
 			'department'     => 'required',
 			'class'        => 'required',
 			'gradeSystem'  => 'required',
-			'totalfull'    => 'required',
-			'wfull'        => 'required',
-			'mfull'        => 'required',
-			'sfull'        => 'required',
-			'pfull'        => 'required',
-			'totalpass'    => 'required',
-			'wpass'        => 'required',
-			'mpass'        => 'required',
-			'spass'        => 'required',
-			'ppass'        => 'required'
+			// 'totalfull'    => 'required',
+			// 'wfull'        => 'required',
+			// 'mfull'        => 'required',
+			// 'sfull'        => 'required',
+			// 'pfull'        => 'required',
+			// 'totalpass'    => 'required',
+			// 'wpass'        => 'required',
+			// 'mpass'        => 'required',
+			// 'spass'        => 'required',
+			// 'ppass'        => 'required'
 		];
 		$validator = \Validator::make($request->all(), $rules);
 		if ($validator->fails())

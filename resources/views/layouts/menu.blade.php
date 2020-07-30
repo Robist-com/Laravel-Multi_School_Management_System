@@ -302,6 +302,10 @@ $teacherclass = ClassSchedule::join('classes', 'classes.class_code', '=', 'class
     <a href="{!! route('notice') !!}"><i class="fa fa-th"></i><span>Notice Board</span></a>
     </li>
 
+    <li class="{{ Request::is('gpa*') ? 'active' : '' }}">
+    <a href="{!! url('gpa') !!}"><i class="fa fa-th"></i><span>Grading Settings</span></a>
+    </li>
+
     </ul>
      </li>
 
