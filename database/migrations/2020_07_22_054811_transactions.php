@@ -28,10 +28,10 @@ class Transactions extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            Schema::disableForeignKeyConstraints();
+            // Schema::disableForeignKeyConstraints();
             // $table->dropForeign(['semester_fee_id']);
             $table->unsignedBigInteger('semester_fee_id')->nullable(); // student_fee_id
-            $table->foreign('semester_fee_id')->references('student_fee_id')->on('student_fees')->onDelete('cascade');
+            // $table->foreign('semester_fee_id')->references('student_fee_id')->on('student_fees')->onDelete('cascade');
 
         });
     }
