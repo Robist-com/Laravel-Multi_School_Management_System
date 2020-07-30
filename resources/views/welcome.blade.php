@@ -96,7 +96,9 @@ $institute = Institute::first();
                     <div class="col-12 h-100">
                         <div class="header-content h-100 d-flex align-items-center justify-content-between">
                             <div class="academy-logo">
+                            @if(isset($institute))
                                 <a href="/"><img src="{{asset('institute_logo/' .$institute->image)}}" alt="logo" srcset="" style="width:70px"></a>
+                                @endif
                             </div>
                             <div class="login-content" style="margin-bottom:20px;">
 
