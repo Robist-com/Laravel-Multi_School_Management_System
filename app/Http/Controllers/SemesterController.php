@@ -47,49 +47,49 @@ class SemesterController extends AppBaseController
         // dd($enable_grade );count_active_grade
         // $semesters = Degree::join('semesters','semesters.id', '=', 'degrees.semester_id')->get();
         $semester_id = $request->get('semester_id');
-        $SemesterSubjects = $this->read_semester_course($semester_id);
+        // $SemesterSubjects = $this->read_semester_course($semester_id);
 
-        $Semester1Subjects = SemesterSubjects::join('semesters','semesters.id', '=', 'semester_subjects.semester_id')
-        ->join('courses','courses.id', '=', 'semester_subjects.course_id')
-        ->join('departments','departments.department_id', '=', 'semester_subjects.department_id')
-        ->join('faculties','faculties.faculty_id', '=', 'semester_subjects.faculty_id')
-        ->join('degrees','degrees.degree_id', '=', 'semester_subjects.degree_id')
-        ->where('semester_subjects.semester_id',1)
-        ->where('semester_subjects.department_id',1)
-        // ->where('semester_subjects.faculty_id',1)
-        ->get();
+        // $Semester1Subjects = SemesterSubjects::join('semesters','semesters.id', '=', 'semester_subjects.semester_id')
+        // ->join('courses','courses.id', '=', 'semester_subjects.course_id')
+        // ->join('departments','departments.department_id', '=', 'semester_subjects.department_id')
+        // ->join('faculties','faculties.faculty_id', '=', 'semester_subjects.faculty_id')
+        // ->join('degrees','degrees.degree_id', '=', 'semester_subjects.degree_id')
+        // ->where('semester_subjects.semester_id',1)
+        // ->where('semester_subjects.department_id',1)
+        // // ->where('semester_subjects.faculty_id',1)
+        // ->get();
 
         // echo "<pre>";print_r($users);die;
 
-        $SemesterSubjects = $this->read_semester_course();
+        // $SemesterSubjects = $this->read_semester_course();
 
         $check = Semester::all();
 
         return view('semesters.index',compact('faculties','check','courses','semester','enable_grade','count_in_active_grade','count_active_grade'))
             ->with('semesters', $semesters)
-            ->with('SemesterSubjects', $SemesterSubjects)
+            // ->with('SemesterSubjects', $SemesterSubjects)
             ->with('Semester1Subjects', $Semester1Subjects);
     }
 
-    public function read_semester_course()
-    {
-        // $semester_id  = Semester::where();
-        // dd($semester_id);
-        return SemesterSubjects::leftJoin('semesters','semesters.id', '=', 'semester_subjects.semester_id')
-                    ->crossJoin('courses','courses.id', '=', 'semester_subjects.course_id')
-                    // ->rightJoin('faculties','faculties.faculty_id', '=', 'semester_subjects.faculty_id')
-                    ->leftJoin('departments','departments.department_id', '=', 'semester_subjects.course_id')
-                    ->crossJoin('faculties','faculties.faculty_id', '=', 'departments.faculty_id')
-                    ->join('degrees','degrees.degree_id', '=', 'semester_subjects.semester_id')
-                    // ->where('semester_subjects.id', '=', 'semester_subjects.semester_id' )
-                    ->get();
+    // public function read_semester_course()
+    // {
+    //     // $semester_id  = Semester::where();
+    //     // dd($semester_id);
+    //     return SemesterSubjects::leftJoin('semesters','semesters.id', '=', 'semester_subjects.semester_id')
+    //                 ->crossJoin('courses','courses.id', '=', 'semester_subjects.course_id')
+    //                 // ->rightJoin('faculties','faculties.faculty_id', '=', 'semester_subjects.faculty_id')
+    //                 ->leftJoin('departments','departments.department_id', '=', 'semester_subjects.course_id')
+    //                 ->crossJoin('faculties','faculties.faculty_id', '=', 'departments.faculty_id')
+    //                 ->join('degrees','degrees.degree_id', '=', 'semester_subjects.semester_id')
+    //                 // ->where('semester_subjects.id', '=', 'semester_subjects.semester_id' )
+    //                 ->get();
 
 
-            $departments = Department::all();
-            $courses = Course::all();
-        return view('semesters.index',compact('departments','courses','SemesterSubjects'));
-        // ->with('semesters', $semesters);
-    }
+    //         $departments = Department::all();
+    //         $courses = Course::all();
+    //     return view('semesters.index',compact('departments','courses','SemesterSubjects'));
+    //     // ->with('semesters', $semesters);
+    // }
 
     /**
      * Show the form for creating a new Semester.
@@ -119,41 +119,41 @@ class SemesterController extends AppBaseController
         return redirect(route('semesters.index'));
     }
 
-    public function createSemester(Request $request)
-    {
-        $input = $request->all();
-        // dd($input);die;
-        $courses =  $request->get('course_id');
-        $Existsemesters = SemesterSubjects::select('*')->where('semester_id',$request->get('semester_id'))
-                                        ->where('course_id',$request->get('course_id'))
-                                        ->where('department_id',$request->get('department_id'))
-                                        ->where('degree_id',$request->get('degree_id'))->get();
-			if(count($Existsemesters)>0)
-			{
+//     public function createSemester(Request $request)
+//     {
+//         $input = $request->all();
+//         // dd($input);die;
+//         $courses =  $request->get('course_id');
+//         $Existsemesters = SemesterSubjects::select('*')->where('semester_id',$request->get('semester_id'))
+//                                         ->where('course_id',$request->get('course_id'))
+//                                         ->where('department_id',$request->get('department_id'))
+//                                         ->where('degree_id',$request->get('degree_id'))->get();
+// 			if(count($Existsemesters)>0)
+// 			{
 
-				Flash::error('deplicate Semester already exists for this Semester !!');
-				return redirect()->back();
-            }
-            else {
+// 				Flash::error('deplicate Semester already exists for this Semester !!');
+// 				return redirect()->back();
+//             }
+//             else {
 
-			foreach($courses as $course){
+// 			foreach($courses as $course){
 
-                $subject = new SemesterSubjects;
-				$subject->semester_id = $request->get('semester_id');
-				$subject->department_id = $request->get('department_id');
-				$subject->degree_id = $request->get('degree_id');
-				$subject->faculty_id = $request->get('faculty_id');
-				$subject->course_id = $course;
+//                 $subject = new SemesterSubjects;
+// 				$subject->semester_id = $request->get('semester_id');
+// 				$subject->department_id = $request->get('department_id');
+// 				$subject->degree_id = $request->get('degree_id');
+// 				$subject->faculty_id = $request->get('faculty_id');
+// 				$subject->course_id = $course;
 
-                $subject->save();
-        }
+//                 $subject->save();
+//         }
 
-            Flash::success('Semester Detail saved successfully.');
+//             Flash::success('Semester Detail saved successfully.');
 
-        return redirect(route('semesters.index'));
+//         return redirect(route('semesters.index'));
 
-    }
-}
+//     }
+// }
 
     public function createDegrees(Request $request)
     {
