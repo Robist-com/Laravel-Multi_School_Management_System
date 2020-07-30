@@ -31,7 +31,7 @@ class ClassSchedule extends Migration
             $table->unsignedBigInteger('faculty_id');
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('batch_id');
-            $table->unsignedBigInteger('classroom_id ');
+            $table->unsignedBigInteger('classroom_id');
             $table->timestamps();
             $table->softDeletes();
 
