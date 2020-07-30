@@ -66,9 +66,9 @@ class SemesterController extends AppBaseController
         $check = Semester::all();
 
         return view('semesters.index',compact('faculties','check','courses','semester','enable_grade','count_in_active_grade','count_active_grade'))
-            ->with('semesters', $semesters)
+            ->with('semesters', $semesters);
             // ->with('SemesterSubjects', $SemesterSubjects)
-            ->with('Semester1Subjects', $Semester1Subjects);
+            // ->with('Semester1Subjects', $Semester1Subjects);
     }
 
     // public function read_semester_course()
