@@ -21,7 +21,7 @@ class Rolls extends Migration
             $table->string('password')->nullable();
             $table->time('login_time')->nullable();
             $table->time('logout_time')->nullable();
-            $table->int('isonline')->nullable();
+            $table->integer('isonline')->nullable();
             $table->string('ip_address')->nullable();
             $table->timestamps();
             $table->softDeletes();
