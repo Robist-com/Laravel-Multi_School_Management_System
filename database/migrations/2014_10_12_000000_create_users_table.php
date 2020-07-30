@@ -25,7 +25,8 @@ class CreateUsersTable extends Migration
             $table->string('ip_address')->nullable();
             $table->time('login_time')->nullable();
             $table->time('logout_time')->nullable();
-
+            
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });
