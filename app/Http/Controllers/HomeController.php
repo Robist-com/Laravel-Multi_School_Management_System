@@ -73,7 +73,7 @@ class HomeController extends Controller
         return view('home', compact('batchCount','transactionsCount','transactions','student_fees',
         'studentsCount','classCount','courseCount','dayCount','feeCount',
         'levelCount','semesterCount','shiftCount','timeCount','feeStructureCount',
-        'classroomCount','teachersCount','classschedulCount','classasignCount',
+        'classroomCount','teachersCount','classschedulCount',
         'facultyCount','departmentCount'));
         // $batchCount = Batch::count();
         // dd( $batchCount);
