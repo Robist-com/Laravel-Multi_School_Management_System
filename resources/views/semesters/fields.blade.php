@@ -32,6 +32,10 @@
     {!! Form::textarea('semester_description', null, ['class' => 'form-control','cols' => 40 , 'rows' => 2, 'placeholder'=>'Enter Semester Description']) !!}
 </div>
 
+<div class="form-group">
+    {!! Form::checkbox('status', null, ['class' => 'form-control','placeholder'=>'Enter Semester Description']) !!}
+</div>
+
 <!-- Submit Field -->
 </div>
 <div class="modal-footer">
