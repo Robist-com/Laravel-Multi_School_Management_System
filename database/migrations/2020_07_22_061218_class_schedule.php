@@ -21,16 +21,17 @@ class ClassSchedule extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
 
-            $table->unsignedBigInteger('course_id')->nullable();
-            $table->unsignedBigInteger('shift_id')->nullable();
-            $table->unsignedBigInteger('day_id')->nullable();
-            $table->unsignedBigInteger('teacher_id')->nullable();
-            $table->unsignedBigInteger('time_id')->nullable();
-            $table->unsignedBigInteger('semester_id')->nullable();
-            $table->unsignedBigInteger('degree_id')->nullable();
-            $table->unsignedBigInteger('faculty_id')->nullable();
-            $table->unsignedBigInteger('department_id')->nullable();
-            $table->unsignedBigInteger('batch_id')->nullable();
+            $table->unsignedBigInteger('course_id');
+            $table->unsignedBigInteger('shift_id');
+            $table->unsignedBigInteger('day_id');
+            $table->unsignedBigInteger('teacher_id');
+            $table->unsignedBigInteger('time_id');
+            $table->unsignedBigInteger('semester_id');
+            $table->unsignedBigInteger('degree_id');
+            $table->unsignedBigInteger('faculty_id');
+            $table->unsignedBigInteger('department_id');
+            $table->unsignedBigInteger('batch_id');
+            $table->unsignedBigInteger('classroom_id ');
             $table->timestamps();
             $table->softDeletes();
 
