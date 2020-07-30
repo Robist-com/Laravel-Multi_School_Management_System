@@ -95,7 +95,6 @@
 				<div class="tab-content col-md-12">
                     {{-- {{ $check }} --}}
 				<div id="home" class="tab-pane fade in active">
-                    @if(count($SemesterSubjects)== 0)
                     <div class="pull-right">
                     <a data-toggle="modal" data-target="#semester_fields-modal" title="Add Grade" class='btn btn-success btn-xs'><i class="glyphicon glyphicon-plus"></i></a>
                     @if($count_in_active_grade)
@@ -105,7 +104,6 @@
                     <div class="pull-right">
                     <!-- <h3 style="font-weight:bold; color:red">Enable Grade </h3> -->
                 </div>
-                    @endif
 			    <h3 style="font-weight:bold; color:red">HOME</h3>
                 <hr class="line">
                 @include('semesters.semester-tabs.semesters')
