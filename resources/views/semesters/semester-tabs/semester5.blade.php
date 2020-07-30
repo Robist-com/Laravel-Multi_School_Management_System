@@ -9,7 +9,7 @@
            </tr>
        </thead>
        <tbody id="accordion">
-           @foreach($SemesterSubjects as $key => $semester)
+           @foreach($semesters as $key => $semester)
            @if ($semester->semester_id == 5)
  
          <tr>

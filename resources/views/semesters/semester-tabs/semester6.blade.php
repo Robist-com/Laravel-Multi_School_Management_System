@@ -9,10 +9,10 @@
            </tr>
        </thead>
        <tbody id="accordion">
-        {{-- @if(count($SemesterSubjects)== 5 )
+        {{-- @if(count($semesters)== 5 )
         <p class="alert alert-danger">No Courses Assigned for this Semester <b>{{$semester->semester_id == 6}}</b></p>
         @endif --}}
-           @foreach($SemesterSubjects as $key => $semester)
+           @foreach($semesters as $key => $semester)
            @if ($semester->semester_id == 6)
  
          <tr>
