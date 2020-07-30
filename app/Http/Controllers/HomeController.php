@@ -54,7 +54,7 @@ class HomeController extends Controller
         $timeCount = Time::count();
         $classroomCount = ClassRoom::count();
         $teachersCount = Teacher::count();
-        $classasignCount = ClassAssigning::count();
+        // $classasignCount = ClassAssigning::count();
         $classschedulCount = ClassSchedule::count();
         $facultyCount = Faculty::count();
         $departmentCount = Department::count();
