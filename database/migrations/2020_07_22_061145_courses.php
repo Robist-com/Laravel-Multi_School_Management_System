@@ -17,7 +17,7 @@ class Courses extends Migration
             $table->bigIncrements('id');
             $table->string('course_name')->nullable();
             $table->string('class')->nullable();
-            $table->string('department')->nullable();
+            $table->unsignedBigInteger('department');
             $table->string('semester')->nullable();
             $table->integer('gradeSystem')->nullable();
             $table->integer('totalfull')->nullable();
