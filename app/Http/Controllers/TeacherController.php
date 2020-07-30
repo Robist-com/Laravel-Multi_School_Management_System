@@ -14,13 +14,13 @@ use App\StudentUploadHomeWork;
 use Session;
 use App\Models\User;
 use App\Models\Batch;
-use App\models\Course;
+use App\Models\Course;
 use App\Models\Classes;
-use App\models\Faculty;
-use App\models\Teacher;
-use App\models\Semester;
+use App\Models\Faculty;
+use App\Models\Teacher;
+use App\Models\Semester;
 use App\Models\Admission;
-use App\models\Attendance;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Models\ClassSchedule;
 // use Excel;  // because this one is the same with this one okay

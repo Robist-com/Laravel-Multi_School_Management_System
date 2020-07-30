@@ -11,9 +11,9 @@ use Flash;
 use Response;
 use PDF;
 use DB;
-use App\models\Classes;
-use App\models\Department;
-use App\models\Course;
+use App\Models\Classes;
+use App\Models\Department;
+use App\Models\Course;
 class ClassesController extends AppBaseController
 {
     /** @var  ClassesRepository */

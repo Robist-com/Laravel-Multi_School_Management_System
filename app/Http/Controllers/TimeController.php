@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use PDF;
-use App\models\Time;
-use App\models\Shift;
+use App\Models\Time;
+use App\Models\Shift;
 
 class TimeController extends AppBaseController
 {

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use PDF;
-use App\models\Shift;
+use App\Models\Shift;
 
 class ShiftController extends AppBaseController
 {

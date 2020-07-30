@@ -9,10 +9,10 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
-use App\models\Semester;
-use App\models\Course;
-use App\models\Faculty;
-use App\models\FeeStructure;
+use App\Models\Semester;
+use App\Models\Course;
+use App\Models\Faculty;
+use App\Models\FeeStructure;
 
 class FeeStructureController extends AppBaseController
 {

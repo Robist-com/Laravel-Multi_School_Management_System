@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use PDF;
-use App\models\Academic;
+use App\Models\Academic;
 class AcademicController extends AppBaseController
 {
     /** @var  AcademicRepository */

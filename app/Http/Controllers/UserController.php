@@ -9,9 +9,9 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
-use App\models\Role;
+use App\Models\Role;
 use PDF;
-use App\models\User;
+use App\Models\User;
 class UserController extends AppBaseController
 {
     /** @var  UserRepository */

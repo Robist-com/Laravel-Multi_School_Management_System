@@ -12,10 +12,10 @@ use Response;
 use PDF;
 use DB;
 use App\Degree;
-use App\models\Semester;
-use App\models\Department;
-use App\models\Faculty;
-use App\models\Course;
+use App\Models\Semester;
+use App\Models\Department;
+use App\Models\Faculty;
+use App\Models\Course;
 use App\SemesterSubjects;
 class SemesterController extends AppBaseController
 {

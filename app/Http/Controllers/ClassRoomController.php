@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use PDF;
-use App\models\ClassRoom;
+use App\Models\ClassRoom;
 class ClassRoomController extends AppBaseController
 {
     /** @var  ClassRoomRepository */

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use PDF;
-use App\models\Role;
+use App\Models\Role;
 class RoleController extends AppBaseController
 {
     /** @var  RoleRepository */

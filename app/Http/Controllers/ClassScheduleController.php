@@ -9,21 +9,21 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
-// we need  to add all our models class here before writing anything okay.
-use App\models\Batch;
-use App\models\Classes;
-use App\models\ClassRoom;
-use App\models\Course;
-use App\models\Day;
-use App\models\Level;
-use App\models\Semester;
-use App\models\Faculty;
-use App\models\Department;
-use App\models\Teacher;
+// we need  to add all our Models class here before writing anything okay.
+use App\Models\Batch;
+use App\Models\Classes;
+use App\Models\ClassRoom;
+use App\Models\Course;
+use App\Models\Day;
+use App\Models\Level;
+use App\Models\Semester;
+use App\Models\Faculty;
+use App\Models\Department;
+use App\Models\Teacher;
 use App\Degree;
-use App\models\Shift;
-use App\models\Time;
-use App\models\ClassSchedule;
+use App\Models\Shift;
+use App\Models\Time;
+use App\Models\ClassSchedule;
 use DB;
 use PDF;
 class ClassScheduleController extends AppBaseController

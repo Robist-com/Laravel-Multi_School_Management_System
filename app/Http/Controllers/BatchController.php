@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use PDF;
-use App\models\Batch;
+use App\Models\Batch;
 class BatchController extends AppBaseController
 {
     /** @var  BatchRepository */

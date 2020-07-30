@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 use PDF;
-use App\models\Day;
+use App\Models\Day;
 class DayController extends AppBaseController
 {
     /** @var  DayRepository */

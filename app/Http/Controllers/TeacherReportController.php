@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\models\Academic;
-use App\models\Admissions;
-use App\models\Day;
+use App\Models\Academic;
+use App\Models\Admissions;
+use App\Models\Day;
 use App\Models\ClassAssigning;
 use App\Models\Teacher; 
-use App\models\Batch;
-use App\models\Classes;
-use App\models\ClassRoom;
-use App\models\Course;
+use App\Models\Batch;
+use App\Models\Classes;
+use App\Models\ClassRoom;
+use App\Models\Course;
 use App\Status;
-use App\models\Level;
-use App\models\Semester;
-use App\models\Shift;
-use App\models\Time;
-use App\models\ClassSchedule;
+use App\Models\Level;
+use App\Models\Semester;
+use App\Models\Shift;
+use App\Models\Time;
+use App\Models\ClassSchedule;
 
 use DB;
 use Validator;

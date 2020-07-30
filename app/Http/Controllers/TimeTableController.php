@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 use Flash;
 use DB;
 use Response;
-use App\models\Teacher;
-use App\models\Semester;
-use App\models\Course;
+use App\Models\Teacher;
+use App\Models\Semester;
+use App\Models\Course;
 use PDF;
 use Auth;
 use App\Models\ClassAssigning;
@@ -25,15 +25,15 @@ use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use App\TimeTable;
 
-use App\models\Batch;
-use App\models\ClassRoom;
-use App\models\Day;
-use App\models\Level;
-use App\models\Shift;
-use App\models\Time;
-use App\models\Department;
-use App\models\Faculty;
-use App\models\ClassSchedule;
+use App\Models\Batch;
+use App\Models\ClassRoom;
+use App\Models\Day;
+use App\Models\Level;
+use App\Models\Shift;
+use App\Models\Time;
+use App\Models\Department;
+use App\Models\Faculty;
+use App\Models\ClassSchedule;
 use App\Degree;
 
 class TimeTableController extends Controller
