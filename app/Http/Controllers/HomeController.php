@@ -41,7 +41,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $batchCount = Batch::count();
+        // $batchCount = Batch::count();
         $batchCount = Batch::count(); // this function ccount count the batch from the batch table but we are using modal okay.
         $studentsCount = Admission::count(); 
         $classCount = Classes::count();
