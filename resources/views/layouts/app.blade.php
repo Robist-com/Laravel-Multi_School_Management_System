@@ -515,23 +515,28 @@ select {
                             <!-- Menu Toggle Button -->
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <!-- The user image in the navbar-->
+                                @if(isset($homeworkCount))
                                 <span><i class="fa fa-globe fa-lg"></i><sup class="badge" style="background:red; ">{{$homeworkCount+$resultCount+$markCount}}</sup></span>
+                                @endif
                                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
                                 {{-- <span class="hidden-xs">Notification</span> --}}
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- The user image in the menu -->
                                 <!-- <li class="user-header"> -->
+                                @if(isset($homeworkCount))
                                 @if($homeworkCount)
+                                @endif
                                 <li>
                                     <a href="{{url('homework-list')}}">
+                                    @if(isset($homeworkCount))
                                     <i class="fa fa-users text-aqua"></i> {{$homeworkCount}} new submit Homework
+                                    @endif
                                     </a>
                                     @else
                                 </li>
                                 @endif
-                               <!-- <p> {{$homeworkCount}}</p>
-                                    here is the notifaction -->
+                              
                               
                             </ul>
                         </li>
