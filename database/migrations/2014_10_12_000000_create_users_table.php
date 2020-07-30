@@ -17,13 +17,13 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->unique();
-            $table->unsignedBigInteger('roll_id');
-            $table->unsignedBigInteger('teacher_id');
+            $table->unsignedBigInteger('role_id')->default(2);
+            $table->unsignedBigInteger('teacher_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->tinyInteger('is_online')->default(0);
-            $table->string('ip_address');
-            $table->time('login_time');
+            $table->string('ip_address')->nullable();
+            $table->time('login_time')->nullable();
             $table->time('logout_time')->nullable();
 
             $table->rememberToken();
