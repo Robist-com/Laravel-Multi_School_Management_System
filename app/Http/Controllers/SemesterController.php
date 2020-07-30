@@ -111,7 +111,7 @@ class SemesterController extends AppBaseController
     public function store(CreateSemesterRequest $request)
     {
         $input = $request->all();
-
+        dd($input);die;
         $semester = $this->semesterRepository->create($input);
 
         Flash::success('Semester saved successfully.');
@@ -158,7 +158,7 @@ class SemesterController extends AppBaseController
     public function createDegrees(Request $request)
     {
         $input = $request->all();
-        // dd($input);die;
+        dd($input);die;
         $semesters_degree =  $request->get('semester_id');
         $exdegree = Degree::select('*')->where('semester_id',$request->get('semester_id'))->where('degree_name',$request->get('degree_name'))->get();
 			if(count($exdegree)>0)
