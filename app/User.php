@@ -9,12 +9,21 @@ use Cache;
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
+
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+
+    protected $dates = ['deleted_at'];
+
+
     protected $fillable = [
         'name',
         'email',
@@ -51,6 +60,11 @@ class User extends Authenticatable
         return $this->belongsTo('App\Roles');
     }
 
+    // public function role()
+    // {
+    //     return $this->belongsTo('App\Models\Role'); // here is our relationship for the users okay
+    // }
+
     public function isOnline(){ // THIS IS THE FUNCTION THAT WE CALLED INSIDE THE TEACHER ONLINE TBALE OKAY
 
         return Cache::has('user-online' . $this->id);// is the current login user id okay.
@@ -58,6 +72,7 @@ class User extends Authenticatable
         //now we will create one file for the online users okay.
         //i have alreay created it let me show you to guys
 
-	}
+    }
+    
 
 }
