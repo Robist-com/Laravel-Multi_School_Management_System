@@ -37,7 +37,7 @@ class SemesterController extends AppBaseController
     public function index(Request $request)
     {
         $semesters = $this->semesterRepository->all();
-        // DD($semesters);
+        // dd($semesters);
         $faculties = Faculty::all();
         $courses = Course::all();
         $semester = Semester::all();
@@ -108,10 +108,10 @@ class SemesterController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateSemesterRequest $request)
+    public function store(Request $request)
     {
         $input = $request->all();
-        dd($input);die;
+        // dd($input);die;
         $semester = $this->semesterRepository->create($input);
 
         Flash::success('Semester saved successfully.');

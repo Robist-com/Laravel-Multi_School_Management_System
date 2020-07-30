@@ -37,7 +37,7 @@
 
                     @include('semesters.table')
                     </div>
-                    {!! Form::open(['route' => 'semesters.store']) !!}
+                  
 
                     @include('semesters.fields')
 

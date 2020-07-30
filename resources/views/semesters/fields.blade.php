@@ -8,11 +8,14 @@
         <h3 class="modal-title" id="exampleModalLabel"><i class="fa fa-gear"></i> Grades </h3>
       </div>
       <div class="modal-body">
-
+      <!-- {!! Form::open(['route' => 'semesters.store']) !!} -->
+      <form action="{{route('semesters.store')}}" method="post">
+      @csrf
 <!-- Semester Name Field -->
 <div class="form-group">
-    {!! Form::text('semester_name', null, ['class' => 'form-control','placeholder'=>'Enter Semester Name']) !!}
+    {!! Form::text('semester_name', null, ['class' => 'form-control','placeholder'=>'Enter Semester Name', 'require' => 'true']) !!}
 </div>
+<!-- <input type="text" name="semester_name" class="form-control" required> -->
 
 <!-- Semester Code Field -->
 <div class="form-group">
@@ -33,7 +36,9 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-  {!! Form::submit('Create Semester', ['class' => 'btn btn-success']) !!}
+  <button type="submit" class="btn btn-info btn-rouneded">Create</button>
+  <!-- {!! Form::submit('Create Semester', ['class' => 'btn btn-success']) !!} -->
+  </form>
 </div>
 </div>
 </div>

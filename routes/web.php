@@ -645,7 +645,7 @@ Route::resource('shifts', 'ShiftController');
 Route::get('shift/status/update', 'ShiftController@updateShiftStatus')->name('shift.update.status');
 
 
-Route::resource('semesters', 'SemesterController');
+// Route::resource('semesters', 'SemesterController');
 
 // ------------------------- UPDATE SEMESTER STATUS -----------------
 Route::get('semesters/status/update', 'SemesterController@updateSemesterStatus')->name('semesters.update.status');
