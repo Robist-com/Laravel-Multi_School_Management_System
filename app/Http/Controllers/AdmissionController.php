@@ -493,7 +493,7 @@ public function StudentList(Request $request)
     
                 // dd($fee_structure_amount);
     
-            return view('admissions.promote_student.index', compact('student','readStudentTransaction','data','fee_structure1',
+            return view('admissions.promote_student.index', compact('readStudentTransaction','data','fee_structure1',
                                                     'readStudentFee','semester','faculty','rolls','students','grades_promote','classes_promote',
                                                     'totalTransaction','invoice_id','classes','student_name','fee_structure','fee_structure_amount'));
            
