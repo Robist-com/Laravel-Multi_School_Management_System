@@ -302,7 +302,7 @@
 
           <div class="info-box-content">
             <span class="info-box-text alert "> CLASS ASSIGNED'S</span>
-            <!-- <span class="info-box-number">{{$classasignCount}}</span> -->
+            <!-- <span class="info-box-number"></span> -->
           </div>
           <!-- /.info-box-content -->
         </div>
