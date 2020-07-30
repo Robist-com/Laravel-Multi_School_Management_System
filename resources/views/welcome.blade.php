@@ -15,11 +15,12 @@ $institute = Institute::first();
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <!-- Title -->
+    @if(isset($institute))
     <title>(AIS {{$institute->name}})</title>
-
+    
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('institute_logo/' .$institute->image) }}">
-
+    @endif
     <!-- Core Stylesheet -->
     <link rel="stylesheet" href="{{ asset('FrontEnd/style.css') }}">
 
