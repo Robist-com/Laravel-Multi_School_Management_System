@@ -6,7 +6,9 @@
   use App\StudentUploadHomeWork;
   use App\MeritList;
   $students = Roll::onlineStudent();
+  @if(isset($homeworkCount))
   $homeworkCount = StudentUploadHomeWork::where('teacher_id', Auth::user()->teacher_id)->count();
+  @endif
   $resultCount = MeritList::where('roll_no', Session::get('studentSession'))->count();
   $markCount = Marks::where('roll_no', Session::get('studentSession'))->count();
 @endphp
