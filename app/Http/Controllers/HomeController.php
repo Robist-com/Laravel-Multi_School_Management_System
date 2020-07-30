@@ -3,24 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\models\Batch;
-use App\models\Classes;
-use App\models\ClassRoom;
-use App\models\Course;
-use App\models\Day;
-use App\models\Level;
-use App\models\Semester;
-use App\models\Shift;
-use App\models\Time;
-use App\models\ClassSchedule;
-use App\models\Admission;
-use App\models\Teacher;
-use App\models\Department;
-use App\models\Transaction;
-use App\models\Faculty;
-use App\models\FeeStructure;
+use App\Models\Batch;
+use App\Models\Classes;
+use App\Models\ClassRoom;
+use App\Models\Course;
+use App\Models\Day;
+use App\Models\Level;
+use App\Models\Semester;
+use App\Models\Shift;
+use App\Models\Time;
+use App\Models\ClassSchedule;
+use App\Models\Admission;
+use App\Models\Teacher;
+use App\Models\Department;
+use App\Models\Transaction;
+use App\Models\Faculty;
+use App\Models\FeeStructure;
 use App\StudentFee;
-use App\models\ClassAssigning;
+use App\Models\ClassAssigning;
 use DB;
 class HomeController extends Controller
 {
