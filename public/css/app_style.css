@@ -1,0 +1,201 @@
+
+.dash {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+min-height: 100vh; }
+
+.dash-content {
+-webkit-box-flex: 2;
+-webkit-flex-grow: 2;
+-ms-flex-positive: 2;
+  flex-grow: 2;
+padding: 25px; }
+@media (max-width: 767.98px) {
+.dash-content {
+padding: 15px 0px; } }
+
+.dash-row {
+margin-bottom: 30px; }
+
+.stats {
+padding: 18px 23px;
+font-family: "Nunito", sans-serif;
+-webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+-webkit-box-orient: vertical;
+-webkit-box-direction: normal;
+-webkit-flex-direction: column;
+-ms-flex-direction: column;
+  flex-direction: column;
+min-height: 170px;
+margin-bottom: 30px; }
+
+.stats-content {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+margin-top: auto;
+-webkit-box-align: end;
+-webkit-align-items: flex-end;
+-ms-flex-align: end;
+  align-items: flex-end; }
+
+.stats-title {
+font-size: 26px;
+font-weight: 600;
+letter-spacing: .04em; }
+
+.stats-icon {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+-webkit-box-align: end;
+-webkit-align-items: flex-end;
+-ms-flex-align: end;
+  align-items: flex-end;
+font-size: 20px; }
+
+.stats-data {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+-webkit-box-orient: vertical;
+-webkit-box-direction: normal;
+-webkit-flex-direction: column;
+-ms-flex-direction: column;
+  flex-direction: column;
+-webkit-box-align: end;
+-webkit-align-items: flex-end;
+-ms-flex-align: end;
+  align-items: flex-end;
+margin-left: auto; }
+
+.stats-number {
+font-size: 33px;
+line-height: 33px;
+font-weight: 600;
+letter-spacing: .04em; }
+
+.stats-change {
+margin-top: 5px;
+font-family: "Open Sans", sans-serif; }
+
+.stats-percentage {
+opacity: 1; }
+
+.stats-timeframe {
+opacity: .5; }
+
+.stats-primary {
+color: #fff;
+background: #3F84FC; }
+
+.stats-secondary {
+color: #fff;
+background: #727F94; }
+
+.stats-success {
+color: #fff;
+background: #1DAB47; }
+
+.stats-info {
+color: #fff;
+background: #8A3FFC; }
+
+.stats-warning {
+color: #212529;
+background: #FCAE3F; }
+
+.stats-danger {
+color: #fff;
+background: #FC413F; }
+
+.stats-light {
+color: #212529;
+background: #f8f9fa; }
+
+.stats-dark {
+color: #fff;
+background: #1E232D; }
+
+.container-fluid, .container-sm, .container-md, .container-lg, .container-xl {
+width: 100%;
+padding-right: 15px;
+padding-left: 15px;
+margin-right: auto;
+margin-left: auto; }
+
+
+.easion-card {
+border: 1px solid #D3D3D3;
+background: #fff;
+margin-bottom: 30px; }
+.easion-card .card-header {
+min-height: 57px;
+background-color: #F0F1F7;
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+-webkit-box-align: center;
+-webkit-align-items: center;
+-ms-flex-align: center;
+    align-items: center;
+padding: 8px 32px; }
+.easion-card .card-body {
+padding: 24px 32px; }
+@media (max-width: 767.98px) {
+.easion-card .card-body {
+padding: 12px 18px; } }
+
+.easion-card-icon {
+margin-right: 20px; }
+
+.easion-card-title {
+font-weight: bold; }
+
+.easion-card-menu {
+margin-left: auto; }
+
+.easion-card-menu-link {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+-webkit-box-align: center;
+-webkit-align-items: center;
+-ms-flex-align: center;
+  align-items: center;
+-webkit-box-pack: center;
+-webkit-justify-content: center;
+-ms-flex-pack: center;
+  justify-content: center;
+width: 30px;
+height: 30px;
+margin-right: -15px; }
+.easion-card-menu-link::after {
+content: "";
+display: inline-block;
+width: 0;
+height: 0;
+border-left: 5px solid transparent;
+border-right: 5px solid transparent;
+border-top: 5px solid rgba(81, 81, 81, 0.8); }
+.text-white .easion-card-menu-link::after {
+border-top-color: #fff; }
+
+.easion-card-body-chart {
+position: relative;
+max-width: 99%; }
+@media (max-width: 767.98px) {
+.easion-card-body-chart {
+padding: 12px 5px; } }
