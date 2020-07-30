@@ -55,14 +55,14 @@ class CourseController extends AppBaseController
         $semester =Semester::all();
         $department =Department::all();
 
-        $Subjects =	DB::table('Subject')
-		->join('classes', 'Subject.class', '=', 'classes.class_code')
-		->select('Subject.id', 'Subject.code','Subject.name','Subject.type', 'Subject.subgroup','Subject.stdgroup','Subject.totalfull',
-		'Subject.totalpass','Subject.gradeSystem','Subject.wfull', 'Subject.wpass','Subject.mfull','Subject.mpass','classes.class_name as class','Subject.sfull','Subject.spass',
-		'Subject.pfull','Subject.ppass')
-		->get();
-
-        return view('courses.index', compact('classes','semester','department','gpa','Subjects'))
+        // $Subjects =	DB::table('Subject')
+		// ->join('classes', 'Subject.class', '=', 'classes.class_code')
+		// ->select('Subject.id', 'Subject.code','Subject.name','Subject.type', 'Subject.subgroup','Subject.stdgroup','Subject.totalfull',
+		// 'Subject.totalpass','Subject.gradeSystem','Subject.wfull', 'Subject.wpass','Subject.mfull','Subject.mpass','classes.class_name as class','Subject.sfull','Subject.spass',
+		// 'Subject.pfull','Subject.ppass')
+		// ->get();
+        // ,'Subjects'
+        return view('courses.index', compact('classes','semester','department','gpa'))
             ->with('courses', $courses);
     }
 
