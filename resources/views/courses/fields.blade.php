@@ -9,7 +9,6 @@
         <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-subscript" aria-hidden="true"> Add New Course</i></h5>
       </div>
       <div class="modal-body">
-      <form role="form" action="{{url('/subject/create')}}" method="post">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="subject_id" id="subject_id">
                     <div class="row">
@@ -22,19 +21,19 @@
 
                           <div class="col-md-6">
                           <div class="form-group">
-                                  <input type="text" id="subject_code" class="form-control" value="{{old('code')}}" autofocus required name="course_code" placeholder="Course Code">
+                                  <input type="text" id="subject_code" class="form-control" value="{{old('course_code')}}" autofocus required name="course_code" placeholder="Course Code">
                               </div>
                           </div>
 
                         <div class="col-md-6">
                           <div class="form-group">
-                                  <input type="text" id="subject_name" class="form-control" value="{{old('name')}}" required name="course_name" placeholder="Course Name">
+                                  <input type="text" id="subject_name" class="form-control" value="{{old('course_name')}}" required name="course_name" placeholder="Course Name">
                               </div>
                           </div>
 
                           <div class="col-md-12">
                           <div class="form-group">
-                          <textarea value="{{old('describtion')}}" class="form-control" name="describtion" placeholder="Description" id="describtion" cols="40" rows="2"></textarea>
+                          <textarea value="{{old('description')}}" class="form-control" name="describtion" placeholder="Description" id="describtion" cols="40" rows="2"></textarea>
                                   <!-- <input type="text" id="describtion" class="form-control" > -->
                               </div>
                           </div>
@@ -259,7 +258,6 @@
         {!! Form::submit('Create Course', ['class' => 'btn btn-success']) !!}
       </div>
     </div>
-    </form>
   </div>
   </div>
   </div>

@@ -79,6 +79,7 @@ class LevelController extends AppBaseController
 			foreach($level as $semester){
             $degree = new Level;
             $degree->course_id = $semester;
+            $degree->grade_id = $request->semester_id;
             $degree->level = $request->level;
             $degree->status = $request->status;
             $degree->level_description = $request->level_description;

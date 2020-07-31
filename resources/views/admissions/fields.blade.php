@@ -368,7 +368,7 @@
                 <legend for="gender">Class Group <b> required</b></legend>
                 <div class="selectWarapper">
                 <select name="department_id" id="department_id" class="form-control select_2_single" >
-                <option value="0" selected="true" disabled="true">Choose Class Group</option>
+                <option value="0" selected="true" disabled="true1">Choose Class Group</option>
 
                 </select>
                 </div>
@@ -538,9 +538,9 @@ $('#faculty_id').on('change',function(e){
         $(department_id).empty();
     $.get("{{ route('dynamicDepartments') }}",{faculty_id:faculty_id},function(data){  
         
-console.log(data);
-$.each(data,function(i,l){
-$(department_id).append($('<option/>',{
+    console.log(data);
+    $.each(data,function(i,l){
+    $(department_id).append($('<option/>',{
     value : l.department_id,
     text  : l.department_name
 }))

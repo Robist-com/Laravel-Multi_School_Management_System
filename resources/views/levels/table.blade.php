@@ -31,6 +31,7 @@
     <table class="table table-striped table-bordered table-hover" id="levels-table">
         <thead>
             <tr>
+                <th>Grade</th>
                 <th>Level</th>
         <th>Course</th>
         <th>Level Description</th>
@@ -41,9 +42,10 @@
         <tbody>
         @foreach($levels as $level)
             <tr>
-                <td class="col-md-2">{!! $level->level !!}</td>
+            <td class="col-md-2">{!! $level->grade['semester_name'] !!}</td>
+            <td class="col-md-2">{!! $level->level !!}</td>
                  
-            <td class="col-md-3">{!! $level->course['course_name'] !!}</td>
+            <td>{!! $level->course['course_name'] !!}</td>
             <td class="col-md-5">{!! $level->level_description !!}</td>
             <td >
                 <input type="checkbox" data-id="{{ $level->id }}" name="status" 

@@ -12,7 +12,7 @@ aria-hidden="true">
             <div class="col-md-6">
                           <div class="form-group">
                           <select name="semester_id" class="form-control select_2_single" id="semester_id">
-                              <option value="selected ">semester </option>
+                              <option value="selected ">Select Grade </option>
                               @foreach($semester as $key => $semes)
                                <option value="{{$semes->id}}">{{$semes->semester_name}}</option>
                                @endforeach 
@@ -37,7 +37,7 @@ aria-hidden="true">
                         </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                         <div class="form-group">
                         <select name="course_id[]" id="course_id" class="form-control select_2_multiple" multiple data-hide-disabled="true" data-size="5" id="subject_class" >
                             <option value="">Select Course</option>
@@ -48,17 +48,19 @@ aria-hidden="true">
                     </div>
                     </div>
 
-                    <!-- Status Field -->
-                    <div class="form-group  col-sm-2">
+                  
+                <div class="form-group col-md-12">
+                    {!! Form::textarea('level_description', null, ['class' => 'form-control', 'cols' => 40, 'rows' =>2, 'placeholder'=> 'Level Description']) !!}
+                </div>
+
+                  <!-- Status Field -->
+                  <div class="form-group  col-sm-2">
                     <label class="checkbox-inline">
                     {!! Form::hidden('status', 'off') !!}
                     {!! Form::checkbox('status', 'on', null) !!} Status
                     </label>
                     </div>
 
-                <div class="form-group">
-                    {!! Form::textarea('level_description', null, ['class' => 'form-control', 'cols' => 40, 'rows' =>2, 'placeholder'=> 'Level Description']) !!}
-                </div>
 
 <!-- Submit Field -->
 </div>

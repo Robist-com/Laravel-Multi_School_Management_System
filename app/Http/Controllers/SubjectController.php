@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Subject;
 use App\Models\Classes;
+use App\Models\Course;
 use App\GPA;
 use DB;
 
@@ -28,15 +29,15 @@ class SubjectController extends Controller {
         // dd($classes);
         $gpa =GPA::select('for')->distinct()->get();
         
-        $Subjects =	DB::table('Subject')
-		->join('classes', 'Subject.class', '=', 'classes.class_code')
-		->select('Subject.id', 'Subject.code','Subject.name','Subject.type', 'Subject.subgroup','Subject.stdgroup','Subject.totalfull',
-		'Subject.totalpass','Subject.gradeSystem','Subject.wfull', 'Subject.wpass','Subject.mfull','Subject.mpass','classes.class_name as class','Subject.sfull','Subject.spass',
-		'Subject.pfull','Subject.ppass')
-		->get();
+        // $Subjects =	DB::table('Subject')
+		// ->join('classes', 'Subject.class', '=', 'classes.class_code')
+		// ->select('Subject.id', 'Subject.code','Subject.name','Subject.type', 'Subject.subgroup','Subject.stdgroup','Subject.totalfull',
+		// 'Subject.totalpass','Subject.gradeSystem','Subject.wfull', 'Subject.wpass','Subject.mfull','Subject.mpass','classes.class_name as class','Subject.sfull','Subject.spass',
+		// 'Subject.pfull','Subject.ppass')
+		// ->get();
            // echo "<pre>";print_r($gpa);exit;
 		//return View::Make('subjects.subjectCreate',compact('classes','gpa'));
-		return View('subjects.index',compact('classes','gpa','Subjects'));
+		return View('subjects.index',compact('classes','gpa'));
 	}
 
 
@@ -86,7 +87,7 @@ class SubjectController extends Controller {
 			}
 			else {
 				foreach($classes as $class){
-				$subject = new Subject;
+				$subject = new Course;
 				$subject->name = $request->get('name');
 				$subject->code = $request->get('code');
 				$subject->class = $class;

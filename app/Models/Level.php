@@ -62,6 +62,12 @@ protected $primaryKey = 'id';
     {
         return $this->belongsTo('App\Models\Course');
     }
+
+    public function grade()
+    {
+        return $this->belongsTo('App\Models\Semester');
+    }
+    
     
     // public function class_schedulling()
     // {

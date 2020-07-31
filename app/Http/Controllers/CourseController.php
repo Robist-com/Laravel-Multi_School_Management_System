@@ -55,13 +55,7 @@ class CourseController extends AppBaseController
         $semester =Semester::all();
         $department =Department::all();
 
-        // $Subjects =	DB::table('Subject')
-		// ->join('classes', 'Subject.class', '=', 'classes.class_code')
-		// ->select('Subject.id', 'Subject.code','Subject.name','Subject.type', 'Subject.subgroup','Subject.stdgroup','Subject.totalfull',
-		// 'Subject.totalpass','Subject.gradeSystem','Subject.wfull', 'Subject.wpass','Subject.mfull','Subject.mpass','classes.class_name as class','Subject.sfull','Subject.spass',
-		// 'Subject.pfull','Subject.ppass')
-		// ->get();
-        // ,'Subjects'
+      
         return view('courses.index', compact('classes','semester','department','gpa'))
             ->with('courses', $courses);
     }
@@ -88,7 +82,7 @@ class CourseController extends AppBaseController
     public function store(Request $request)
     {
         $input = $request->all();
-            dd($input); die;
+            // dd($input); die;
         // $course = $this->courseRepository->create($input);
 
         $classes =  $request->get('class');
@@ -96,7 +90,7 @@ class CourseController extends AppBaseController
 			'course_name'         => 'required',
 			'course_code'         => 'required',
 			'describtion'         => 'required',
-			'semester'     => 'required',
+			// 'semester'     => 'required',
 			'department'     => 'required',
 			'class'        => 'required',
 			'gradeSystem'  => 'required',
@@ -114,7 +108,7 @@ class CourseController extends AppBaseController
 		$validator = \Validator::make($request->all(), $rules);
 		if ($validator->fails())
 		{
-			return redirect('/subject/create')->withErrors($validator);
+			return redirect()->back()->withErrors($validator);
 		}
 		else {
 			$exsubject = Course::select('*')->where('class',$request->get('class'))->where('course_code',$request->get('course_code'))->get();
@@ -130,7 +124,7 @@ class CourseController extends AppBaseController
 				$subject = new Course;
 				$subject->course_name = $request->get('course_name');
 				$subject->course_code = $request->get('course_code');
-				$subject->describtion = $request->get('describtion');
+				$subject->description = $request->get('describtion');
 				$subject->class = $class;
 				$subject->gradeSystem = $request->get('gradeSystem');
 				// $subject->type = $request->get('type');
@@ -299,7 +293,7 @@ class CourseController extends AppBaseController
 
         public function dynamicDegrees(Request $request){
             $input = $request->all();
-            // dd($input); die;
+           
         if ($request->ajax()) {
             return response(Level::where('grade_id', $request->grade_id)->get());
         }

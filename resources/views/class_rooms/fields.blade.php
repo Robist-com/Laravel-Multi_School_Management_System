@@ -18,7 +18,7 @@
        </div>
        <br>
        <div class="">
-       {!! Form::textarea('description', null, ['class' => 'form-control','placeholder'=>'Enter Description','rows' => '2']) !!}
+       {!! Form::textarea('classroom_description', null, ['class' => 'form-control','placeholder'=>'Enter Description','rows' => '2']) !!}
        </div>
        <br>
         <!-- Status Field -->

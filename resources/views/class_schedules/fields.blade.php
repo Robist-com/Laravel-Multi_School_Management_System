@@ -204,11 +204,12 @@ be dynamic value by the select of the course okay.... -->
     //     we will write our code here okay.
     $('#course_id1').on('change',function(e){
                 var course_id = $(this).val();
+                alert(course_id)
                 var level = $('#level_id1')
                     $(level).empty();
              $.get("{{ route('dynamicLevel') }}",{course_id:course_id},function(data){  
                     
-                    // console.log(data);
+                    console.log(data);
                     $.each(data,function(i,l){
                     $(level).append($('<option/>',{
                         value : l.level_id,

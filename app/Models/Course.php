@@ -47,7 +47,7 @@ class Course extends Model
         'id' => 'integer',
         'course_name' => 'string',
         'course_code' => 'string',
-        'describtion' => 'string',
+        'description' => 'string',
         'class' => 'string',
         'department' => 'string',
         'gradeSystem' => 'integer',
@@ -62,7 +62,7 @@ class Course extends Model
     public static $rules = [
         'course_name' => 'required',
         'course_code' => 'required',
-        'describtion' => 'required',
+        'description' => 'required',
         'status' => 'required'
     ];
 

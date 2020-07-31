@@ -33,7 +33,7 @@
             <div class="clearfix"></div>
                     @include('times.table')
                     
-                    {!! Form::open(['route' => 'shifts.store']) !!}
+                    {!! Form::open(['route' => 'times.store']) !!}
 
                         @include('times.fields')
 

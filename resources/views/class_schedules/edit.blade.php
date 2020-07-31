@@ -179,6 +179,7 @@ be dynamic value by the select of the course okay.... -->
     //     we will write our code here okay.
     $('#course_id').on('change',function(e){
                 var course_id = $(this).val();
+                alert(course_id)
                 var level = $('#level_id')
                     $(level).empty();
              $.get("{{ route('dynamicLevel') }}",{course_id:course_id},function(data){  
@@ -266,6 +267,7 @@ $('#Viewclassschedule-show').on('show.bs.modal',  function(event){
         $('#semester_id1').on('change',function(e){
         var grade_id = $(this).val();
         var degree = $('#degree_id1')
+        // alert(grade_id)
             $(degree).empty();
         $.get("{{ route('dynamicDegrees') }}",{grade_id:grade_id},function(data){  
     

@@ -25,7 +25,7 @@ class Admissions extends Migration
             $table->string('phone')->nullable();
             $table->date('dob')->nullable();
             $table->string('address')->nullable();
-            $table->string('cureent_address')->nullable();
+            $table->string('current_address')->nullable();
             $table->string('nationality')->nullable();
             $table->string('passport')->nullable();
             $table->date('dateregistered')->nullable();

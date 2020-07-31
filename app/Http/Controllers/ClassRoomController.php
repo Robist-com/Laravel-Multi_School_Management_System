@@ -53,7 +53,7 @@ class ClassRoomController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateClassRoomRequest $request)
+    public function store(Request $request)
     {
         $input = $request->all();
 
