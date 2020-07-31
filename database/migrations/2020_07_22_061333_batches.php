@@ -16,7 +16,7 @@ class Batches extends Migration
         Schema::create('batches', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('batch')->nullable();
-            $table->tinyInteger('is_current_batch')->nullable();
+            $table->tinyInteger('is_current_batch')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

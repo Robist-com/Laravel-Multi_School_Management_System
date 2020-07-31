@@ -132,7 +132,7 @@ class BatchController extends AppBaseController
     public function updateBatchStatus(Request $request)
     {
         $batch = Batch::findOrFail($request->batch_id);
-        $batch->status = $request->status;
+        $batch->is_current_batch = $request->is_current_batch;
         $batch->save();
     
         return response()->json(['message' => 'Batch status updated successfully.']);

@@ -18,6 +18,13 @@
                     {!! Form::text('batch', null, ['class' => 'form-control']) !!}
                     </div>
                     </div>
+                    <br>
+     <div class="form-group" name="is_current_batch">
+                    <label class="checkbox-inline">
+                    {!! Form::hidden('is_current_batch', '0') !!}
+                    {!! Form::checkbox('is_current_batch', '1', null) !!} Is Current Batch
+                    </label>
+                    </div>
                     
                     <div class="modal-footer">
                         {!! Form::submit('Update Batch', ['class' => 'btn btn-info']) !!}

@@ -20,7 +20,7 @@ input:read-only{
         <thead>
             <tr>
                 <th>Batch</th>
-                <th style="text-align:center">Status</th>
+                <th style="text-align:center">Is Current</th>
                 <th style="text-align:center">Created At</th>
                 <th colspan="3">Action</th>
             </tr>
@@ -31,8 +31,8 @@ input:read-only{
                 <td>{!! $batch->batch !!}</td>
 
                 <td style="text-align:center">
-                <input type="checkbox" data-id="{{ $batch->id }}" name="status" 
-                class="js-switch" {{ $batch->status == 1 ? 'checked' : '' }}>
+                <input type="checkbox" data-id="{{ $batch->id }}" name="is_current_batch" 
+                class="js-switch" {{ $batch->is_current_batch == 1 ? 'checked' : '' }}>
                 </td>
 
                 <td style="text-align:center">{!! date('d-M-Y', strtotime($batch->created_at)) !!}</td>

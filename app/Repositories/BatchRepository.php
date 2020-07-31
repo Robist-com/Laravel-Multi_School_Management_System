@@ -17,7 +17,7 @@ class BatchRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'batch'
+        'batch','is_current_batch'
     ];
 
     /**

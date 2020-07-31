@@ -14,7 +14,26 @@
       <!-- <div class="form-group col-md-12"> -->
     {!! Form::text('batch', null, ['class' => 'form-control','placeholder'=>'Enter Batch Year']) !!}
     <!-- </div> -->
-     
+     <!-- <div class="col-md-3"> -->
+
+    <br>
+     <div class="form-group" name="is_current_batch">
+                    <label class="checkbox-inline">
+                    {!! Form::hidden('is_current_batch', '0') !!}
+                    {!! Form::checkbox('is_current_batch', '1', null) !!} Is Current Batch
+                    </label>
+                    </div>
+     <!-- Status Field -->
+     <!-- <div class=" col-sm-6">
+                    <div class=" col-sm-1" name="status" id="status1">
+                    <label class="container12">Is Current Batch
+                    {!! Form::hidden('is_current_batch', 0) !!}
+                    {!! Form::checkbox('is_current_batch', '1', null) !!}
+                        <span class="checkmark"></span>
+                    </label>
+                    </div>   
+                </div> -->
+
       </div>
       <div class="modal-footer">
         <button  type="button" class="btn btn-warning" data-dismiss="modal">Close</button>

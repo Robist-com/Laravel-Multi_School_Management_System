@@ -26,7 +26,8 @@ class Batch extends Model
 
 
     public $fillable = [
-        'batch'
+        'batch','is_current_batch'
+
     ];
 
     /**
@@ -36,7 +37,9 @@ class Batch extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'batch' => 'string'
+        'batch' => 'string',
+        'is_current_batch' => 'integer'
+
     ];
 
     /**
