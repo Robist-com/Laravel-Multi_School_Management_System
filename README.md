@@ -1,2 +1,2 @@
-# Laravel_Multi_School_Management_System
+# Laravel-Multi_School_Management_System
 this is multi school management system 
