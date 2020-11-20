@@ -1,24 +1,21 @@
-@extends('layouts.app')
+
+
+
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
 @section('content')
-    <section class="content-header">
-        <h1>
-            Class Schedule
-        </h1>
-    </section>
-    <div class="content">
-        @include('adminlte-templates::common.errors')
-        <div class="box box-primary">
 
-            <div class="box-body">
-                <div class="row">
-                    {!! Form::open(['route' => 'classSchedules.store']) !!}
 
-                        @include('class_schedules.fields')
+@if($template->template == '0')
 
-                    {!! Form::close() !!}
-                </div>
-            </div>
-        </div>
-    </div>
+       @include('class_schedules.admindefault.create')
+
+@else
+
+       @include('class_schedules.adminbsb.create')
+
+@endif
+
 @endsection

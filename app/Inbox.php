@@ -8,6 +8,6 @@ class Inbox extends Model
 {
     protected $table = 'inboxes';
     public $fillable = [
-        'user_id', 'subject','message', 'status'
+        'user_id', 'subject','message', 'status', 'school_id'
     ];
 }

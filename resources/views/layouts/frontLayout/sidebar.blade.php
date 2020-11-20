@@ -13,12 +13,14 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
+        @if(isset($students))
         <img src="{{asset('student_images/' .$students->image)}}" style="width:170px; height:70px" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>{{$students->first_name}} {{$students->last_name}}</p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
+        @endif
       </div>
       <!-- search form -->
       <form action="#" method="get" class="sidebar-form">
@@ -118,7 +120,7 @@
           </li>
           </ul>
         </li>
-
+@if(isset($students))
         @if($students->status == 1)
         <li class="treeview">
             <a href="#">
@@ -134,6 +136,7 @@
             </li>
             </ul>
           </li>
+          @endif
           @endif
       </ul>
     </section>

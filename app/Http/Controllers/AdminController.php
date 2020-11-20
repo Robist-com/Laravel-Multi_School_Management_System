@@ -82,4 +82,15 @@ class AdminController extends Controller
     {
         //
     }
+
+    //language area
+	public function language(Request $request,$locale)
+	{
+		$file = fopen(realpath(base_path('config/lang.php')), 'w');
+		fwrite($file, "<?php
+		return[
+			'locale' => '$locale'
+		];");
+		return back();
+	}
 }

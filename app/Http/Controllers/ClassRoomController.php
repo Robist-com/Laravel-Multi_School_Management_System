@@ -19,6 +19,7 @@ class ClassRoomController extends AppBaseController
     public function __construct(ClassRoomRepository $classRoomRepo)
     {
         $this->classRoomRepository = $classRoomRepo;
+        $this->middleware('auth');
     }
 
     /**
@@ -30,7 +31,14 @@ class ClassRoomController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $classRooms = $this->classRoomRepository->all();
+        // $classRooms = $this->classRoomRepository->all();
+
+        if (auth()->user()->group == "Owner") {
+            $classRooms = ClassRoom::where('school_id', auth()->user()->school->id)->get();
+
+        }else {
+            $classRooms = $this->classRoomRepository->all();
+        }
 
         return view('class_rooms.index')
             ->with('classRooms', $classRooms);
@@ -56,10 +64,15 @@ class ClassRoomController extends AppBaseController
     public function store(Request $request)
     {
         $input = $request->all();
-
+        // dd($input);
         $classRoom = $this->classRoomRepository->create($input);
 
-        Flash::success('Class Room saved successfully.');
+        if ($classRoom) {
+            Flash::success('Class Room saved successfully.');
+        }else {
+            Flash::error('Class Room unable to save successfully. Try again!');
+        }
+
 
         return redirect(route('classRooms.index'));
     }
@@ -94,6 +107,7 @@ class ClassRoomController extends AppBaseController
     public function edit($id)
     {
         $classRoom = $this->classRoomRepository->find($id);
+        $classRooms = ClassRoom::where('school_id', auth()->user()->school->id)->get();
 
         if (empty($classRoom)) {
             Flash::error('Class Room not found');
@@ -101,7 +115,7 @@ class ClassRoomController extends AppBaseController
             return redirect(route('classRooms.index'));
         }
 
-        return view('class_rooms.edit')->with('classRoom', $classRoom);
+        return view('class_rooms.index')->with('classRoom', $classRoom)->with('classRooms', $classRooms);
     }
 
     /**

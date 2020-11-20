@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class gradesheetControllers extends Controller
 {
+		public function construct()
+		{
+			$this->middleware('auth');
+		}
+
     public  function  getgenerate()
 	{
 		$classes = Classes::pluck('class_name','class_code');

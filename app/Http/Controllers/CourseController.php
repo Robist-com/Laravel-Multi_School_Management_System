@@ -31,6 +31,7 @@ class CourseController extends AppBaseController
     public function __construct(CourseRepository $courseRepo)
     {
         $this->courseRepository = $courseRepo;
+        $this->middleware('auth');
     }
 
     /**
@@ -42,19 +43,47 @@ class CourseController extends AppBaseController
      */
     public function index(Request $request)
     {
+        if (auth()->user()->group == "Owner") {
         $courses = Course::join('classes','classes.class_code', '=', 'courses.class')
                             ->join('departments','departments.department_id', '=', 'courses.department')
-                            ->get();
+                            ->where('courses.school_id', auth()->user()->school->id)
+
+                            ->select('courses.id as subject_id',
+                            'courses.course_name',
+                            'courses.course_code',
+                            'courses.description','departments.department_name',
+                             'courses.class',
+                             'courses.status'
+                              )
+                             
+                             ->groupby('courses.id'
+                             ,'courses.course_name','courses.course_code','courses.description',
+                             'departments.department_name',
+                            'courses.class', 'courses.status'
+                             )->get();
+                            // dd($courses);
         //  = $this->courseRepository->all();
+        $classes = Classes::select('class_code','class_name')->orderby('class_code','asc')->where('school_id', auth()->user()->school->id)->get();
 
-        $classes = Classes::select('class_code','class_name')->orderby('class_code','asc')->get();
+        // dd($classes);
+        $gpa =GPA::select('for')->distinct()->where('school_id', auth()->user()->school->id)->get();
 
-        // dd($courses);
-        $gpa =GPA::select('for')->distinct()->get();
+        $semester =Semester::where('status', 'on')->where('school_id', auth()->user()->school->id)->get();
+        $department =Department::where('school_id', auth()->user()->school->id)->get();
 
-        $semester =Semester::all();
-        $department =Department::all();
+        }else
+        {
+            $courses = Course::join('classes','classes.class_code', '=', 'courses.class')
+            ->join('departments','departments.department_id', '=', 'courses.department')
+            ->get();
 
+            $classes = Classes::select('class_code','class_name')->orderby('class_code','asc')->get();
+
+            $gpa =GPA::select('for')->distinct()->get();
+
+            $semester =Semester::where('status', 'on')->get();
+            $department =Department::all();
+        }
       
         return view('courses.index', compact('classes','semester','department','gpa'))
             ->with('courses', $courses);
@@ -127,19 +156,20 @@ class CourseController extends AppBaseController
 				$subject->description = $request->get('describtion');
 				$subject->class = $class;
 				$subject->gradeSystem = $request->get('gradeSystem');
-				// $subject->type = $request->get('type');
+				$subject->school_id = $request->get('school_id');
 				$subject->semester = $request->get('semester');
 				$subject->department = $request->get('department');
-				$subject->totalfull = $request->get('totalfull');
-				$subject->totalpass = $request->get('totalpass');
-				$subject->wfull = $request->get('wfull');
-				$subject->wpass = $request->get('wpass');
-				$subject->mfull = $request->get('mfull');
-				$subject->mpass = $request->get('mpass');
-				$subject->sfull = $request->get('sfull');
-				$subject->spass = $request->get('spass');
-				$subject->pfull = $request->get('pfull');
-				$subject->ppass = $request->get('ppass');
+				$subject->totalfull = 0;
+				$subject->totalpass = 0;
+				$subject->wfull = 0;
+				$subject->wpass = 0;
+				$subject->mfull = 0;
+				$subject->mpass = 0;
+				$subject->sfull = 0;
+				$subject->spass = 0;
+				$subject->pfull = 0;
+				$subject->ppass = 0;
+				
 
 				$subject->save();
             }
@@ -184,9 +214,50 @@ class CourseController extends AppBaseController
      */
     public function edit($id)
     {
+        
         $course = $this->courseRepository->find($id);
-        $departments = Department::all();
-        $gpa =GPA::select('for')->distinct()->get();
+
+        // dd( $course);
+        if (auth()->user()->group == "Owner") {
+            $courses = Course::join('classes','classes.class_code', '=', 'courses.class')
+                                ->join('departments','departments.department_id', '=', 'courses.department')
+                                ->where('courses.school_id', auth()->user()->school->id)
+                                ->select('courses.*', 'courses.id as subject_id', 'departments.department_name', 'classes.class_name' )->get();
+                                // dd($courses);
+            //  = $this->courseRepository->all();
+            $classes = Classes::select('class_code','class_name')->orderby('class_code','asc')->where('school_id', auth()->user()->school->id)->get();
+    
+            // dd($classes);
+            $gpa =GPA::select('for')->distinct()->where('school_id', auth()->user()->school->id)->get();
+    
+            $semester =Semester::where('status', 'on')->where('school_id', auth()->user()->school->id)->get();
+            $department =Department::where('school_id', auth()->user()->school->id)->get();
+    
+            }else
+            {
+                $courses = Course::join('classes','classes.class_code', '=', 'courses.class')
+                ->join('departments','departments.department_id', '=', 'courses.department')
+                ->get();
+    
+                $classes = Classes::select('class_code','class_name')->orderby('class_code','asc')->get();
+    
+                $gpa =GPA::select('for')->distinct()->get();
+    
+                $semester =Semester::where('status', 'on')->get();
+                $department =Department::all();
+            }
+          
+//         $courses = Course::join('classes','classes.class_code', '=', 'courses.class')
+//         ->join('departments','departments.department_id', '=', 'courses.department')
+//         ->get();
+//         // dd($courses);
+// //  = $this->courseRepository->all();
+
+// $classes = Classes::select('class_code','class_name')->orderby('class_code','asc')->get();
+
+//         $department = Department::all();
+//         $semester =Semester::all();
+//         $gpa =GPA::select('for')->distinct()->get();
         // dd($course);
         if (empty($course)) {
             Flash::error('Course not found');
@@ -194,7 +265,8 @@ class CourseController extends AppBaseController
             return redirect(route('courses.index'));
         }
 
-        return view('courses.edit')->with('course', $course)->with('departments', $departments)->with('gpa', $gpa);
+        return view('courses.index',compact('semester', 'classes'))->with('course', $course)->with('department', $department)
+        ->with('gpa', $gpa)->with('courses', $courses);
     }
 
     /**
@@ -244,6 +316,8 @@ class CourseController extends AppBaseController
     public function destroy($id)
     {
         $course = $this->courseRepository->find($id);
+
+    //    dd( $course);
 
         if (empty($course)) {
             Flash::error('Course not found');
@@ -306,6 +380,8 @@ class CourseController extends AppBaseController
         return response(Department::where('faculty_id', $request->faculty_id)->get());
     }
 }
+
+
 
 public function dynamicDepartmentsWithClass(Request $request){
     $input = $request->all();

@@ -65,6 +65,14 @@ class instituteController extends Controller {
     }
 	
 
+	public function Settings(Request $request)
+	{
+		// dd($request->all());
+		$settings = Institute::where('school_id', auth()->user()->school_id)->update(['template' => $request->template]);
+
+		return $settings;
+	}
+
 	
 
 	/**

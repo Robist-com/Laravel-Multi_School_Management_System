@@ -1,38 +1,72 @@
-@extends('layouts.app')
 
-@php
-    $class_name
-@endphp
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
+
 @section('content')
-<div class="col-md-3 pull-right" style="height:20% !important" >
+
+
+@if($template->template == '0')
+
+<div class="clearfix"></div>
+    <div class="page-title">
     @include('flash::message')
 
     @include('adminlte-templates::common.errors')
-</div>
-    <section class="content-header">
-        <h1>
-            Attendance
 
-            @if (isset($class_name))
-            <a href="{{route('AttendanceList',$class_name->teacher_id)}}"><button class="pull-right"
-                title="Back to Attendance List">Back</button></a>
-            @endif
-        </h1>
-   </section>
+          <div class="title_right1">
+            <div class="col-md-3 col-sm-5 col-xs-12 form-group pull-right top_search">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search for...">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button">Go!</button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <?php
+        $date = date('d-m-Y');
+        $nameOfDay = date('l', strtotime($date));
+        echo "<h4 style='color:red; font-weight:bolder;text-transform:uppercase'>$nameOfDay
+            <b style='color:black'>Attendance</b></h4>  ";
+        ?>
+        <div class="clearfix"></div>
+        <div class="row">
 
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+              <h2 style="font-weight:bold;text-transform: uppercase; text-align:left">
+             <i class="fa fa-calendar"></i> Update CLASS<b style="color:red">  ATTENDANCE</b>
+            </h2>
+            <div class="col-md-2 pull-right">
+                <input type="button" name="class_name"  id="class_nam" class="btn btn-round btn-dark edit_atten"
+                value="{{$edited_date->class_name}}" disabled >
+            </div>
+            <div class="col-md-2 pull-right">
+            <input type="button" name="semester_name"  id="semester_nam" class="btn btn-round btn-dark  edit_atten"
+            value="{{$edited_date->semester_name}}" disabled >
+            </div>
+            
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
 
-
-   <div class="content">
-
-       <div class="box box-primary">
-           <div class="box-body">
-               <div class="row">
-                {{-- {{$class_name}} --}}
-                @include('teachers.attendances.edit_attendance')
+              @include('teachers.admindefault.attendances.edit_attendance')
 
 
                </div>
            </div>
        </div>
    </div>
+        
+ 
+@else
+
+  @include('teachers.adminbsb.attendances.edit_attendance')
+
+
+@endif
+
 @endsection

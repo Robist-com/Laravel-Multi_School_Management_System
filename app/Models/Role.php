@@ -17,6 +17,7 @@ class Role extends Model
     use SoftDeletes;
 
     public $table = 'roles';
+    public $primaryKey = 'id';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -26,7 +27,8 @@ class Role extends Model
 
 
     public $fillable = [
-        'name'
+        'name',
+        'school_id' => 'integer',
     ];
 
     /**
@@ -36,7 +38,8 @@ class Role extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'name' => 'string'
+        'name' => 'string',
+        'school_id' => 'integer',
     ];
 
     /**
@@ -50,7 +53,12 @@ class Role extends Model
 
     public function user()
     {
-        return $this->hasMany('App\Models\User');
+        return $this->hasMany('App\User');
+    }
+
+    public function permission()
+    {
+        return $this->hasOne('App\Permission');
     }
     
 }

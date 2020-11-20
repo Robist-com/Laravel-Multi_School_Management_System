@@ -1,7 +1,10 @@
 <div class="responsive">
-<table  class="table table-hover" id="allfees-table">
-        <thead>
-            <tr>
+<table class="table table-striped jambo_table bulk_action" id="allfees-table">
+<thead>
+    <tr class="headings">
+        <th>
+            <input type="checkbox" id="check-all" class="flat">
+        </th>
         <th>Photo</th>
         <th>Roll No.</th>
         <th>Grade</th>
@@ -9,12 +12,18 @@
         <th>Fee Amount</th>
         <th>Paid Amount</th>
         <th>Balance</th>
-        <th colspan="3">Action</th>
+        <th class="column-title no-link last"><span class="nobr">Action</span></th>
+        <th class="bulk-actions" colspan="8">
+            <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+        </th>
             </tr>
         </thead>
         <tbody>
         @foreach($all_fees as $fees)
-            <tr>
+        <tr class="even pointer">
+            <td class="a-center ">
+            <input type="checkbox" class="flat" name="table_records">
+            </td>
             <td><img src="{{asset('student_images/'.$fees->image)}}" alt=""
             class="rounded-circle" width="50" height="50" style="border-radius:50%; vertical-alight:middle;"></td>
             <td>{{ $fees->username }}</td>
@@ -32,7 +41,6 @@
                     {!! Form::open(['route' => ['deleteStudentFee', $fees->student_fee_id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
                         <a href="{{ url('all/student/transactions', [$fees->student_id]) }}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
-                        <!-- <a href="{{ route('fees.edit', [$fees->id]) }}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a> -->
                         {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure you want to delete this? This will delete the related table details!')"]) !!}
                     </div>
                     {!! Form::close() !!}

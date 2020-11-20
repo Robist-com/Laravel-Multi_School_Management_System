@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Permission;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Cache;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Cashier\Billable;
 /**
  * Class User
  * @package App\Models
@@ -20,6 +23,7 @@ use Cache;
 class User extends Model
 {
     use SoftDeletes;
+    use Billable;
 
     public $table = 'users';
 
@@ -37,7 +41,9 @@ class User extends Model
         'teacher_id',
         'email_verified_at',
         'password',
-        'remember_token'
+        'remember_token',
+        'school_id',
+
     ];
 
     /**
@@ -52,7 +58,8 @@ class User extends Model
         'role_id' => 'integer',
         'email_verified_at' => 'datetime',
         'password' => 'string',
-        'remember_token' => 'string'
+        'remember_token' => 'string',
+        'school_id' => 'integer',
     ];
 
     /**
@@ -71,10 +78,15 @@ class User extends Model
      /**
      * Get the user that owns the phone.
      */
+    // public function role()
+    // {
+    //     return $this->belongsTo('App\Models\Role');
+    // }
+
     public function role()
-    {
-        return $this->belongsTo('App\Models\Role'); // here is our relationship for the users okay
-    }
+{
+    return $this->belongsTo('App\Models\Role');
+}
 
     public function isOnline(){ // THIS IS THE FUNCTION THAT WE CALLED INSIDE THE TEACHER ONLINE TBALE OKAY
 
@@ -83,6 +95,26 @@ class User extends Model
         //now we will create one file for the online users okay.
         //i have alreay created it let me show you to guys
 
-	}
+    }
+    
+    public function school()
+    {
+        return $this->hasOne('App\School');
+    }
+
+
+
+    public function get_permission_by_role()
+    {
+         $user = Auth::user();
+        $permissions = Permission::count();
+        if($permissions>0){
+            $permissions = Permission::where('permission_group',strtolower($user->group))->where('permission_type','yes')->get();
+        }else{
+            $permissions =array(); 
+        }
+       return $permissions ;
+    }
+
 
 }

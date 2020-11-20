@@ -1,20 +1,26 @@
-@include('table_style')
+<!-- @include('table_style') -->
 <div class="table-responsive">
-<div class="panel">
-    <div class="panel-body">
     <div  id="wait"></div>
-    </div>
-</div>
-    <table class="table table-striped table-bordered table-hover" id="roles-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th colspan="3">Action</th>
+       
+                <table class="table table-striped jambo_table bulk_action" id="role-table">
+                        <thead>
+                        <tr class="headings">
+                            <th class="text-center ">
+                              <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                <th class="text-center ">Name</th>
+                <th class="column-title no-link last text-center"><span class="nobr">Action</span></th>
+                <th class="bulk-actions" colspan="7">
+                    <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                </th>
             </tr>
         </thead>
         <tbody>
         @foreach($roles as $role)
-            <tr>
+        <tr class="even pointer">
+            <td class="a-center ">
+            <input type="checkbox" class="flat" name="table_records">
+            </td>
                 <td>{!! $role->name !!}</td>
                 <td>
                     {!! Form::open(['route' => ['roles.destroy', $role->id], 'method' => 'delete']) !!}

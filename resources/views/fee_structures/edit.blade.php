@@ -167,11 +167,14 @@ $(department_id).append($('<option/>',{
 });
 
 
+
+
+
 // REGULAR EXPRESSION 
 
 
 function NumbersOnly(e , field) {
-
+ 
     var val = field.value;
     var num = /^([0-9-.]+[\.]?[0-9-.]?[0-9-.]?|[0-9-.]+)$/g;
     var number = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;

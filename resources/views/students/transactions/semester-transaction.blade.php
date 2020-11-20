@@ -1,139 +1,99 @@
-<div class="tab-content">
-    <div class="tab-pane fade active in" id="activity">
-        <div class="tabbable">
-          @include('students.transactions.semester-tabs.tabs-header')
-            <div class="tab-content">
-                {{-- semester 1 tab --}}
-                @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '1') 
-              <div id="menu0" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 1</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester1')
-              </div>
-              @endif
-              @endforeach
-              
-                {{-- semester 2 tab --}}
-                @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '2') 
-               <div id="menu1" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 2</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester2')
-              </div>
-              @endif
-              @endforeach
 
-               {{-- semester 3 tab --}}
-               @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '3') 
-               <div id="menu2" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 3</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester3')
-              </div>
-              @endif
-              @endforeach
+@if($studenttransaction)
+@foreach ($student_grades as $n => $student_grade)
+@foreach ($studenttransaction as $n => $transaction)
+@if ($transaction->semester_fee_id == $student_grade->id)
 
-                {{-- semester 4 tab --}}
-                @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '4') 
-               <div id="menu3" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 4</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester4')
-              </div>
-              @endif
-              @endforeach
 
-                  {{-- semester 5 tab --}}
-                  @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '5') 
-               <div id="menu4" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 5</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester5')
-              </div>
-              @endif
-              @endforeach
-
-                {{-- semester 6 tab --}}
-                @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '6') 
-               <div id="menu5" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 6</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester6')
-              </div>
-              @endif
-              @endforeach
-
-                  {{-- semester 7 tab --}}
-                  @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '7') 
-               <div id="menu6" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 7</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester7')
-              </div>
-              @endif
-              @endforeach
-
-                {{-- semester 8 tab --}}
-                @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '8') 
-               <div id="menu7" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 8</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester8')
-              </div>
-              @endif
-              @endforeach
-                {{-- semester 9 tab --}}
-                @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '9') 
-               <div id="menu8" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 9</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester9')
-              </div>
-              @endif
-              @endforeach
-
-                {{-- semester 10 tab --}}
-                @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '10') 
-               <div id="menu9" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 10</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester10')
-              </div>
-              @endif
-              @endforeach
-
-                {{-- semester 11 tab --}}
-               @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '11') 
-               <div id="menu10" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 11</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester11')
-              </div>
-              @endif
-              @endforeach
-
-                {{-- semester 12 tab --}}
-               @foreach($class_grade as $grade) 
-                  @if($grade->semester_id == '12') 
-               <div id="menu11" class="active tab-pane in fade">
-                <h3 style="font-weight:bold; color:red">GRADE 12</h3>
-                <hr class="line">
-                @include('students.transactions.semester-tabs.semester12')
-              </div>
-              @endif
-              @endforeach
-            </div>
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="box-title">{{$student_grade->semester_name}}</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button> -->
         </div>
     </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="row">
+            <div class="card">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div class="card">
+                            <h3 style="text-transform:uppercase; font-weight:bold; margin-left:30%;">
+                            {{$student_grade->semester_name}} <b style="color:red">TRANSACTIONS</b>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <!-- <table class="bordered-table"> -->
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr class="bordered-tr">
+                                <th class="bordered-th">#</th>
+                                <th class="bordered-th">Transaction Date</th>
+                                <th class="bordered-th">Cashier</th>
+                                <th class="bordered-th">Balance ($)</th>
+                                <th class="bordered-th">Paid Amount ($)</th>
+                                <th class="bordered-th">Total ($)</th>
+                                <th class="bordered-th">Remark</th>
+                                <th class="bordered-th">Description</th>
+                                <th class="bordered-th">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+
+                            <tr class="bordered-tr">
+                                <td class="bordered-td" style="text-align: center;background-color:#34495E; color:#fff">
+                                    {{++$n}}
+                                </td>
+                                <td class="bordered-td" style="text-align: center;">
+                                    {{date('d-M-Y',strtotime($transaction->transaction_date))}}</td>
+                                <td class="bordered-td" style="text-align: center;">{{$transaction->name}}</td>
+                                <td class="bordered-td" style="text-align: center; color:red;  font-weight:bold; cursor:pointer"><span class="fa fa-usd" data-toggle="tooltip" data-placement="left" title="Remaining Balance"></span>
+                                    {{number_format($transaction->balance,2)}}</td>
+                                <td class="bordered-td" style="text-align: center; font-weight:bold; cursor:pointer"><span class="fa fa-usd" data-toggle="tooltip" data-placement="left" title="Amount Paid"></span>
+                                    {{number_format($transaction->paid_amount,2)}}</td>
+                                    <td class="bordered-td" style="text-align: center; color:green; font-weight:bold; cursor:pointer"><span class="fa fa-usd" data-toggle="tooltip" data-placement="left" title="Total Fee Amount"></span>
+                                    {{number_format($transaction->paid_amount + $transaction->balance,2)}}</td>
+                                <td class="bordered-td" style="text-align: center;">{{$transaction->remark}}</td>
+                                <td class="bordered-td" style="text-align: center;">{{$transaction->description}}</td>
+
+                                <td style="text-align: center;width:112px;">
+                                    <a href="{{ route ('StudentInvoicePrint', [$transaction->invoice_id])}}"
+                                        target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"
+                                            title="Print"></i></a>
+                                </td>
+                        </tbody>
+                    </table>
+                </div>
+            </div><br>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+    <!-- <h1>Hello</h1> -->
+    </div>
 </div>
+<!-- /.box -->
+
+@endif
+@endforeach
+@endforeach
+@else
+<tr class="bordered-tr">
+    <td colspan="12" class=" bordered-td">
+        <div class="alert alert-danger text-center" style="font-weight:bolder">
+            No Transaction Found for {{$transaction->first_name}}
+            {{$transaction->last_name}}
+        </div>
+    </td>
+</tr>
+@endif

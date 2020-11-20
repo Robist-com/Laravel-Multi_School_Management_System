@@ -1,14 +1,17 @@
 <table class="table table-striped table-hover" id="admissions-table">
   <thead>
       <tr>
-   <th>Image</th>
-   <th>Full Name</th>
-   <th>Student Group</th> 
-        <th>Class Group</th>  
-  <th>Batch</th> 
-  <th>Gender</th>
-  <th>Status</th>
-  <th colspan="3">Action</th>
+      <th class="column-title">Image</th>
+        <th class="column-title">Full Name</th>
+        <th class="column-title">Student Group</th> 
+        <th class="column-title">Class Group</th> 
+        <th class="column-title">Batch</th> 
+        <th class="column-title">Gender</th>
+        <th class="column-title">Status</th>
+        <th class="column-title no-link last"><span class="nobr">Action</span>
+        <th class="bulk-actions" colspan="8">
+            <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+        </th>
       </tr>
   </thead>
   <tbody>
@@ -33,10 +36,10 @@
       </td>
       <!-- <td>@if($admission->gender == 1) Male @else  Female @endif</td> -->
       <!-- <td>@if($admission->status == 1) Active @else Inactive @endif</td> -->
-      <td style="text-align:center">
-          <input type="checkbox" data-id="{{ $admission->id }}" name="status" 
-          class="js-switch" id="status"onclick="loadAjax()" {{ $admission->status == 1 ? 'checked' : '' }}>
-    </td>
+      <td style="text-align:center1">
+                @if($admission->status == 1) Active @else  In Active @endif
+      </td>
+     
      
           <td>
               {!! Form::open(['route' => ['admissions.destroy', $admission->id], 'method' => 'delete']) !!}
@@ -58,3 +61,4 @@
   @endforeach
   </tbody>
 </table>
+</div>

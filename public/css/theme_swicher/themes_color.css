@@ -1,0 +1,138 @@
+/* body {
+    background-color: aqua !important;
+} */
+.theme-options {
+    max-width: 800px;
+    margin: auto 0;
+    text-align: right;
+    padding: 20px 0;
+}
+.theme-options div {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin: 2px 10px;
+    border: 1px solid #fff;
+    display: inline-block;
+    opacity: 0.5;
+}
+.theme-options div.active {
+    opacity: 1;
+}
+.theme-options #theme-white {
+    background-color: #fff;
+}
+.theme-options #theme-blue {
+    background-color: #1eb1c1;
+}
+.theme-options #theme-green {
+    background-color: #31ce1c;
+}
+.theme-options #theme-purple {
+    background-color: #bf24e6 e5;
+}
+.theme-options #theme-yellow {
+    background-color: #ffd51b;
+}
+.theme-options #theme-red {
+    background-color: #c11e1e;
+}
+.theme-options #theme-black {
+    background-color: #000;
+}
+/* .nav_menu {
+    margin: 0 auto;
+    background-color: #fff;
+    color: #000 ce;
+} */
+body.them-blue {
+    background-color: #fff;
+}
+.nav_menu.them-blue  {
+    background-color: #fff;
+}
+.nav_menu.them-blue h1, .nav_menu.them-blue h2, .nav_menu.them-blue h3, .nav_menu.them-blue h4, .nav_menu.them-blue h5, .nav_menu.them-blue h6 {
+    color: blue;
+}
+.nav_menu.them-blue p {
+    color: #000;
+}
+.nav_menu.them-blue .links a {
+    color: #1e41c1;
+}
+.nav_menu.them-green {
+    background-color: #06572a !important;
+}
+.nav_menu.them-green {
+    background-color: #06572a !important;
+}
+.nav_menu.them-green h1, .nav_menu.them-green h2, .nav_menu.them-green h3, .nav_menu.them-green h4, .nav_menu.them-green h5, .nav_menu.them-green h6 {
+    color: green !important;
+}
+.nav_menu.them-green p {
+    color: #000 !important;
+}
+body.them-green .links a {
+    color: #1e41c1 !important;
+}
+body.them-red {
+    background-color: #ee1911;
+}
+body.them-red .nav_menu {
+    background-color: #ee1911;
+}
+body.them-red .nav_menu h1, body.them-red .nav_menu h2, body.them-red .nav_menu h3, body.them-red .nav_menu h4, body.them-red .nav_menu h5, body.them-red .nav_menu h6 {
+    color: black;
+}
+body.them-red .nav_menu p {
+    color: #000;
+}
+body.them-red .links a {
+    color: #1e41c1;
+}
+body.them-purple {
+    background-color: #3b0232;
+}
+body.them-purple .nav_menu {
+    background-color: #3b0232;
+}
+body.them-purple .nav_menu h1, body.them-purple .nav_menu h2, body.them-purple .nav_menu h3, body.them-purple .nav_menu h4, body.them-purple .nav_menu h5, body.them-purple .nav_menu h6 {
+    color: white;
+}
+body.them-purple .nav_menu p {
+    color: #000;
+}
+body.them-purple .links a {
+    color: #1e41c1;
+}
+body.them-yellow {
+    background-color: #f0e110;
+}
+body.them-yellow .nav_menu {
+    background-color: #f0e110;
+}
+body.them-yellow .nav_menu h1, body.them-yellow .nav_menu h2, body.them-yellow .nav_menu h3, body.them-yellow .nav_menu h4, body.them-yellow .nav_menu h5, body.them-yellow .nav_menu h6 {
+    color: black;
+}
+body.them-yellow .nav_menu p {
+    color: #000;
+}
+body.them-yellow .links a {
+    color: #1e41c1;
+}
+body.them-black {
+    background-color: #000201;
+}
+body.them-black .nav_menu {
+    background-color: #000201;
+}
+body.them-black .nav_menu h1, body.them-black .nav_menu h2, body.them-black .nav_menu h3, body.them-black .nav_menu h4, body.them-black .nav_menu h5, body.them-black .nav_menu h6 {
+    color: wheat;
+}
+body.them-black .nav_menu p {
+    color: wheat;
+}
+body.them-black .links a {
+    color: #1e41c1;
+}

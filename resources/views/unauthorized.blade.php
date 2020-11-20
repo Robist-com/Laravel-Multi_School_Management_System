@@ -69,10 +69,10 @@ small {
   padding: 10px 0px;
 }
 </style>
-
+{{--{{$permission_name}}--}}
   <div id="spam">
     <h1><spam>X</spam> Access Denied(403)</h1>
-    <p>You cannot access this page! This is for only {{$role}}<br/><br/>
+    <p>You cannot access this page! This is for only   {{$role}}<br/><br/>
     <small>---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</small></p>
   </div><br><br>
   @if(Auth::user()->role_id != 2)

@@ -30,8 +30,11 @@ class gradesheetController extends Controller {
  public $data = array();
 	public function __construct() {
 		/*$this->beforeFilter('csrf', array('on'=>'post'));
+        
+
 		$this->beforeFilter('auth',array('except' => array('searchpub','postsearchpub','printsheet')));*/
-               $this->middleware('auth',array('except' => array('searchpub','postsearchpub','printsheet')));
+			   $this->middleware('auth',array('except' => array('searchpub','postsearchpub','printsheet')));
+			  
 	}
 	/**
 	* Display a listing of the resource.
@@ -173,7 +176,7 @@ class gradesheetController extends Controller {
 				->join('departments', 'departments.department_id', '=', 'admissions.department_id')
                 ->select(DB::raw('DISTINCT(rolls.username)'), 'rolls.username as roll_no', 'admissions.first_name','admissions.image',
                 'admissions.last_name', 'departments.department_name', 'marks.shift', 'marks.class')
-				->where('admissions.status', '=', 1)
+				->where('admissions.acceptance', '=', 'accept')
 				->where('admissions.class_code', '=', $request->get('class'))
 				//->where('Marks.class', '=', $request->get('class'))
 				->where('admissions.department_id', '=', $request->get('section'))
@@ -436,7 +439,7 @@ public function send_sms($class,$section,$exam,$session)
 		'semesters.*')
 		 ->where('rolls.username','=',$regiNo)
 		 ->where('admissions.class_code','=',$class)
-		 ->where('admissions.status', '=', 1);
+		 ->where('admissions.acceptance', '=', 'accept');
 		//  ->first();
     //    echo "<pre>";print_r($student->first());exit;
 		if($student->count()>0) {
@@ -476,17 +479,19 @@ public function send_sms($class,$section,$exam,$session)
 					}
 				}
 				//echo $m->section_id .'==='. $section."909".$m->regiNo .'=== '.$regiNo;
-					 //echo "<pre>";print_r($meritdata);
-					 //exit;
+					//  echo "<pre>";print_r($meritdata);
+					//  exit;
 
               //print_r($meritdata);
              // exit;
 				//sub group need to implement
-				$subjects = Course::select('course_name', 'course_code', 'totalfull')->where('class', '=', $student->classcode)->get();
+				$subjects = Course::select('course_name', 'course_code', 'totalfull')
+				->where('class', '=', $student->classcode)->get();
 				// echo "<pre>";print_r($subjects->toArray() );exit;
 				$overallSubject = array();
 				$subcollection = array();
 				
+				// dd($subcollection );
 
 				$banglatotal = 0;
 				$banglatotalhighest = 0;
@@ -505,8 +510,12 @@ public function send_sms($class,$section,$exam,$session)
 				$isBanglaFail=false;
                 $isEnglishFail=false;
 
-                $coursecode = Course::select('course_code')->first();
-                
+				$coursecode = Course::join('class_schedule','class_schedule.course_id','=', 'courses.id')
+				->join('batches','batches.id','=', 'class_schedule.batch_id')
+				->select('course_code')
+				->where('batches.is_current_batch', 1)
+				->where('class_schedule.school_id', 4)->first();
+                            //  print_r($coursecode); exit;
 				foreach ($subjects as $subject) {
 					$submarks = Marks::select('written', 'mcq', 'practical', 'ca', 'total', 'point', 'grade')->where('roll_no', '=', $student->roll_no)
 					->where('subject', '=', $subject->course_code)->where('exam', '=', $exam)->where('class', '=', $class)->first();
@@ -609,8 +618,8 @@ public function send_sms($class,$section,$exam,$session)
 				}
 					
                 // echo "<pre>";print_r(array_push($enextra, $gcal[0])); die;
-                //echo "<pre>f";print_r($banglaArray);
-               //exit;
+                // echo "<pre>f";print_r($subcollection);
+            //    exit;
 				$extra = array($exam_name, $subgrpbl, $totalHighest, $subgrpen,$totalourall);
 				$query="select left(MONTHNAME(STR_TO_DATE(m, '%m')),3) as month, count(student_id) AS present from ( select 01 as m union all select 02 union all select 03 union all select 04 union all select 05 union all select 06 union all select 07 union all select 08 union all select 09 union all select 10 union all select 11 union all select 12 ) as months LEFT OUTER JOIN attendances ON MONTH(attendances.attendance_date)=m and attendances.student_id ='".$regiNo."' and  attendances.attendance_status IN ('Present','present','late','Late') GROUP BY m";
 				$attendance=DB::select(DB::RAW($query));
@@ -676,7 +685,10 @@ public function send_sms($class,$section,$exam,$session)
 				break;
 			}
 		}
+
+		// dd($group);
 		return $group;
+
 	}
 	public  function getSubjectTotalno($subjects,$subject)
 	{
@@ -713,30 +725,42 @@ public function send_sms($class,$section,$exam,$session)
 			->get();
 			if(count($isGenerated)==0)
 			{
-				 $subjects            = Course::select('course_name', 'course_code','department')->where('class', '=', $request->get('class'))->get();
-				 $sectionsHas         = Admission::select('department_id')->where('class_code', '=', $request->get('class'))->where('department_id', '=', $request->get('section'))->where('batch_id', trim($request->get('session')))->where('status', '=', 1)->distinct()->orderBy('department_id', 'asc')->get();
-				 $sectionMarksSubmit  = Marks::select('department')->where('class', '=', $request->get('class'))->where('department', '=', $request->get('section'))->where('session', trim($request->get('session')))->where('exam',$request->get('exam'))->distinct()->get();
+				 $subjects            = Course::select('course_name', 'course_code','department')
+										->where('class', '=', $request->get('class'))->where('school_id', auth()->user()->school_id)->get();
 
-                //dd($sectionsHas);
+				 $sectionsHas         = Admission::select('department_id')->where('class_code', '=', $request->get('class'))
+										->where('department_id', '=', $request->get('section'))->where('batch_id', trim($request->get('session')))
+										->where('acceptance', '=', 'accept')->distinct()->orderBy('department_id', 'asc')->get();
+
+				 $sectionMarksSubmit  = Marks::select('department')->where('class', '=', $request->get('class'))
+										->where('department', '=', $request->get('section'))->where('session', trim($request->get('session')))
+										->where('exam',$request->get('exam'))->distinct()->get();
+
+                // dd($sectionsHas, $sectionMarksSubmit);
 				if (count($sectionsHas)==count($sectionMarksSubmit))
 				{
 					$isAllSubSectionMarkSubmit =false;
 					$notSubSection='';
 					foreach ($sectionsHas as $section) {
-						$marksubmit = Marks::select('subject')->where('class', '=', $request->get('class'))->where('department',$section->department_id)->where('session', trim($request->get('session')))->where('exam',$request->get('exam'))->distinct()->get();
+						$marksubmit = Marks::select('subject')->where('class', '=', $request->get('class'))
+						->where('department',$section->department_id)
+						->where('session', trim($request->get('session')))
+						->where('exam',$request->get('exam'))->distinct()->get();
 
-						if(count($subjects) == count($marksubmit))
-						{
-							$isAllSubSectionMarkSubmit = true;
-							continue;
-						}
-						else{
-							$notSubSection=$section->department_id;
-							$isAllSubSectionMarkSubmit =false;
-							break;
-						}
+					// 	if(count($subjects) == count($marksubmit))
+					// 	{
+					// 		$isAllSubSectionMarkSubmit = true;
+					// 		continue;
+					// 	}
+					// 	else{
+					// 		$notSubSection=$section->department_id;
+					// 		$isAllSubSectionMarkSubmit =false;
+					// 		break;
+					// 	}
 					}
-					if ($isAllSubSectionMarkSubmit) {
+
+					// dd($isAllSubSectionMarkSubmit);
+					if (!$isAllSubSectionMarkSubmit) {
 						$fourthsubjectCode = "";
 						foreach ($subjects as $subject) {
 							if ($subject->type === "Electives") {
@@ -750,7 +774,7 @@ public function send_sms($class,$section,$exam,$session)
                         ->where('admissions.class_code',    '=', $request->get('class'))
                         ->where('admissions.department_id',  '=', $request->get('section'))
                         ->where('admissions.batch_id',  '=', trim($request->get('session')))
-                        ->where('admissions.status', '=', 1)
+                        ->where('admissions.acceptance', '=', 'accept')
                         ->get();
         //    echo "<pre>";print_r($students->toArray());exit;
             if (count($students) != 0) {
@@ -758,7 +782,7 @@ public function send_sms($class,$section,$exam,$session)
                 ->join('marks','marks.roll_no','=','rolls.username')
                 ->select('marks.roll_no')
                 // ->join('Student', 'Marks.roll_no', '=', 'Student.regiNo')
-                ->where('admissions.status', '=', 1)
+                ->where('admissions.acceptance', '=', 'accept')
                 ->where('admissions.class_code', '=', $request->get('class'))
                 ->where('marks.class', '=', $request->get('class'))
                 ->where('marks.session', '=', trim($request->get('session')))
@@ -856,8 +880,8 @@ public function send_sms($class,$section,$exam,$session)
                                     $test[] = $merit;
 								}
 
-								 //echo "<pre>";print_r($test );
-									//exit;
+								//  echo "<pre>";print_r($test );
+								// 	exit;
 
 							}
 							else {
@@ -881,7 +905,7 @@ public function send_sms($class,$section,$exam,$session)
 					}
 				}
 				else{
-                    Flash::error('All sections marks not submited yet!');
+                    Flash::error('All 1 sections marks not submited yet!');
 					return Redirect::to('/result/home');
 				}
 			}
@@ -925,7 +949,7 @@ public function send_sms($class,$section,$exam,$session)
 			$formdata->department_id=$request->get('section');
 			$formdata->exam=$request->get('exam');
             $formdata->batch=$request->get('session');
-		$students =$request->get('regiNo');
+		// $students =$request->get('regiNo');
 		$classes = Classes::select('class_code','class_name')->orderby('class_code','asc')->get();
 		// dd($classes);
 		//return View::Make('result.resultsearch',compact('formdata','classes'));
@@ -941,6 +965,7 @@ public function send_sms($class,$section,$exam,$session)
 			'session' => 'required'
 
 		];
+		// dd($request->all());
 		$validator = \Validator::make($request->all(), $rules);
 		if ($validator->fails())
 		{
@@ -951,7 +976,8 @@ public function send_sms($class,$section,$exam,$session)
             $formdata->batch=$request->get('session');
 
 			if($request->get('regiNo_f')!='' && $request->get('class_f')!='' && $request->get('section_f')!=''){
-				return Redirect::to('/result/search?class='.$request->get('class_f'). '&department_id='.$request->get('section_f').'&regiNo='.$request->get('regiNo_f'))->withErrors($validator);
+				Flash::error($validator);
+				return Redirect::to('/result/search?class='.$request->get('class_f'). '&department_id='.$request->get('section_f').'&regiNo='.$request->get('regiNo_f'));
 			}
 			Flash::error($validator);
 			return Redirect::to('/result/search');
@@ -997,26 +1023,45 @@ public function send_sms($class,$section,$exam,$session)
 			if(count($ispubl)>0) {
 
 				$classes = Classes::pluck('class_name', 'class_code');
-				$students = DB::table('admissions')
+				// $students = DB::table('admissions')
+				// ->join('rolls', 'rolls.student_id', '=', 'admissions.id')
+				// ->join('marks', 'marks.roll_no', '=', 'rolls.username')
+				// ->join('classes', 'classes.class_code', '=', 'admissions.class_code')
+				// ->join('departments', 'departments.department_id', '=', 'admissions.department_id')
+                // ->select(DB::raw('DISTINCT(rolls.username)'), 'rolls.username as roll_no', 'admissions.first_name','admissions.image',
+                // 'admissions.last_name', 'departments.department_name', 'marks.shift', 'marks.class','classes.class_code')
+				// ->where('admissions.acceptance', '=', 'accept')
+				// ->where('marks.roll_no', '=', $request->get('regiNo'));
+				// if($request->get('regiNo_f')!=''){
+				// 	$students =$students->where('rolls.username',$request->get('regiNo_f'));
+				// }
+				$all_students_class = Admission::all();
+
+				$students_class = DB::table('admissions')
 				->join('rolls', 'rolls.student_id', '=', 'admissions.id')
 				->join('marks', 'marks.roll_no', '=', 'rolls.username')
 				->join('classes', 'classes.class_code', '=', 'admissions.class_code')
 				->join('departments', 'departments.department_id', '=', 'admissions.department_id')
                 ->select(DB::raw('DISTINCT(rolls.username)'), 'rolls.username as roll_no', 'admissions.first_name','admissions.image',
                 'admissions.last_name', 'departments.department_name', 'marks.shift', 'marks.class','classes.class_code')
-				->where('admissions.status', '=', 1)
+				->where('admissions.acceptance', '=', 'accept')
 				// ->where('admissions.class_code', '=', $request->get('class'))
 				->where('Marks.class', '=', $request->get('class'))
 				// ->where('admissions.department_id', '=', $request->get('section'))
 				->where('admissions.batch_id', '=', trim($request->get('session')))
-				->where('marks.exam', '=', $request->get('exam'))
-				->where('marks.roll_no', '=', $request->get('regiNo'));
-				if($request->get('regiNo_f')!='' && $request->get('section_f')!='' && $request->get('class_f')!=''){
-					$students =$students->where('rolls.username',$request->get('regiNo_f'));
+				->where('marks.exam', '=', $request->get('exam'));
+				// ->where('marks.roll_no', '=', $request->get('regiNo'));
+				if($request->get('section_f')!='' && $request->get('class_f')!=''){
+					$students_class =$students_class->where('Marks.class',$request->get('class_f'));
 				}
 
-                $students =$students->get();
-                
+                // $students =$students->get();
+                $students_class =$students_class->get();
+				
+				if (count($students_class) == 0) {
+					Flash::error('No Result Found for this session... ' .$request->get('session'). ' and '  . $classes->class_name . 'and ' .$request->get('exam'). '');
+					return redirect(url('result/search'));
+				}
                 
 
 				$formdata = new formfoo5;
@@ -1049,7 +1094,7 @@ public function send_sms($class,$section,$exam,$session)
                 //   exit;
 
 					$regiNo = $request->get('regiNo_f');
-				return View('result.resultsearch', compact('classes', 'formdata', 'students','gradsystem','type','exams_ids','regiNo'));
+				return View('result.resultsearch', compact('classes', 'formdata', 'all_students_class', 'students','students_class','gradsystem','type','exams_ids','regiNo'));
             }
             
 			else
@@ -1072,6 +1117,46 @@ public function send_sms($class,$section,$exam,$session)
 
 		}
 	}
+
+
+	
+public function searchResultRoll_no(Request $request)
+{
+	// dd($request->all());
+	$formdata = new formfoo5;
+	$formdata->class=$request->get('class');
+	$formdata->department_id=$request->get('section');
+	$formdata->exam=$request->get('exam');
+	$formdata->batch=$request->get('session');
+	$roll_no = $request->get('regiNo');
+
+				$students = DB::table('admissions')
+				->join('rolls', 'rolls.student_id', '=', 'admissions.id')
+				->join('marks', 'marks.roll_no', '=', 'rolls.username')
+				->join('classes', 'classes.class_code', '=', 'admissions.class_code')
+				->join('departments', 'departments.department_id', '=', 'admissions.department_id')
+                ->select(DB::raw('DISTINCT(rolls.username)'), 'rolls.username as roll_no', 'admissions.first_name','admissions.image',
+                'admissions.last_name', 'departments.department_name', 'marks.shift', 'marks.class','classes.class_code', 'classes.class_name')
+				->where('admissions.acceptance', '=', 'accept')
+				->where('marks.roll_no', '=', $request->get('regiNo'));
+				if($roll_no !=''){
+					$students =$students->where('rolls.username',$roll_no);
+				}
+
+			$students =$students->get();
+
+			$students_class = '';
+
+			$all_students = Admission::all();
+
+			if (count($students) == 0) {
+				Flash::error('No Result Found for this roll no... ' . $roll_no . '');
+				return redirect(url('result/search'));
+			}
+				// dd($students);
+				// return $students;
+				return View('result.resultsearch', compact('classes', 'formdata', 'all_students', 'students','students_class','gradsystem','type','exams_ids','regiNo'));
+}
 
 
 	// SEARCH IN PUBLIC

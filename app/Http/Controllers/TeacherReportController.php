@@ -29,6 +29,13 @@ use Response;
 
 class TeacherReportController extends Controller
 {
+
+    public function construct()
+    {
+        $this->middleware('auth');
+    }
+
+
     public function getTeacherReportList()
     {
         $programs = Program::all();

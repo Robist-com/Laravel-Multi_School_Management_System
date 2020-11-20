@@ -15,29 +15,29 @@ class Admissions extends Migration
     {
         Schema::create('admissions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
-            $table->string('father_name')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('father_name');
             $table->string('father_phone')->nullable();
             $table->string('mother_name')->nullable();
-            $table->string('gender')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('gender');
+            $table->string('email');
+            $table->string('phone');
             $table->date('dob')->nullable();
             $table->string('address')->nullable();
             $table->string('current_address')->nullable();
-            $table->string('nationality')->nullable();
+            $table->string('nationality');
             $table->string('passport')->nullable();
-            $table->date('dateregistered')->nullable();
-            $table->string('class_code')->nullable();
+            $table->date('dateregistered');
+            $table->string('class_code');
             $table->string('image')->nullable();
             $table->string('status')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('semester_id')->nullable();
-            $table->unsignedBigInteger('degree_id')->nullable();
-            $table->unsignedBigInteger('faculty_id')->nullable();
-            $table->unsignedBigInteger('department_id')->nullable();
-            $table->unsignedBigInteger('batch_id')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('semester_id');
+            $table->unsignedBigInteger('degree_id');
+            $table->unsignedBigInteger('faculty_id');
+            $table->unsignedBigInteger('department_id');
+            $table->unsignedBigInteger('batch_id');
             $table->timestamps();
             $table->softDeletes();
 

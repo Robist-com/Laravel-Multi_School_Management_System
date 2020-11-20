@@ -25,6 +25,9 @@ class TransactionController extends AppBaseController
     public function __construct(TransactionRepository $transactionRepo)
     {
         $this->transactionRepository = $transactionRepo;
+
+			$this->middleware('auth');
+
     }
 
     /**
@@ -38,8 +41,8 @@ class TransactionController extends AppBaseController
     {
         $transactions = $this->transactionRepository->all();
 
-                $semester = Semester::where('status', 'on')->get();
-                $classes = Classes::all();
+                $semester = Semester::where('status', 'on')->where('school_id', auth()->user()->school_id)->get();
+                $classes = Classes::where('school_id', auth()->user()->school_id)->get();
                 $semester_id = $request->get('semester_id');
                 $class_code = $request->get('class_code');
                 $roll_no = $request->get('roll_no');
@@ -75,7 +78,7 @@ class TransactionController extends AppBaseController
                                     'transactions.balance',
                                     'transactions.paid_amount as paid_amount')
                                 //   ->where('rolls.username', $roll_no)
-                                //   ->where('admissions.semester_id',$semester_id)
+                                  ->where('transactions.school_id', auth()->user()->school_id)
                                   ->get();
 
                             return view('transactions.index')
@@ -133,6 +136,7 @@ class TransactionController extends AppBaseController
                                     'transactions.balance',
                                     'transactions.paid_amount as paid_amount')
                                   ->where('rolls.username', $roll_no)
+                                  ->where('admissions.school_id', auth()->user()->school_id)
                                 //   ->where('admissions.semester_id',$semester_id)
                                   ->get();
                                 //   dd($data);
@@ -177,6 +181,7 @@ class TransactionController extends AppBaseController
                                     'transactions.paid_amount as paid_amount')
                                 ->where('admissions.class_code', $class_code)
                                   ->where('admissions.semester_id',$semester_id)
+                                  ->where('admissions.school_id', auth()->user()->school_id)
                                 ->get();
 
                                 if(count($data)=="0"){
@@ -215,6 +220,7 @@ class TransactionController extends AppBaseController
                         ->join('users', 'users.id', '=', 'transactions.user_id')
                         ->join('rolls', 'rolls.roll_id', '=', 'admissions.id')
                         ->where('transactions.student_id', $student_id)
+                        ->where('admissions.school_id', auth()->user()->school_id)
                         ->select('admissions.id',
                                     'admissions.first_name',
                                     'admissions.last_name',
@@ -223,7 +229,7 @@ class TransactionController extends AppBaseController
                                     'faculties.faculty_name',
                                     'departments.department_name',
                                     'fee_structures.semesterFee as semesterFee',
-                                    'fee_structures.admissionFee as admissionFee',
+                                    // 'fee_structures.admissionFee as admissionFee',
                                     'fee_structures.fee_type',
                                     'fee_structures.id as fee_structure_id',
                                     'transactions.transaction_date as paid_date',
@@ -239,6 +245,7 @@ class TransactionController extends AppBaseController
                                     'transactions.semester_fee_id',
                                     'levels.id as degree_id','levels.level')
                                     ->first();
+                                    
 
             $invoice = InvoiceDetails::join('invoices', 'invoices.id', '=', 'invoice_details.invoice_id')
                         ->join('admissions', 'admissions.id', '=', 'invoice_details.student_id')
@@ -252,6 +259,7 @@ class TransactionController extends AppBaseController
                         ->join('users', 'users.id', '=', 'transactions.user_id')
                         ->join('rolls', 'rolls.roll_id', '=', 'admissions.id')
                         ->where('transactions.student_id', $student_id)
+                        ->where('admissions.school_id', auth()->user()->school_id)
                         
                         ->select('admissions.id',
                                     'admissions.first_name',
@@ -261,7 +269,7 @@ class TransactionController extends AppBaseController
                                     'faculties.faculty_name',
                                     'departments.department_name',
                                     'fee_structures.semesterFee as semesterFee',
-                                    'fee_structures.admissionFee as admissionFee',
+                                    // 'fee_structures.admissionFee as admissionFee',
                                     'fee_structures.fee_type',
                                     'fee_structures.id as fee_structure_id',
                                     'transactions.transaction_date as paid_date',
@@ -279,8 +287,8 @@ class TransactionController extends AppBaseController
                                     // ->where('transactions.student_id', $student_id)->sum('paid_amount')
                                     ->get();
 
-        $totalPaid = Transaction::where('student_id', $student_id)->sum('paid_amount');
-        $balance = Transaction::where('student_id', $student_id)->sum('balance');
+        $totalPaid = Transaction::where('student_id', $student_id)->where('school_id', auth()->user()->school_id)->sum('paid_amount');
+        $balance = Transaction::where('student_id', $student_id)->where('school_id', auth()->user()->school_id)->sum('balance');
 
         $studentFee = StudentFee::find($student_info->semester_fee_id);
         $roll_no = Roll::where('username',$student_info->roll_no)->first();
@@ -289,7 +297,7 @@ class TransactionController extends AppBaseController
         // dump( $totalPaid);
         // dump($roll_no);die;
         return view('report.transactions.students.transaction', compact('invoice','roll_no', 
-        'student_info', 'timeTable', 'totalPaid', 'balance', 'studentFee'));
+        'student_info',  'totalPaid', 'balance', 'studentFee'));
 
         
     }
@@ -305,7 +313,8 @@ class TransactionController extends AppBaseController
                         ->join('users', 'users.id', '=', 'transactions.user_id')
                         // ->select('fee_structures.id as semester_fee_id')
                         // dd();
-                        ->where('admissions.id', $student_id);
+                        ->where('admissions.id', $student_id)
+                        ->where('admissions.school_id', auth()->user()->school_id);
     }
 
     public function read_student_fee($student_id)
@@ -331,6 +340,7 @@ class TransactionController extends AppBaseController
                                     // ,
                                     // 'studentfees.discount')
                              ->where('admissions.id', $student_id)
+                             ->where('admissions.school_id', auth()->user()->school_id)
                              ->orderBy('student_fees.student_fee_id', 'ASC');
                             // return $result;
     }

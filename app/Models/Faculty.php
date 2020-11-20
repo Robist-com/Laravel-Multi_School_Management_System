@@ -30,7 +30,9 @@ class Faculty extends Model
     public $fillable = [
         'faculty_name',
         'faculty_code',
-        'faculty_status'
+        'faculty_status',
+        'school_id',
+
     ];
 
     /**
@@ -42,7 +44,8 @@ class Faculty extends Model
         'faculty_id' => 'integer',
         'faculty_name' => 'string',
         'faculty_code' => 'string',
-        'faculty_status' => 'boolean'
+        'faculty_status' => 'boolean',
+        'school_id' => 'integer',
     ];
 
     /**

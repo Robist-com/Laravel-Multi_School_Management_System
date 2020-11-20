@@ -19,17 +19,6 @@ aria-hidden="true">
                               </select>
                               </div>
                           </div>
-
-                          <!-- <div class="col-md-6">
-                          <div class="form-group">
-                          <select name="semester_id" class="form-control select_2_single" id="semester_id">
-                              <option value="selected ">Department </option>
-                              @foreach($department as $key => $depart)
-                               <option value="{{$depart->department_id}}">{{$depart->department_name}}</option>
-                               @endforeach 
-                              </select>
-                              </div>
-                          </div> -->
                           
                           <div class="col-md-6">
                           <div class="form-group">
@@ -41,7 +30,7 @@ aria-hidden="true">
                         <div class="form-group">
                         <select name="course_id[]" id="course_id" class="form-control select_2_multiple" multiple data-hide-disabled="true" data-size="5" id="subject_class" >
                             <option value="">Select Course</option>
-                          @foreach($courses  as $key => $cour)
+                          @foreach($course  as $key => $cour)
                             <option value="{{$cour->id}}" >{{$cour->course_name}}</option>
                           @endforeach
                         </select>

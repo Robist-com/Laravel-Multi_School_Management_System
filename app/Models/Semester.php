@@ -33,7 +33,9 @@ class Semester extends Model
         'semester_code',
         'semester_duration',
         'semester_description',
-        'status'
+        'status',
+        'school_id',
+
     ];
 
     /**
@@ -47,7 +49,8 @@ class Semester extends Model
         'semester_code' => 'string',
         'semester_duration' => 'string',
         'semester_description' => 'string',
-        'status' => 'tinyint'
+        'status' => 'tinyint',
+        'school_id' => 'integer',
     ];
 
     /**

@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class RolesController extends Controller
 {
+    public function construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -70,7 +75,9 @@ class RolesController extends Controller
      */
     public function edit(Roles $roles)
     {
-        //
+        $roles = Roles::all();
+        $roles = Roles::all();
+        return view ('roles.index', compact('roles', 'role'));
     }
 
     /**

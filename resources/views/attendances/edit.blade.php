@@ -1,22 +1,33 @@
-@extends('layouts.app')
+
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
 @section('content')
-    <section class="content-header">
-        <h1>
-            Attendance
-        </h1>
-   </section>
-   <div class="content">
-       @include('adminlte-templates::common.errors')
-       <div class="box box-primary">
-           <div class="box-body">
-               <div class="row">
-               
-                @include('attendances.edit_attendance')
 
-                
-               </div>
-           </div>
-       </div>
-   </div>
+
+@if($template->template == '0')
+
+        <div class="clearfix"></div>
+
+        @include('flash::message')
+        @include('adminlte-templates::common.errors')
+
+        @include('attendances.admindefault.edit_attendance')
+            <!-- </div> -->
+
+@else
+
+        @include('flash::message')
+        @include('adminlte-templates::common.errors')
+
+        @include('attendances.adminbsb.edit_attendance')
+            <!-- </div> -->
+
+
+@endif
+
 @endsection
+
+
+

@@ -21,6 +21,7 @@ use App\Models\ClassAssigning;
 use App\Models\Teacher;
 use Flash;
 use Response;
+// use App\FeeType;
 
 use App\Models\Batch;
 use App\Models\Classes;
@@ -41,6 +42,12 @@ use App\StudentSubjects;
 use App\SemesterSubjects;
 class FeeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function getPayment()
     {
         return view('fee.searchPayment');
@@ -71,25 +78,36 @@ class FeeController extends Controller
     {
         if ($request->ajax()) {
             
+
                 $semester_id = $request->get('semester_id');
                 $class_code = $request->get('class_code');
                 $roll_no = $request->get('roll_no');
-                $semester = Semester::all();
-                $classes = Classes::all();
+               
                 $student_id = $request->get('student_id');
 
                 $rolls = Roll::where('username', $roll_no)->first();
               
+                // dd($class_code);
+
+                // if (isset( $rolls)) {
+                    # code...
+                
+        
+    
+    if (auth()->user()->group == 'Owner') {
+
+        $semester = Semester::where('status', 'on')->where('school_id', auth()->user()->school_id)->get();
+        $classes = Classes::where('school_id', auth()->user()->school_id)->get();
+
                 $readStudentTransaction = $this->read_student_transaction($rolls->student_id)->orderBy('admissions.id', 'desc')->take(2)->get();
-        // dd($readStudentTransaction);
-
-        $readStudentFee = $this->read_student_fee($rolls->student_id)->orderBy('admissions.id', 'desc')->take(2)->get();
-        // dd($readStudentFee);
-        $totalTransaction = $this->total_transaction($rolls->student_id)->get();
-        $invoice_id = InvoiceDetails::where('student_id', 'student_id')->max('invoice_id');
-        $student_name =  DB::table('admissions')->select('first_name','last_name')->where('id',$rolls->student_id)->first();
-
-        if ($request->roll_no !="" ) {
+        
+                $readStudentFee = $this->read_student_fee($rolls->student_id)->orderBy('admissions.id', 'desc')->take(2)->get();
+                // dd($readStudentFee);
+                $totalTransaction = $this->total_transaction($rolls->student_id)->get();
+                $invoice_id = InvoiceDetails::where('student_id', 'student_id')->max('invoice_id');
+                $student_name =  DB::table('admissions')->select('first_name','last_name')->where('id',$rolls->student_id)->first();
+        // dd($classes);
+        if ($request->roll_no !="" && $request->class_code == '' && $request->semester_id == '') {
 
                 $data =  Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
                         ->join('admissions', 'admissions.id','=', 'rolls.student_id')
@@ -102,62 +120,151 @@ class FeeController extends Controller
                         ->select('admissions.id as student_id','departments.*','semesters.*','semesters.semester_name',
                                    'levels.*','rolls.username',
                                    'admissions.*',
-                                   'classes.*', 'classes.id as class_id')
+                                   'classes.*', 'classes.id as class_id'
+                                   )
                                 ->where('rolls.username',$roll_no)
+                                ->where('admissions.school_id', auth()->user()->school_id)
                                 ->get();
 
                 $fee_structure = FeeStructure::where('semester_id', $rolls->semester_id)->get();
                 $fee_structure_amount = FeeStructure::where('id', $request->fee_type)->first();
+
         }
-        elseif($request->class_code != '' && $request->semester_id != '')
-        {
+    // }
+        // else
+        
+    }else {
+        $semester = Semester::all();
+        $classes = Classes::all();
+
             $data =  Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
-            ->join('admissions', 'admissions.id','=', 'rolls.student_id')
-            ->join('departments','departments.department_id','=', 'admissions.department_id')
-            ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
-            ->join('levels', 'levels.id','=', 'admissions.degree_id')
-            ->join('classes', 'classes.class_code','=', 'admissions.class_code')
-            ->join('batches', 'batches.id','=', 'admissions.batch_id')
-            ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
-            ->select('admissions.id as student_id','departments.*','semesters.*','semesters.semester_name',
-                       'fee_structures.*','faculties.*','levels.*','rolls.username',
-                       'fee_structures.id as fee_structure_id','admissions.*',
-                       'classes.*', 'classes.id as class_id')
-                       ->where('semesters.id',$semester_id)
-                       ->where('classes.class_code',$class_code)
-                    ->get();
-        }
+                        ->join('admissions', 'admissions.id','=', 'rolls.student_id')
+                        ->join('departments','departments.department_id','=', 'admissions.department_id')
+                        ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
+                        ->join('levels', 'levels.id','=', 'admissions.degree_id')
+                        ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+                        ->join('batches', 'batches.id','=', 'admissions.batch_id')
+                        // ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
+                        ->select('admissions.id as student_id','departments.*','semesters.*','semesters.semester_name',
+                                   'levels.*','rolls.username',
+                                   'admissions.*',
+                                   'classes.*', 'classes.id as class_id')
+                                ->where('rolls.username',$roll_no)
+                                // ->where('admissions.school_id', auth()->user()->school_id)
+                                ->get();
 
-        $fee_structure1 = FeeStructure::all();
+                            $fee_structure = FeeStructure::where('semester_id', $rolls->semester_id)->get();
+                            $fee_structure_amount = FeeStructure::where('id', $request->fee_type)->first();
+                    }
 
-        $view = view('fee.fee-payment')
-        ->with('readStudentFee', $readStudentFee)
-        ->with('data', $data )
-        ->with('semester', $semester )
-        ->with('readStudentTransaction', $readStudentTransaction)
-        ->with('totalTransaction', $totalTransaction)
-        ->with('fee_structure', $fee_structure)
-        ->with('fee_structure1', $fee_structure1)
-        ->with('fee_structure_amount', $fee_structure_amount)
-        ->with('classes', $classes)
-        ->with('student_name', $student_name)
-        ->render();
+                        if ($request->ajax()) {
+                            $fee_structure1 = FeeStructure::where('fee_type', $request->fee_type);
+                        }
 
-        return response($view);
+                        $view = view('fee.fee-payment')
+                        ->with('readStudentFee', $readStudentFee)
+                        ->with('data', $data )
+                        ->with('semester', $semester )
+                        ->with('readStudentTransaction', $readStudentTransaction)
+                        ->with('totalTransaction', $totalTransaction)
+                        ->with('fee_structure', $fee_structure)
+                        ->with('fee_structure1', $fee_structure1)
+                        ->with('fee_structure_amount', $fee_structure_amount)
+                        ->with('classes', $classes)
+                        ->with('student_name', $student_name)
+                        ->render();
 
+                        return response($view);
 
         // echo json_encode($data);
         }
 }
 
-// ------------------------- SINGLE STUDENT FEE COLLECTION------------------
-public function StudentFeeCollectionPayment($student_id)
+
+public function FeeCollectionPaymentGradeClass(Request $request)
 {
-        $semester = Semester::where('status', 'on')->get();
-        $faculty = Faculty::all();
-        $classes = Classes::all();
-        $batches = Batch::all();
-        
+    $semester_id = $request->get('semester_id');
+    $class_code = $request->get('class_code');
+
+    if ($request->ajax()) {
+
+
+    if (auth()->user()->group == 'Owner') {
+
+    if($request->class_code != '' && $request->semester_id != '')
+    {
+        $data =  Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
+        ->join('admissions', 'admissions.id','=', 'rolls.student_id')
+        ->join('departments','departments.department_id','=', 'admissions.department_id')
+        ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
+        ->join('levels', 'levels.id','=', 'admissions.degree_id')
+        ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+        ->join('batches', 'batches.id','=', 'admissions.batch_id')
+        ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
+        ->select('admissions.id as student_id','departments.*','semesters.*','semesters.semester_name',
+                   'fee_structures.*','faculties.*','levels.*','rolls.username',
+                   'fee_structures.id as fee_structure_id','admissions.*',
+                   'classes.*', 'classes.id as class_id')
+                   ->where('semesters.id',$semester_id)
+                   ->where('classes.class_code',$class_code)
+                ->get();
+
+                $fee_structure = FeeStructure::where('semester_id', $semester_id)->get();
+                $fee_structure_amount = FeeStructure::where('id', $request->fee_type)->first();
+    }
+}else {
+    $data =  Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
+                        ->join('admissions', 'admissions.id','=', 'rolls.student_id')
+                        ->join('departments','departments.department_id','=', 'admissions.department_id')
+                        ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
+                        ->join('levels', 'levels.id','=', 'admissions.degree_id')
+                        ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+                        ->join('batches', 'batches.id','=', 'admissions.batch_id')
+                        // ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
+                        ->select('admissions.id as student_id','departments.*','semesters.*','semesters.semester_name',
+                                   'levels.*','rolls.username',
+                                   'admissions.*',
+                                   'classes.*', 'classes.id as class_id')
+                                   ->where('semesters.id',$semester_id)
+                                   ->where('classes.class_code',$class_code)
+                                //    ->where('admissions.school_id', auth()->user()->school_id)
+                                ->get();
+
+                            $fee_structure = FeeStructure::where('semester_id', $rolls->semester_id)->get();
+                            $fee_structure_amount = FeeStructure::where('id', $request->fee_type)->first();
+}
+
+if ($request->ajax()) {
+    $fee_structure1 = FeeStructure::where('fee_type', $request->fee_type)->get();
+}
+    $view = view('fee.multi-fee-payment')
+                        // ->with('readStudentFee', $readStudentFee)
+                        ->with('data', $data )
+                        // ->with('semester', $semester )
+                        // ->with('readStudentTransaction', $readStudentTransaction)
+                        // ->with('totalTransaction', $totalTransaction)
+                        ->with('fee_structure', $fee_structure)
+                        ->with('fee_structure1', $fee_structure1)
+                        ->with('fee_structure_amount', $fee_structure_amount)
+                        // ->with('classes', $classes)
+                        // ->with('student_name', $student_name)
+                        ->render();
+
+                        return response($view);
+}
+}
+
+// ------------------------- SINGLE STUDENT FEE COLLECTION------------------
+public function StudentFeeCollectionPayment(Request $request, $student_id)
+{
+       if (auth()->user()->group == "Owner") {
+
+        $semester = Semester::where('status', 'on')->where('school_id', auth()->user()->school_id)->get();
+        $classes = Classes::where('school_id', auth()->user()->school_id)->get();
+        $faculty = Faculty::where('school_id', auth()->user()->school_id)->get();
+        $classes = Classes::where('school_id', auth()->user()->school_id)->get();
+        $batches = Batch::where('school_id', auth()->user()->school_id)->get();
+      
         $readStudentTransaction = $this->read_student_transaction($student_id)->orderBy('admissions.id', 'desc')->take(2)->get();
         // dd($readStudentTransaction);
 
@@ -167,13 +274,13 @@ public function StudentFeeCollectionPayment($student_id)
         $invoice_id = InvoiceDetails::where('student_id', 'student_id')->max('invoice_id');
      $student_name =  DB::table('admissions')->select('first_name','last_name')->where('id',$student_id)->first();
     //  dd($student_name);
-    $data = Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
-    ->join('admissions', 'admissions.id','=', 'rolls.student_id')
-    ->join('departments','departments.department_id','=', 'admissions.department_id')
-    ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
-    ->join('levels', 'levels.id','=', 'admissions.degree_id')
-    ->join('classes', 'classes.class_code','=', 'admissions.class_code')
-    ->join('batches', 'batches.id','=', 'admissions.batch_id')
+        $data = Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
+        ->join('admissions', 'admissions.id','=', 'rolls.student_id')
+        ->join('departments','departments.department_id','=', 'admissions.department_id')
+        ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
+        ->join('levels', 'levels.id','=', 'admissions.degree_id')
+        ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+        ->join('batches', 'batches.id','=', 'admissions.batch_id')
     // ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
     // ->join('semester_subjects','semester_subjects.id','=', 'admissions.semester_id')
     // ->join('courses','courses.id','=', 'semester_subjects.course_id')
@@ -185,11 +292,54 @@ public function StudentFeeCollectionPayment($student_id)
                'classes.*', 'classes.id as class_id')
             ->where('rolls.student_id',$student_id)
             ->get();
+            $fee_structure = FeeStructure::where('school_id', auth()->user()->school_id)->get();
+            $fee_structure1 = [];
+       }else {
+
+        $semester = Semester::where('status', 'on')->get();
+        $faculty = Faculty::all();
+        $classes = Classes::all();
+        $batches = Batch::all();
+
+
+        
+        $readStudentTransaction = $this->read_student_transaction($student_id)->orderBy('admissions.id', 'desc')->take(2)->get();
+        // dd($readStudentTransaction);
+
+        $readStudentFee = $this->read_student_fee($student_id)->orderBy('admissions.id', 'desc')->take(2)->get();
+        // dd($readStudentFee);
+        $totalTransaction = $this->total_transaction($student_id)->get();
+        $invoice_id = InvoiceDetails::where('student_id', 'student_id')->max('invoice_id');
+        $student_name =  DB::table('admissions')->select('first_name','last_name')->where('id',$student_id)->first();
+    //  dd($student_name);
+        $data = Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
+        ->join('admissions', 'admissions.id','=', 'rolls.student_id')
+        ->join('departments','departments.department_id','=', 'admissions.department_id')
+        ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
+        ->join('levels', 'levels.id','=', 'admissions.degree_id')
+        ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+        ->join('batches', 'batches.id','=', 'admissions.batch_id')
+    // ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
+    // ->join('semester_subjects','semester_subjects.id','=', 'admissions.semester_id')
+    // ->join('courses','courses.id','=', 'semester_subjects.course_id')
+        ->select('admissions.id as student_id','departments.*','semesters.*',
+               'faculties.*','levels.*',
+               'admissions.*','rolls.username',
+            //    'semester_subjects.*',
+            //    'courses.*',
+               'classes.*', 'classes.id as class_id')
+            ->where('rolls.student_id',$student_id)
+            ->get();
             $fee_structure = FeeStructure::all();
-            $fee_structure1 = FeeStructure::all();
+            if ($request->ajax()) {
+                $fee_structure1 = [];
+            }
+           
+           # code...
+       }
             // dd($data);die;
             return view('fee.fee-payment-class', compact('data',
-            'student','readStudentTransaction','student_name',
+            'readStudentTransaction','student_name',
             'readStudentFee','semester','faculty','fee_structure','fee_structure1',
             'totalTransaction','invoice_id','classes'));
 }
@@ -197,8 +347,24 @@ public function StudentFeeCollectionPayment($student_id)
 // ------------------------- MULTI STUDENT FEE COLLECTION BY CLASS------------------
 public function StudentFeeListCollectionPayment(Request $request)
 {
-                $semester = Semester::where('status', 'on')->get();
-                $faculty = Faculty::all();
+                $rules = array(
+                    'degree_id'  => 'required',
+                    'semester_id'  => 'required',
+                    'semester_id'  => 'required',
+                    'department_id'  => 'required',
+                    'class_id'  => 'required',
+                    // 'student_id'  => 'required'
+                );
+
+                // dd($request->all());
+                $error = Validator::make($request->all(), $rules);
+                if($error->fails())
+                {
+                    return redirect()->back()->withErrors($error);
+                }
+
+                $semester = Semester::where('status', 'on')->where('school_id', auth()->user()->school_id)->get();
+                $faculty = Faculty::where('school_id', auth()->user()->school_id)->get();
                 $classes = Classes::all();
                 $batches = Batch::all();
                 $department_id = $request->get('department_id');
@@ -218,61 +384,77 @@ public function StudentFeeListCollectionPayment(Request $request)
                           ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
                           ->join('levels', 'levels.id','=', 'admissions.degree_id')
                           ->join('classes', 'classes.class_code','=', 'admissions.class_code')
-
-                          
                           ->join('batches', 'batches.id','=', 'admissions.batch_id')
-                        //   ->join('rolls', 'rolls.roll_id','=', 'rolls.student_id')
-                          ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
-                        // //   ->join('semesters','semesters.id','=', 'admissions.semester_id')
-                        // //   ->join('courses','courses.id','=', 'admissions.course_id')
                           ->select('admissions.id as student_id','departments.*','semesters.*',
-                                   'fee_structures.*','faculties.*','levels.*',
-                                   'fee_structures.id as fee_structure_id','admissions.*','rolls.username',
+                                   'faculties.*','levels.*',
+                                   'admissions.*','rolls.username',
                                    'classes.*', 'classes.id as class_id')
                                   ->where('admissions.class_code', $class_id)
                                   ->where('admissions.semester_id',$semester_id)
                                   ->where('admissions.faculty_id',$faculty_id)
                                   ->where('admissions.department_id',$department_id)
+                                  ->where('admissions.acceptance','accept')
                                   ->get();
-                                //   dd($data1);
+
+                                //   dd($data);
+
                                   if(count($data)=="0"){
-                                      echo "<h1 align='center' class=' alert alert-danger'>No Class Found Under This Course </h1>";
+
+                                        Flash::info('No Class Found Under This Course ');
                                     }
                                     else
                                     {
 
-                           return view('fee.feeTypes.multiFeePayment', compact('data',
-                                          'student','readStudentTransaction',
+                        //    return view('fee.feeTypes.multiFeePayment', compact('data',
+                                    return view('fee.studentListpayment',  compact('data',
+                                          
                                           'readStudentFee','semester','faculty',
-                                          'totalTransaction','invoice_id','classes'));
-                               }
+                                         'classes'));
+                                    }
 
-                              }else{
-                                  echo "<h1 align='center' class=' alert alert-danger'>No Class Found Under This Course </h1>";
-                              }
+                                     }else{
+                                        Flash::info('No Class Found Under This Course ');
+                                    }
 
-                              return view('fee.studentListpayment',  compact('data',
-                                          'student','readStudentTransaction',
+                                        return view('fee.studentListpayment',  compact('data',
+                                       
                                           'readStudentFee','semester','faculty',
-                                          'totalTransaction','invoice_id','classes'));
+                                          'classes'));
 
 }
 
 public function StudentListPayment(Request $request)
 {
+
+      if (auth()->user()->group == "Owner") {
+        $semester = Semester::where('status', 'on')->where('school_id', auth()->user()->school_id)->get();
+        $faculty = Faculty::where('school_id', auth()->user()->school_id)->get();
+        $classes = Classes::where('school_id', auth()->user()->school_id)->get();
+        $batches = Batch::where('school_id', auth()->user()->school_id)->get();
+      }else {
         $semester = Semester::where('status', 'on')->get();
         $faculty = Faculty::all();
         $classes = Classes::all();
         $batches = Batch::all();
+      }
 
-    return view('fee.studentListpayment', compact('data','semester','faculty','classes'));
+    return view('fee.studentListpayment', compact('semester','faculty','classes'));
 }
 
     public function ViewPayment(Request $request){
-        $semester = Semester::where('status', 'on')->get();
-        $faculty = Faculty::all();
-        $classes = Classes::all();
-        $batches = Batch::all();
+
+
+        if (auth()->user()->group == "Owner") {
+            $semester = Semester::where('status', 'on')->where('school_id', auth()->user()->school_id)->get();
+            $faculty = Faculty::where('school_id', auth()->user()->school_id)->get();
+            $classes = Classes::where('school_id', auth()->user()->school_id)->get();
+            $batches = Batch::where('school_id', auth()->user()->school_id)->get();
+          }else {
+            $semester = Semester::where('status', 'on')->get();
+            $faculty = Faculty::all();
+            $classes = Classes::all();
+            $batches = Batch::all();
+          }
 
         $roll_no = $request->get('roll_no');
         $student_id = $request->get('student_id');
@@ -301,47 +483,137 @@ public function StudentListPayment(Request $request)
         $student_name =  DB::table('admissions')->select('first_name','last_name')->where('id',$student_id)->first();
         }
 
+        if (auth()->user()->group == 'Owner') {
+
+        $data = Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
+                    ->join('admissions', 'admissions.id','=', 'rolls.student_id')
+            //         ->join('departments','departments.department_id','=', 'admissions.department_id')
+            //         ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
+            //         ->join('levels', 'levels.id','=', 'admissions.degree_id')
+            //         // ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+            //         // ->join('batches', 'batches.id','=', 'admissions.batch_id')
+            //         ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
+            //         // ->join('semester_subjects','semester_subjects.id','=', 'admissions.semester_id')
+            //         // ->join('courses','courses.id','=', 'semester_subjects.course_id')
+            //         ->select('admissions.id as student_id','departments.*','semesters.*',
+            //                 'fee_structures.*','faculties.*','levels.*',
+            //    'fee_structures.id as fee_structure_id','admissions.*','rolls.username'
+            // //    'semester_subjects.*',
+            // //    'courses.*',
+            // //    'classes.*', 'classes.id as class_id'
+            //    )
+            ->where('rolls.student_id',$student_id)
+            ->where('admissions.acceptance', 'accept')
+            ->where('admissions.school_id', auth()->user()->school_id)
+            ->get();
+
+
+
+
+            $all_fees = Transaction::join('admissions', 'admissions.id','=', 'transactions.student_id')
+                                      ->join ('semesters','semesters.id','=', 'admissions.semester_id')
+                                      ->join('rolls', 'rolls.student_id','=', 'admissions.id')
+                                    ->join('departments','departments.department_id','=', 'admissions.department_id')
+                                    ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
+                                    ->join('levels', 'levels.id','=', 'admissions.degree_id')
+            // ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+                                    ->join('batches', 'batches.id','=', 'admissions.batch_id')
+                                    ->join('student_fees','student_fees.student_fee_id','=', 'transactions.semester_fee_id')
+                                    ->join('fee_structures','fee_structures.id','=', 'student_fees.fee_id')
+            // ->join('transactions','transactions.student_id','=', 'student_fees.student_id')
+
+            ->select('admissions.id as student_id','departments.department_name','semesters.semester_name',
+                    'faculties.faculty_name','levels.level','fee_structures.fee_type','fee_structures.semesterFee',
+                    'student_fees.student_fee_id','admissions.image','rolls.username',
+                    'transactions.paid_amount','transactions.balance'
+                    // 'classes.class_name', 'classes.id as class_id'
+                    )
+
+            ->groupby('student_id','departments.department_name','semesters.semester_name',
+                            'fee_structures.semesterFee','faculties.faculty_name','levels.level',
+                            'fee_structures.fee_type','admissions.first_name','rolls.username',
+                                'transactions.balance','transactions.paid_amount','admissions.image',
+                                'student_fees.student_fee_id','student_fees.fee_id',
+                                'transactions.transaction_id'
+                                // 'classes.class_name', 'class_id'
+                                )
+
+       ->where('admissions.school_id', auth()->user()->school_id)
+       ->where('admissions.acceptance','accept')
+       ->get();
+
+    //    dd($all_fees);
+    $fee_structure = FeeStructure::where('school_id', auth()->user()->school_id);
+    $fee_structure1 = FeeStructure::where('school_id', auth()->user()->school_id);
+
+    $fee_structure = FeeStructure::all();
+    // $fee_structure1 = [];
+    }else {
+       
         $data = Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
                     ->join('admissions', 'admissions.id','=', 'rolls.student_id')
                     ->join('departments','departments.department_id','=', 'admissions.department_id')
                     ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
                     ->join('levels', 'levels.id','=', 'admissions.degree_id')
-                    ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+                    // ->join('classes', 'classes.class_code','=', 'admissions.class_code')
                     ->join('batches', 'batches.id','=', 'admissions.batch_id')
                     ->join('fee_structures','fee_structures.semester_id','=', 'admissions.semester_id')
                     // ->join('semester_subjects','semester_subjects.id','=', 'admissions.semester_id')
                     // ->join('courses','courses.id','=', 'semester_subjects.course_id')
                     ->select('admissions.id as student_id','departments.*','semesters.*',
                             'fee_structures.*','faculties.*','levels.*',
-               'fee_structures.id as fee_structure_id','admissions.*','rolls.username',
+               'fee_structures.id as fee_structure_id','admissions.*','rolls.username'
             //    'semester_subjects.*',
             //    'courses.*',
-               'classes.*', 'classes.id as class_id')
+            //    'classes.*', 'classes.id as class_id'
+               )
             ->where('rolls.student_id',$student_id)
             ->get();
 
-            $all_fees = Roll::join('semesters','semesters.id','=', 'rolls.semester_id')
-            ->join('admissions', 'admissions.id','=', 'rolls.student_id')
+
+            $all_fees = Transaction::join('admissions', 'admissions.id','=', 'transactions.student_id')
+            ->join ('semesters','semesters.id','=', 'admissions.semester_id')
+            ->join('rolls', 'rolls.student_id','=', 'admissions.id')
             ->join('departments','departments.department_id','=', 'admissions.department_id')
             ->join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
             ->join('levels', 'levels.id','=', 'admissions.degree_id')
-            ->join('classes', 'classes.class_code','=', 'admissions.class_code')
+            // ->join('classes', 'classes.class_code','=', 'admissions.class_code')
             ->join('batches', 'batches.id','=', 'admissions.batch_id')
-            ->join('student_fees','student_fees.student_id','=', 'admissions.id')
+            ->join('student_fees','student_fees.student_fee_id','=', 'transactions.fee_id')
             ->join('fee_structures','fee_structures.id','=', 'student_fees.fee_id')
-            ->join('transactions','transactions.student_id','=', 'student_fees.student_id')
-            // ->join('courses','courses.id','=', 'semester_subjects.course_id')
-            ->select('admissions.id as student_id','departments.*','semesters.*',
-                    'student_fees.*','faculties.*','levels.*','fee_structures.fee_type','fee_structures.semesterFee',
-            'student_fees.student_fee_id','admissions.*','rolls.username','transactions.*',
-    //    'semester_subjects.*',
-    //    'courses.*',
-       'classes.*', 'classes.id as class_id')
-    // ->where('rolls.student_id',$student_id)
-    ->get();
+            // ->join('transactions','transactions.student_id','=', 'student_fees.student_id')
 
+            ->select('admissions.id as student_id','departments.department_name','semesters.semester_name',
+            'faculties.faculty_name','levels.level','fee_structures.fee_type','fee_structures.semesterFee',
+            'student_fees.student_fee_id','admissions.image','rolls.username',
+            'transactions.paid_amount','transactions.balance'
+            // 'classes.class_name', 'classes.id as class_id'
+            )
+
+            ->groupby('student_id','departments.department_name','semesters.semester_name',
+            'fee_structures.semesterFee','faculties.faculty_name','levels.level',
+            'fee_structures.fee_type','admissions.first_name','rolls.username',
+                'transactions.balance','transactions.paid_amount','admissions.image',
+                'student_fees.student_fee_id','student_fees.fee_id',
+                'transactions.transaction_id'
+      // 'classes.class_name', 'class_id'
+      )
+    //    'classes.*', 'classes.id as class_id')
+       ->get();
+    }
+
+
+       if (auth()->user()->group == "Owner") {
+        $fee_structure = FeeStructure::where('school_id', auth()->user()->school_id)->get();
+        $fee_structure1 = FeeStructure::where('school_id', auth()->user()->school_id)->get();
+        
+       }else {
         $fee_structure = FeeStructure::all();
-        $fee_structure1 = FeeStructure::all();
+        if($request->ajax()){
+            $fee_structure1 = FeeStructure::where('fee_type', $request->fee_type)->get();
+        }
+        
+       }
         $fee_structure_amount = FeeStructure::where('id', $request->fee_type)->first();
 
             // dd($fee_structure_amount);
@@ -355,18 +627,36 @@ public function StudentListPayment(Request $request)
     {
         if($request->ajax())
         {
-        if ($request->fee_type != '') {
-        $fee_structure1 = FeeStructure::join('semesters', 'semesters.id', '=', 'fee_structures.semester_id' )
-                              ->where('fee_structures.id', $request->fee_type)
-                              ->select('fee_structures.id as fee_structure_id', 
-                              'fee_structures.semesterFee', 'fee_structures.degree_id as level_id',
-                              'semesters.semester_name','fee_structures.total_amount',
-                              'fee_structures.fee_type')->get();
+            if (auth()->user()->group == "Owner") {
+                if ($request->fee_type != '') {
+                        $fee_structure1 = FeeStructure::join('semesters', 'semesters.id', '=', 'fee_structures.semester_id' )
+                        ->where('fee_structures.school_id', auth()->user()->school_id)
+                        ->where('fee_structures.id', $request->fee_type)
+                        ->select('fee_structures.id as fee_structure_id', 
+                        'fee_structures.semesterFee', 'fee_structures.degree_id as level_id',
+                        'semesters.semester_name','fee_structures.total_amount',
+                        'fee_structures.fee_type')->get();
 
+                }
+                else {
+                    // $fee_structure = FeeStructure::all();
+                }
+
+            }else {
+                if ($request->fee_type != '') {
+                    $fee_structure1 = FeeStructure::join('semesters', 'semesters.id', '=', 'fee_structures.semester_id' )
+                    ->where('fee_structures.id', $request->fee_type)
+                    ->select('fee_structures.id as fee_structure_id', 
+                    'fee_structures.semesterFee', 'fee_structures.degree_id as level_id',
+                    'semesters.semester_name','fee_structures.total_amount',
+                    'fee_structures.fee_type')->get();
+            }
+
+            else {
+                $fee_structure = FeeStructure::all();
+            }
         }
-        else {
-            $fee_structure = FeeStructure::all();
-        }
+               
 
         $view = view('fee.fee-type')
         // ->with('readStudentFee', $readStudentFee)
@@ -414,7 +704,7 @@ public function StudentListPayment(Request $request)
                                     'faculties.faculty_name',
                                     'departments.department_name',
                                     'fee_structures.semesterFee as semesterFee',
-                                    'fee_structures.admissionFee as admissionFee',
+                                    'admissions.image as image',
                                     'fee_structures.fee_type',
                                     'fee_structures.id as fee_structure_id',
                                     'transactions.transaction_date as paid_date',
@@ -439,7 +729,7 @@ public function StudentListPayment(Request $request)
 
         // dump($totalPaid);
         // dump($roll_no);die;
-        return view('fee.fee-invoice.fee_invoice', compact('invoice','roll_no', 'timeTable', 'totalPaid', 'studentFee'));
+        return view('fee.fee-invoice.fee_invoice', compact('invoice','roll_no', 'totalPaid', 'studentFee'));
     }
 
     public function payment($viewName,$student_id)
@@ -752,7 +1042,7 @@ public function FilterBySemesterDepartment(Request $request)
 //   dd($input); die;
             $CheckStudentfee_type = StudentFee::where('student_id', $request->student_id)
                                                 ->where('fee_id', $request->fee_id)->count();
-
+                                                // dd($CheckStudentfee_type); die;
             if ($CheckStudentfee_type) {
                 
                Flash::error('Student Already Paid this Fee');
@@ -761,27 +1051,36 @@ public function FilterBySemesterDepartment(Request $request)
                 # code...
            
             // dd($input); die;
-        $studentFee = StudentFee::create(['student_id' => $request->student_id,
-                                        'fee_id' => $request->fee_id,
-                                        'amount' => $request->amount,
-                                        'level_id' => $request->level_id]);
-
-        $transact = Transaction::create(['transaction_date' => $request->transact_date = date('Y-m-d'),
-                                        'fee_id' => $request->fee_id,
-                                        'user_id' => $request->user_id,
-                                        'student_id' => $request->student_id,
-                                        'semester_fee_id' => $studentFee->student_fee_id,
-                                        'paid_amount' => $request->paid_amount,
-                                        'balance' => $request->balance,
-                                        'remark' => $request->remark,
-                                        'description' => $request->description]);
+        $studentFee = new StudentFee;
+        
+        $studentFee->student_id = $request->student_id;
+        $studentFee->fee_id = $request->fee_id;
+        $studentFee->amount=$request->amount;
+        $studentFee->level_id=$request->level_id;
+        $studentFee->save();
+        // dd($studentFee); die;
+        $transact = new Transaction;
+        // ::create(['
+        $transact->transaction_date=$request->transact_date = date('Y-m-d');
+        $transact->fee_id=$request->fee_id;
+        $transact->user_id=$request->user_id;
+        $transact->student_id=$request->student_id;
+        $transact->semester_fee_id=$studentFee->student_fee_id;
+        $transact->paid_amount=$request->paid_amount;
+        $transact->balance=$request->balance;
+        $transact->remark=$request->remark;
+        $transact->school_id=$request->school_id;
+        $transact->description=$request->description;
         // dd($transact); die;
+        $transact->save();
         $invoice_id = Invoice::autoNumber();
 
-          InvoiceDetails::create(['invoice_id' => $invoice_id,
-                                'student_fee_id' => $studentFee->student_fee_id,
-                                'student_id' => $request->student_id,
-                                'transaction_id' => $transact->transaction_id]);
+        $invoice_detail =  new InvoiceDetails;
+        $invoice_detail->invoice_id=$invoice_id;
+        $invoice_detail-> student_fee_id=$studentFee->student_fee_id;
+        $invoice_detail-> student_id=$request->student_id;
+        $invoice_detail-> transaction_id=$transact->transaction_id;
+        $invoice_detail-> save();
         Flash::success('Student Payment Save Successfully!.');
         return back();
     }
@@ -1297,4 +1596,59 @@ public function FilterBySemesterDepartment(Request $request)
 
         return view('admins.students.transactions', compact('data','student_id'));
     }
+
+    public function FeeType(Request $request)
+    {
+        if (auth()->user()->group == "Owner") {
+            $feetypes = FeeType::where('school_id', auth()->user()->school_id)->get();
+        }else {
+            $feetypes = FeeType::join('schools' , 'schools.id', '=', 'fee_types.school_id')->get();
+        }
+       
+        // dd( $feetypes);
+       return view('feetypes.index', compact('feetypes'));
+    }
+
+    public function EditFeeType(Request $request, $id)
+    {
+        $feetype = FeeType::findOrfail($id);
+        
+        if (auth()->user()->group == "Owner") {
+            $feetypes = FeeType::where('school_id', auth()->user()->school_id)->get();
+        }else {
+            $feetypes = FeeType::join('schools' , 'schools.id', '=', 'fee_types.school_id')->get();
+        }
+    //    dd($feetype);
+       return view('feetypes.index', compact('feetype','feetypes'));
+    }
+
+    public function StoreFeeType(Request $request)
+    {
+        // dd($request->all());
+        $feetype = $request->get('fee_type');
+        $school = $request->get('school_id');
+        FeeType::updateOrCreate(['type' => $feetype, 'school_id' => $school]);
+
+        Flash::success('Fee Type Created successfully!');
+        return back();
+    }
+
+    public function UpdateFeeType(Request $request, $id)
+    {
+        $fee_type = array('type' => $request->fee_type, 'school_id' => $request->school_id);
+
+        FeeType::findOrfail($id)->update($fee_type);
+    //    dd($feetype);
+        Flash::success('Fee Type Updated successfully!');
+        return back();
+    }
+
+    public function DeleteFeeType(Request $request, $feetypeid)
+    {
+        FeeType::findOrfail($feetypeid)->delete();
+
+        Flash::success('Fee Type Deleted successfully!');
+        return back();
+    }
+
 }

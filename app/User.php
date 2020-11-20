@@ -7,10 +7,14 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Cache;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Cashier\Billable;
+
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable ;
     use SoftDeletes;
+    use Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +37,7 @@ class User extends Authenticatable
         'email_verified_at',
         'password',
         'remember_token'
+        , 'school_id'
     ];
 
     /**
@@ -56,10 +61,15 @@ class User extends Authenticatable
      /**
      * Get the user that role that own by the user.
      */
+    // public function role()
+    // {
+    //     return $this->belongsTo('App\Models\Role');
+    // }
+
     public function role()
-    {
-        return $this->belongsTo('App\Roles');
-    }
+{
+    return $this->belongsTo('App\Models\Role');
+}
 
     // public function role()
     // {
@@ -74,6 +84,26 @@ class User extends Authenticatable
         //i have alreay created it let me show you to guys
 
     }
+
+    public function school()
+    {
+        return $this->hasOne('App\School');
+    }
+
+  
+    
+    public function get_permission_by_role()
+    {
+         $user = Auth::user();
+        $permissions = Permission::count();
+        if($permissions>0){
+            $permissions = Permission::where('permission_group',strtolower($user->group))->where('permission_type','yes')->get();
+        }else{
+            $permissions =array(); 
+        }
+       return $permissions ;
+    }
+
     
 
 }

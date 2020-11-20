@@ -32,6 +32,7 @@ class DayController extends AppBaseController
     {
         $days = $this->dayRepository->all();
 
+        $days = Day::where('school_id', auth()->user()->school->id)->get();
         return view('days.index')
             ->with('days', $days);
     }
@@ -56,7 +57,14 @@ class DayController extends AppBaseController
     public function store(CreateDayRequest $request)
     {
         $input = $request->all();
+            // dd( $input);
+            $check_exist = Day::where(['name' => $request->name, 'school_id' => auth()->user()->school_id])->count();
 
+        if ($check_exist > 0) {
+
+            Flash::error('Day name '. $request->name . ' is already exist!.');
+            return back();
+        }
         $day = $this->dayRepository->create($input);
 
         Flash::success('Day saved successfully.');
@@ -94,6 +102,7 @@ class DayController extends AppBaseController
     public function edit($id)
     {
         $day = $this->dayRepository->find($id); 
+        $days = Day::where('school_id', auth()->user()->school_id)->get();
 
         if (empty($day)) {
             Flash::error('Day not found');
@@ -101,7 +110,7 @@ class DayController extends AppBaseController
             return redirect(route('days.index'));
         }
 
-        return view('days.edit')->with('day', $day);
+        return view('days.index')->with('day', $day)->with('days', $days);
     }
 
     /**
@@ -122,9 +131,17 @@ class DayController extends AppBaseController
             return redirect(route('days.index'));
         }
 
+        // $check_exist = Day::where(['name' => $request->name, 'school_id' => auth()->user()->school_id, 'status' => ''])->count();
+
         $day = $this->dayRepository->update($request->all(), $id);
 
         Flash::success('Day updated successfully.');
+
+        // if ($check_exist > 0 ) {
+
+        //     Flash::error('Day name '. $request->name . ' is already exist!.');
+        //     return back();
+        // }
 
         return redirect(route('days.index'));
     }

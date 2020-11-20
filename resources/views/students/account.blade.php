@@ -26,8 +26,8 @@
             </ul>
           </div>
         </div>
-
         
+        @if(isset($noticeMessage))
             <marquee behavior="side" scrollamount="2" direction="fade">
          
                   <p class="para"><i class="badge bg-purple-active">
@@ -39,7 +39,7 @@
                   </p>
          
                   </marquee>
-              
+              @endif
  </div>
   </section>
 

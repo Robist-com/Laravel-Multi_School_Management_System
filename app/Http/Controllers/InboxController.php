@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class InboxController extends Controller
 {
+  public function construct()
+  {
+    $this->middleware('auth');
+  }
+
     /**
      * Display a listing of the resource.
      *

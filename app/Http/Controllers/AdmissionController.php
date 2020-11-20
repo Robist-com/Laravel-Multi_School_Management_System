@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Cities;
+use App\Country;
 use App\Http\Requests\CreateAdmissionRequest;
 use App\Http\Requests\UpdateAdmissionRequest;
 use App\Repositories\AdmissionRepository;
@@ -19,6 +21,7 @@ use App\Models\Classes;
 use App\Models\Semester;
 use App\Models\Level;
 use App\Roll;
+use App\Institute;
 use App\PromoteStudent;
 // use App\NewStatus;
 use PDF;
@@ -26,7 +29,10 @@ use DB;
 use Validator;
 use App\InvoiceDetails;
 use App\Models\FeeStructure;
+use App\States;
 use App\StudentFee;
+use Illuminate\Support\Facades\DB as FacadesDB;
+
 class AdmissionController extends AppBaseController
 {
     /** @var  AdmissionRepository */
@@ -35,6 +41,7 @@ class AdmissionController extends AppBaseController
     public function __construct(AdmissionRepository $admissionRepo)
     {
         $this->admissionRepository = $admissionRepo;
+        $this->middleware('auth');
     }
 
     /**
@@ -47,43 +54,44 @@ class AdmissionController extends AppBaseController
     public function index()
     {
 
-         // we fetch all admission as well.
-        $student_id = Admission::max('id'); // this roll id will be auto genarated username and password for each stuent okay
-        $roll_id = Roll::max('roll_id'); // this roll id will be auto genarated username and password for each stuent okay
-        $faculties = Faculty::all(); // we fetch all faculty
-        $departments = Department::all(); // we fetch all departments
-        $batches = Batch::all(); // we fetch all departments
-        $levels = Level::all(); // we fetch all departments
-        $classes = Classes::all(); // we fetch all classes
-        $Semester = Semester::where('status', "on")->get(); // we fetch all Semester
+        if (request()->ajax()) {
+      
+        if (auth()->user()->group == 'Owner') {
 
-        $enable_grade = Semester::where('status', "on")->get();
-        // $class_grade = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')->
-        // where('teacher_id', Auth::user()->teacher_id)->where('class_id',$class_name->class_code)->GET();
-        // dd($class_grade);
+                   $data = Admission::join('departments','departments.department_id', 'admissions.department_id')
+                                        ->join('faculties','faculties.faculty_id', 'admissions.faculty_id')
+                                        ->join('rolls','rolls.student_id', 'admissions.id')
+                                        ->join('batches','batches.id', 'admissions.batch_id')
+                                        ->join('schools','schools.id', 'admissions.school_id')
+                                    ->select('admissions.*','departments.*','faculties.*','admissions.id AS student_id',
+                                            'batches.*','rolls.username as roll_no','schools.name as school_name',
+                                         DB::raw('(CASE 
+                                        WHEN admissions.gender = "0" THEN "Male" ELSE  "Female" END) AS gender'),
+                                        DB::raw('CONCAT(admissions.first_name, \' \', admissions.last_name) as full_name')
+                                        )
+                                        ->where('admissions.school_id', auth()->user()->school_id)->get();
 
-        // $admissions = Admission::join('faculties','faculties.faculty_id','=', 'admissions.faculty_id')
-        //                         ->join('departments','departments.department_id','=', 'admissions.department_id')
-        //                         ->join('batches','batches.id','=', 'admissions.batch_id')->get();
-                                // dd($admissions); die;
-                                $admissions = Admission::join('faculties','faculties.faculty_id', 'admissions.faculty_id')
-                                ->join('departments','departments.department_id', 'admissions.department_id')
-                                // ->join('batches','batches.id', '=', 'admissions.batch_id')
-                                ->paginate(10);
-                                // all();
-                                $admission = Admission::join('faculties','faculties.faculty_id', 'admissions.faculty_id')
-                                ->join('departments','departments.department_id', 'admissions.department_id')
-                                ->join('batches','batches.id', 'admissions.batch_id')
-                                ->select('admissions.*','departments.*')
-                                ->select('admissions.batch_id', 'batches.id', DB::raw('COUNT(*) as count'))
-                                ->groupBy('admissions.batch_id','batches.id')
-                                ->paginate(10);
-                                if(count($admissions)!=0){
-                                    $rand_username_password = mt_rand(111609300011 .$student_id +1, 111609300011 .$student_id +1);
-                                   }elseif(count($admissions)==0){
-                                       $rand_username_password = mt_rand(1116093000111 .$student_id , 1116093000111 .$student_id );
-                                   }
-        return view('admissions.index', compact('admissions','levels', 'admission','Semester','classes','student_id','faculties','departments','batches','roll_id','rand_username_password'));
+        }else {
+
+            $data = Admission::join('departments','departments.department_id', 'admissions.department_id')
+                                    ->join('faculties','faculties.faculty_id', 'admissions.faculty_id')
+                                    ->join('rolls','rolls.student_id', 'admissions.id')
+                                    ->join('batches','batches.id', 'admissions.batch_id')
+                                    ->join('schools','schools.id', 'admissions.school_id')
+                                ->select('admissions.*','departments.*','faculties.*','admissions.id AS student_id',
+                                        'batches.*','rolls.username as roll_no','schools.name as school_name',
+                                    DB::raw('(CASE 
+                                    WHEN admissions.gender = "0" THEN "Male" ELSE  "Female" END) AS gender'),
+                                    DB::raw('CONCAT(admissions.first_name, \' \', admissions.last_name) as full_name')
+                                    )->get();
+
+        }
+
+        return response()->json(['data'=>$data],200);
+       
+    }
+    return view('admissions.index');
+        // return view('admissions.index', compact('admissions','levels', 'admission','Semester','classes','student_id','faculties','departments','batches','roll_id','rand_username_password'));
 
     }
 
@@ -97,7 +105,8 @@ class AdmissionController extends AppBaseController
             ->join('classes','classes.class_code','=','admissions.class_code')
             ->join('departments','departments.department_id','=','admissions.department_id')
             ->join('faculties','faculties.faculty_id','=','admissions.faculty_id')
-            ->where('gender', $request->sort_by_gender)->get();
+            ->where('gender', $request->sort_by_gender)
+            ->where('admissions.acceptance', 'accept')->get();
 
         }
         else if($request->roll_no != '')
@@ -117,7 +126,8 @@ class AdmissionController extends AppBaseController
             ->join('semesters','semesters.id','=','admissions.semester_id')
             ->join('classes','classes.class_code','=','admissions.class_code')
             ->join('departments','departments.department_id','=','admissions.department_id')
-            ->join('faculties','faculties.faculty_id','=','admissions.faculty_id')->get();
+            ->join('faculties','faculties.faculty_id','=','admissions.faculty_id')
+            ->where('admissions.acceptance', 'accept')->get();
         }
 
         $male = Admission::where('gender', '0')->count();
@@ -137,12 +147,48 @@ public function StudentList(Request $request)
             ->join('semesters','semesters.id','=','admissions.semester_id')
             ->join('classes','classes.class_code','=','admissions.class_code')
             ->join('departments','departments.department_id','=','admissions.department_id')
-            ->join('faculties','faculties.faculty_id','=','admissions.faculty_id')->paginate(8);
+            ->join('faculties','faculties.faculty_id','=','admissions.faculty_id')
+            ->where('admissions.acceptance', 'accept')->paginate(8);
 
-        $male = Admission::where('gender', '0')->count();
-        $female = Admission::where('gender', '1')->count();
+        $male = Admission::where('gender', '0')->where('acceptance', 'accept')->count();
+        $female = Admission::where('gender', '1')->where('acceptance', 'accept')->count();
 
         return view('admissions.students.studentList',compact('female','male'))
+        ->with('allStudentList', $allStudentList)
+        ->with('female', $female)
+        ->with('male', $male);
+}
+
+
+public function OnlineAdmission(Request $request)
+{
+    if (auth()->user()->group == "Owner") {
+        $allStudentList = Roll::join('admissions','admissions.id','=','rolls.student_id')
+        ->join('semesters','semesters.id','=','admissions.semester_id')
+        ->join('classes','classes.class_code','=','admissions.class_code')
+        ->join('departments','departments.department_id','=','admissions.department_id')
+        ->join('faculties','faculties.faculty_id','=','admissions.faculty_id')
+        ->where('admissions.acceptance', 'pending')
+        ->where('admissions.school_id', auth()->user()->school_id)
+        ->get();
+        // ->dd();
+
+            $male = Admission::where('gender', '0')->where('school_id', auth()->user()->school_id)->count();
+            $female = Admission::where('gender', '1')->where('school_id', auth()->user()->school_id)->count();
+    }else {
+        $allStudentList = Roll::join('admissions','admissions.id','=','rolls.student_id')
+        ->join('semesters','semesters.id','=','admissions.semester_id')
+        ->join('classes','classes.class_code','=','admissions.class_code')
+        ->join('departments','departments.department_id','=','admissions.department_id')
+        ->join('faculties','faculties.faculty_id','=','admissions.faculty_id')
+        ->where('admissions.acceptance', 'pending')->get();
+
+            $male = Admission::where('gender', '0')->count();
+            $female = Admission::where('gender', '1')->count();
+    }
+  
+
+        return view('admissions.online-admission.online_admissionList',compact('female','male'))
         ->with('allStudentList', $allStudentList)
         ->with('female', $female)
         ->with('male', $male);
@@ -153,11 +199,112 @@ public function StudentList(Request $request)
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('admissions.create');
+        if (auth()->user()->group == 'Owner') {
+
+            $student_id = Admission::where('school_id', auth()->user()->school_id)->max('id'); // this roll id will be auto genarated username and password for each stuent okay
+            $roll_id = Roll::max('roll_id'); // this roll id will be auto genarated username and password for each stuent okay
+            $faculties = Faculty::where('school_id', auth()->user()->school_id)->get(); // we fetch all faculty
+            $departments = Department::where('school_id', auth()->user()->school_id)->get(); // we fetch all departments
+            $batches = Batch::where('school_id', auth()->user()->school_id)->get(); // we fetch all departments
+            $levels = Level::where('school_id', auth()->user()->school_id)->get(); // we fetch all departments
+            $classes = Classes::where('school_id', auth()->user()->school_id)->get(); // we fetch all classes
+            $Semester = Semester::where('status', "on")->where('school_id', auth()->user()->school_id)->get(); // we fetch all Semester
+    
+            $enable_grade = Semester::where('status', "on")->where('school_id', auth()->user()->school_id)->get();
+
+            $admissions = Admission::join('faculties','faculties.faculty_id', 'admissions.faculty_id')
+                    ->join('departments','departments.department_id', 'admissions.department_id')
+                    ->join('schools','schools.id', 'admissions.school_id')
+                    // ->join('batches','batches.id', '=', 'admissions.batch_id')
+                    ->where('admissions.school_id', auth()->user()->school_id)->paginate(10);
+                    // all();
+                    $admission = Admission::join('faculties','faculties.faculty_id', 'admissions.faculty_id')
+                    ->join('departments','departments.department_id', 'admissions.department_id')
+                    ->join('batches','batches.id', 'admissions.batch_id')
+                    ->join('schools','schools.id', 'admissions.school_id')
+                    ->select('admissions.*','departments.*')
+                    ->select('admissions.batch_id', 'batches.id', DB::raw('COUNT(*) as count'))
+                    ->groupBy('admissions.batch_id','batches.id')
+                    ->where('admissions.school_id', auth()->user()->school_id)->paginate(10);
+
+                    $school_id = auth()->user()->school_id;
+                    
+                    if(count($admissions)!=0){
+                        $rand_username_password = mt_rand($school_id. 111609300011 .$student_id +1, $school_id. 111609300011 .$student_id +1);
+                        }elseif(count($admissions)==0){
+                            $rand_username_password = mt_rand($school_id. 1116093000111 .$student_id , $school_id. 1116093000111 .$student_id );
+                        }
+
+        }else {
+
+            $student_id = Admission::max('id'); // this roll id will be auto genarated username and password for each stuent okay
+            $roll_id = Roll::max('roll_id'); // this roll id will be auto genarated username and password for each stuent okay
+            $faculties = Faculty::all(); // we fetch all faculty
+            $departments = Department::all(); // we fetch all departments
+            $batches = Batch::all(); // we fetch all departments
+            $levels = Level::all(); // we fetch all departments
+            $classes = Classes::all(); // we fetch all classes
+            $Semester = Semester::where('status', "on")->get(); // we fetch all Semester
+    
+            $enable_grade = Semester::where('status', "on")->get();
+
+            $admissions = Admission::join('faculties','faculties.faculty_id', 'admissions.faculty_id')
+                    ->join('departments','departments.department_id', 'admissions.department_id')
+                    ->join('schools','schools.id', 'admissions.school_id')
+                    // ->join('batches','batches.id', '=', 'admissions.batch_id')
+                    ->paginate(10);
+                    // all();
+                    $admission = Admission::join('faculties','faculties.faculty_id', 'admissions.faculty_id')
+                    ->join('departments','departments.department_id', 'admissions.department_id')
+                    ->join('batches','batches.id', 'admissions.batch_id')
+                    ->join('schools','schools.id', 'admissions.school_id')
+                    ->select('admissions.*','departments.*')
+                    ->select('admissions.batch_id', 'batches.id', DB::raw('COUNT(*) as count'))
+                    ->groupBy('admissions.batch_id','batches.id')
+                   ->paginate(10);
+                    
+                   $school_id = $request->school_id;
+                    
+                   if(count($admissions)!=0){
+                       $rand_username_password = mt_rand($school_id. 111609300011 .$student_id +1, $school_id. 111609300011 .$student_id +1);
+                       }elseif(count($admissions)==0){
+                           $rand_username_password = mt_rand($school_id. 1116093000111 .$student_id , $school_id. 1116093000111 .$student_id );
+                       }
+
+        }
+
+        $countries = Country::all();
+
+        return view('admissions.create', compact('admissions','levels', 'countries','admission','Semester','classes','student_id','faculties','departments','batches','roll_id','rand_username_password'));
+
     }
 
+
+    public function Country_state(Request $request){
+        $input = $request->all();
+        // dd($input); die;
+    if ($request->ajax()) {
+        return response(States::
+        join('countries', 'countries.id','=', 'states.country_id')
+        ->select('states.name as state_name', 'states.id as state_id', 'countries.id as country_id', 'countries.name', 'countries.phonecode')
+        ->where('states.country_id',$request->country_id)
+        ->get());
+    }
+}
+
+public function State_city(Request $request){
+    $input = $request->all();
+    // dd($input); die;
+if ($request->ajax()) {
+    return response(Cities::
+    join('states', 'states.id','=', 'cities.state_id')
+    ->select('states.name as state_name', 'states.id as state_id', 'cities.id as city_id', 'cities.name as city_name')
+    ->where('cities.state_id',$request->state_id)
+    ->get());
+}
+}
     /**
      * Store a newly created Admission in storage.
      *
@@ -168,15 +315,110 @@ public function StudentList(Request $request)
     public function store(Request $request)
     {
         $input = $request->all();
+      
 
+        $template = Institute::where('school_id', auth()->user()->school_id)->first();
     //    but we will use the simples way of this now let's remove this
-         $file = $request->file('image');
-         $extension = $file->getClientOriginalExtension();
-         $new_image_name = time(). '.' .$extension;
-         $file->move(public_path('student_images'), $new_image_name);
+    // if ( $template->template == 0) {
+        // dd($input);
+        // if ($request->file('image') == '') {
 
+        //  $file = $request->file('image');
+        // //  $extension = $file->getClientOriginalExtension();
+        // //  $new_image_name = time(). '.' .$extension;
+        // //  $file->move(public_path('student_images'), $new_image_name);
 
+        // }else {
+           
+        //     $file = $request->file('image');
+        //     $extension = $file->getClientOriginalExtension();
+        //     $new_image_name = time(). '.' .$extension;
+        //     $file->move(public_path('student_images'), $new_image_name);
         //  now is the part to store our informayion isde the database okay.
+
+        $student = new Admission;
+        $student->first_name = $request->first_name;
+        $student->last_name = $request->last_name;
+        $student->father_name = $request->father_name;
+        $student->father_phone = $request->father_phone;
+        $student->mother_name = $request->mother_name;
+        $student->gender = $request->gender;
+        $student->phone = $request->phone;
+        $student->dob = $request->dob;
+        $student->email = $request->email;
+        $student->status = $request->status;
+        $student->nationality = $request->nationality;
+        $student->passport = $request->passport;
+        $student->address = $request->address;
+        $student->current_address = $request->current_address;
+        $student->department_id = $request->department_id;
+        $student->faculty_id = $request->faculty_id;
+        $student->semester_id = $request->semester_id;
+        $student->degree_id = $request->degree_id;
+        $student->class_code = $request->class_id;
+        $student->school_id = $request->school_id;
+        $student->dateregistered = $request->dateregistered;
+        $student->batch_id = $request->batch_id;
+        $student->acceptance = 'accept';
+        $student->user_id = $request->user_id; // is the user who has the role to create students okay.
+            // if ( $file) {
+            //     $student->image = $new_image_name;
+            // }else {
+            //     $student->image = '';
+            // }
+            
+            // dd($student);
+        // so here we will add condition okay to check if insert to proceed to next level okay.
+       if($student->save()){
+            $student_id =$student->id;
+            $username = 'username';
+            $password = 'password';
+
+            Roll::insert(['student_id' => $student_id, 'username'=>
+             $request->username,'password'=> $request->password, 'semester_id'=> $request->semester_id]);
+
+            PromoteStudent::insert(['student_id' => $student_id,'grade_id' => $request->semester_id,
+            'class_code'=> $request->class_id, 'school_id'=> $request->school_id, 'status' =>'current']);
+
+            //  dump($request->all()); die;
+
+            // NewStatus::insert(['student_id' => $student_id, 'semester_id' => $request->semester_id]);
+
+            // return redirect()->route('showStudentRoll', ['student_id' => $student_id]);
+            // return redirect()->route('view_student_timetable', ['student_id' => $student_id]);
+
+       }
+    // }
+
+        // $admission = $this->admissionRepository->create($input);
+
+
+        Flash::success('Admission ' .$request->first_name  . '  ' .  $request->last_name. ' saved successfully.');
+
+        return redirect(route('admissions.index'));
+    }
+
+
+
+    public function Admission_Store(Request $request)
+    {
+      
+        if ($request->ajax()) {
+
+            // dd($request->all());
+
+        //    if ($request->file('image') == '') {
+
+        //  $file = $request->file('image');
+
+
+        // }else {
+           
+        //     $file = $request->file('image');
+        //     $extension = $file->getClientOriginalExtension();
+        //     $new_image_name = time(). '.' .$extension;
+        //     $file->move(public_path('student_images'), $new_image_name);
+        // //  now is the part to store our informayion isde the database okay.
 
         $student = new Admission;
             $student->first_name = $request->first_name;
@@ -198,11 +440,18 @@ public function StudentList(Request $request)
             $student->semester_id = $request->semester_id;
             $student->degree_id = $request->degree_id;
             $student->class_code = $request->class_id;
-            $student->dateregistered = date('Y-m-d');
+            $student->school_id = $request->school_id;
+            $student->dateregistered = $request->dateregistered;
             $student->batch_id = $request->batch_id;
-            $student->user_id = Auth::id(); // is the user who has the role to create students okay.
-            $student->image = $new_image_name;
-
+            $student->acceptance = 'accept';
+            $student->user_id = $request->user_id; // is the user who has the role to create students okay.
+            // if ( $file) {
+            //     $student->image = $new_image_name;
+            // }else {
+            //     $student->image = '';
+            // }
+            
+            // dd($student);
         // so here we will add condition okay to check if insert to proceed to next level okay.
        if($student->save()){
             $student_id =$student->id;
@@ -213,24 +462,26 @@ public function StudentList(Request $request)
              $request->username,'password'=> $request->password, 'semester_id'=> $request->semester_id]);
 
             PromoteStudent::insert(['student_id' => $student_id,'grade_id' => $request->semester_id,
-            'class_code'=> $request->class_id, 'status' =>'current']);
+            'class_code'=> $request->class_id, 'school_id'=> $request->school_id, 'status' =>'current']);
 
-            //  dump($request->all()); die;
+             dump($request->all()); die;
 
             // NewStatus::insert(['student_id' => $student_id, 'semester_id' => $request->semester_id]);
 
             // return redirect()->route('showStudentRoll', ['student_id' => $student_id]);
             // return redirect()->route('view_student_timetable', ['student_id' => $student_id]);
 
+           
 
        }
+      
+    // }
 
-        // $admission = $this->admissionRepository->create($input);
+    return response($student);
+       
+    
+    }
 
-
-        Flash::success('Admission ' .$request->first_name. ''.$request->last_name. ' saved successfully.');
-
-        return redirect(route('admissions.index'));
     }
 
     /**

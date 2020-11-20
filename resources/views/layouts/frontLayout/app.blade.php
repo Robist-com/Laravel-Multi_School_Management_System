@@ -5,10 +5,33 @@
   use App\Marks;
   use App\HomeWork;
   use App\MeritList;
+  use App\Institute;
   $students = Roll::onlineStudent();
+  if(isset($homeworkCount)){
   $homeworkCount = HomeWork::where('class_code', $students->class_code)->where('status', 1)->count();
+  }
+  if(isset($resultCount)){
+
   $resultCount = MeritList::where('roll_no', Session::get('studentSession'))->count();
+}
+
+$url = request()->segment(3);
+
+
+if(auth()->user()){
+  $logouts =  Institute::where('school_id', auth()->user()->school_id)
+  ->join('schools', 'schools.id', '=', 'institute.school_id')->get();
+}
+else {
+  $logouts =  Institute::where('school_id', $students->school_id)
+  ->join('schools', 'schools.id', '=', 'institute.school_id')->get();
+}
+
+
+
+  if(isset($resultCount)){
   $markCount = Marks::where('roll_no', Session::get('studentSession'))->count();
+}
 @endphp
 
 <!DOCTYPE html>
@@ -51,6 +74,7 @@
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->
+      @foreach($logouts as $logout)
     <nav class="navbar navbar-static-top">
       <!-- Sidebar toggle button-->
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
@@ -140,15 +164,20 @@
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>
+              @if(isset($homeworkCount))
               <span class="label label-warning">{{$homeworkCount+$resultCount+$markCount}} </span>
+              @endif
             </a>
             <ul class="dropdown-menu">
+            @if(isset($homeworkCount))
+
               <li class="header">You have {{$homeworkCount+$resultCount+$markCount}} notifications</li>
               <li>
                 <!-- inner menu: contains the actual data -->
                 <ul class="menu">
                 @if($homeworkCount)
                   <li>
+                  
                     <a href="{{url('student-class-homework')}}">
                       <i class="fa fa-users text-aqua"></i> {{$homeworkCount}} new Homework 
                     </a>
@@ -156,36 +185,38 @@
                   </li>
                   @endif
 
+                  @if(isset($resultCount))
+
                   @if($resultCount)
                   <li>
+
                     <a href="{{url('student-exam-result')}}">
                       <i class="fa fa-warning text-yellow"></i> {{$resultCount}} Result Published
                     </a>
+
                     @else
                   </li>
                   @endif
+                  @endif
 
+                  @if(isset($markCount))
                   @if($markCount)
                   <li>
                     <a href="{{url('student-exam-marks')}}">
                       <i class="fa fa-users text-red"></i> {{$markCount}} new Mark
                     </a>
+                  </li>
                   @else
-                  </li>
+                  <li></li>
                   @endif
-                  <!-- <li>
-                    <a href="#">
-                      <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-user text-red"></i> You changed your username
-                    </a>
-                  </li> -->
+                  @endif
+
+
                 </ul>
               </li>
               <li class="footer"><a href="#">View all</a></li>
+              @endif
+
             </ul>
           </li>
           <!-- Tasks: style can be found in dropdown.less -->
@@ -267,6 +298,7 @@
             </ul>
           </li>
           <!-- User Account: style can be found in dropdown.less -->
+          @if(isset($students))
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="{{asset('student_images/' .$students->image)}}" class="user-image" alt="User Image">
@@ -282,6 +314,7 @@
                   <small>Member since Nov. </small>
                 </p>
               </li>
+              @endif
               <!-- Menu Body -->
               <li class="user-body">
                 <div class="row">
@@ -303,7 +336,9 @@
                   <a href="{{url('student-biodata')}}" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="{{ url('/student/logout') }}" class="btn btn-default btn-flat">Sign out</a>
+              
+                  <a href="{{url('student/logout/'.$logout->web)}}" class="btn btn-default btn-flat">Sign out</a>
+                
                 </div>
               </li>
             </ul>
@@ -316,6 +351,7 @@
       </div>
 
     </nav>
+    @endforeach
   </header>
 
   @include('layouts.frontLayout.sidebar')
@@ -431,29 +467,30 @@
 
 </div>
 <!-- ./wrapper -->
-
 <!-- jQuery 3 -->
-<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="{{asset('bower_components/jquery/dist/jquery.min.js')}}"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="{{asset('bower_components/bootstrap/dist/js/bootstrap.min.js')}}"></script>
 <!-- FastClick -->
-<script src="bower_components/fastclick/lib/fastclick.js"></script>
+<script src="{{asset('bower_components/fastclick/lib/fastclick.js')}}"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/adminlte.min.js"></script>
+<script src="{{asset('dist/js/adminlte.min.js')}}"></script>
 <!-- Sparkline -->
-<script src="bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+<script src="{{asset('bower_components/jquery-sparkline/dist/jquery.sparkline.min.js')}}"></script>
 <!-- jvectormap  -->
-<script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-<script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="{{asset('plugins/jvectormap/jquery-jvectormap-1.2.2.min.js')}}"></script>
+<script src="{{asset('plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script>
 <!-- SlimScroll -->
-<script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="{{asset('bower_components/jquery-slimscroll/jquery.slimscroll.min.js')}}"></script>
 <!-- ChartJS -->
-<script src="bower_components/chart.js/Chart.js"></script>
+<script src="{{asset('bower_components/chart.js/Chart.js')}}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard2.js"></script>
+<script src="{{asset('dist/js/pages/dashboard2.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
+<script src="{{asset('dist/js/demo.js')}}"></script>
 
-@yield('scripts')
+
+
+
 </body>
 </html>

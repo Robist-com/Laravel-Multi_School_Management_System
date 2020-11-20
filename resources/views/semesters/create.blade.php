@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Grades
+            Semester
         </h1>
     </section>
     <div class="content">

@@ -32,7 +32,9 @@ class ClassRoom extends Model
         'classroom_name',
         'classroom_code',
         'classroom_description',
-        'classroom_status'
+        'classroom_status',
+        'school_id',
+
     ];
 
     /**
@@ -45,7 +47,8 @@ class ClassRoom extends Model
         'classroom_name' => 'string',
         'classroom_code' => 'string',
         'classroom_description' => 'string',
-        'classroom_status' => 'boolean'
+        'classroom_status' => 'boolean',
+        'school_id' => 'integer',
     ];
 
     /**

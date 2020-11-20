@@ -25,7 +25,8 @@ class Day extends Model
     protected $dates = ['deleted_at'];
 
     public $fillable = [
-        'name'
+        'name','school_id','status',
+ 
     ];
 
     /**
@@ -35,7 +36,8 @@ class Day extends Model
      */
     protected $casts = [
         'day_id' => 'integer',
-        'name' => 'string'
+        'name' => 'string',
+        'school_id' => 'integer',
     ];
 
     /**

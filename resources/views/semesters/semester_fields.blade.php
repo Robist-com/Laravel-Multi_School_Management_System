@@ -15,8 +15,7 @@ input{
     color: blue;
 }
 </style>
- 
- 
+  
   <!-- //--------------------MODAL START HERE------------->
   <div class="modal fade left" id="semester_fields-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-notify modal-lg  modal-right " role="document">
@@ -27,9 +26,9 @@ input{
         </button>
         <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-sun-o" aria-hidden="true"> ADD NEW FEE STRUCTURE</i></h5>
       </div>
-        <form action="{{  route ('semesters.create.subjects')}}" method="post">
-        <div class="modal-body">
+      <div class="modal-body">
         <div class="panel-body">
+        <form action="{{  route ('semesters.create.subjects')}}" method="post">
         @csrf
 
         <!-- Name Field -->
@@ -98,8 +97,6 @@ input{
     </div>
   </div>
 
-
-  
   @section('scripts')
 
 <script>

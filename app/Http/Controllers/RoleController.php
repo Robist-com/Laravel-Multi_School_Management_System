@@ -11,6 +11,7 @@ use Flash;
 use Response;
 use PDF;
 use App\Models\Role;
+use App\Permission;
 class RoleController extends AppBaseController
 {
     /** @var  RoleRepository */
@@ -19,6 +20,10 @@ class RoleController extends AppBaseController
     public function __construct(RoleRepository $roleRepo)
     {
         $this->roleRepository = $roleRepo;
+
+			$this->middleware('auth');
+
+
     }
 
     /**
@@ -31,9 +36,10 @@ class RoleController extends AppBaseController
     public function index(Request $request)
     {
         $roles = $this->roleRepository->all();
-
+        $permissions = Permission::all();
         return view('roles.index')
-            ->with('roles', $roles);
+            ->with('roles', $roles)
+            ->with('permissions', $permissions);
     }
 
     /**
@@ -74,7 +80,7 @@ class RoleController extends AppBaseController
     public function show($id)
     {
         $role = $this->roleRepository->find($id);
-
+       
         if (empty($role)) {
             Flash::error('Role not found');
 
@@ -94,14 +100,14 @@ class RoleController extends AppBaseController
     public function edit($id)
     {
         $role = $this->roleRepository->find($id);
-
+        $roles = Role::all();
         if (empty($role)) {
             Flash::error('Role not found');
 
             return redirect(route('roles.index'));
         }
 
-        return view('roles.edit')->with('role', $role);
+        return view('roles.index')->with('role', $role)->with('roles', $roles);
     }
 
     /**
@@ -138,9 +144,9 @@ class RoleController extends AppBaseController
      *
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Role $role)
     {
-        $role = $this->roleRepository->find($id);
+        
 
         if (empty($role)) {
             Flash::error('Role not found');
@@ -148,7 +154,7 @@ class RoleController extends AppBaseController
             return redirect(route('roles.index'));
         }
 
-        $this->roleRepository->delete($id);
+        $role->delete();
 
         Flash::success('Role deleted successfully.');
 

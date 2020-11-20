@@ -55,7 +55,9 @@ class Teacher extends Model
         'dateregistered',
         'user_id',
         // 'semester_id',
-        'image'
+        'image',
+        'school_id',
+
     ];
 
     /**
@@ -77,7 +79,8 @@ class Teacher extends Model
         'status' => 'string',
         'dateregistered' => 'date',
         'user_id' => 'integer',
-        'image' => 'string'
+        'image' => 'string',
+        'school_id' => 'integer',
     ];
 
     /**

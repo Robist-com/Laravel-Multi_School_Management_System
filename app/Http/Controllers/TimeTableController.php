@@ -38,6 +38,11 @@ use App\Degree;
 
 class TimeTableController extends Controller
 {
+    public function construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -46,6 +51,21 @@ class TimeTableController extends Controller
     public function index()
     {
 
+        if (auth()->user()->group == "Owner") {
+            $teachers = Teacher::where('school_id',auth()->user()->school_id)->get();
+            // $semester = Semester::all();
+            $classes = Classes::where('school_id',auth()->user()->school_id)->get();
+            $coursese  = Course::where('school_id',auth()->user()->school_id)->get();
+    
+            $semesters = Semester::where('status', 'on')->where('school_id',auth()->user()->school_id)->get();
+            $departments = Department::where('school_id',auth()->user()->school_id)->get();
+            $faculty = Faculty::where('school_id',auth()->user()->school_id)->get();
+            $timeslot = Time::where('school_id',auth()->user()->school_id)->get();
+            $days = Day::where('school_id',auth()->user()->school_id)->get();
+            $levels = Level::where('school_id',auth()->user()->school_id)->get();
+            $timetable=array();
+        }else {
+           
         $teachers = Teacher::all();
         // $semester = Semester::all();
         $classes = Classes::all();
@@ -58,6 +78,9 @@ class TimeTableController extends Controller
         $days = Day::all();
         $levels = Level::all();
         $timetable=array();
+        
+    }
+       
 
 
         // $timetables=array();
@@ -173,6 +196,8 @@ class TimeTableController extends Controller
 	{
             $timeslot = Time::all();
             $days = Day::all();
+            $timetable=array();
+
             $input = $request->all();
             $department_id = $request->get('department_id');
             $semester_id = $request->get('semester_id');
@@ -180,7 +205,23 @@ class TimeTableController extends Controller
             $faculty_id = $request->get('faculty_id');
             $class_id = $request->get('class_id');
 
-    $classtimetables =  ClassSchedule::join('courses', 'courses.id', '=', 'class_schedule.course_id')
+            $grades = Semester::where(['id' => $semester_id, 'school_id' => auth()->user()->school_id])->first();
+            $exis_class = Classes::where(['class_code' => $class_id, 'school_id' => auth()->user()->school_id])->first();
+
+            $teachers = Teacher::where('school_id',auth()->user()->school_id)->get();
+            // $semester = Semester::all();
+            $classes = Classes::where('school_id',auth()->user()->school_id)->get();
+            $coursese  = Course::where('school_id',auth()->user()->school_id)->get();
+    
+            $semesters = Semester::where('status', 'on')->where('school_id',auth()->user()->school_id)->get();
+            $departments = Department::where('school_id',auth()->user()->school_id)->get();
+            $faculty = Faculty::where('school_id',auth()->user()->school_id)->get();
+            $timeslot = Time::where('school_id',auth()->user()->school_id)->get();
+            $days = Day::where('school_id',auth()->user()->school_id)->get();
+            $levels = Level::where('school_id',auth()->user()->school_id)->get();
+
+            if(auth()->user()->group == "Owner"){
+                    $classtimetables =  ClassSchedule::join('courses', 'courses.id', '=', 'class_schedule.course_id')
                     ->join('batches', 'batches.id','=', 'class_schedule.batch_id')
                     ->join('classes', 'classes.class_code','=', 'class_schedule.class_id')
                     ->join('days', 'days.day_id','=', 'class_schedule.day_id')
@@ -194,27 +235,57 @@ class TimeTableController extends Controller
                     ->join('class_rooms', 'class_rooms.classroom_id','=', 'class_schedule.classroom_id')
                                     // ->where('class_schedule.status','=', 1 )->get();
                                     // ->get();
-            ->where('class_schedule.semester_id', $semester_id)
-            ->where('class_schedule.department_id', $department_id)
-            ->where('class_schedule.degree_id', $degree_id)
-            ->where('class_schedule.faculty_id', $faculty_id)
-            ->where('class_schedule.class_id', $class_id)
-            ->orderBy('teachers.teacher_id', 'DESC')
-            ->get();
+                    ->where('class_schedule.semester_id', $semester_id)
+                    ->where('class_schedule.department_id', $department_id)
+                    ->where('class_schedule.degree_id', $degree_id)
+                    ->where('class_schedule.faculty_id', $faculty_id)
+                    ->where('class_schedule.class_id', $class_id)
+                    ->where('class_schedule.school_id', auth()->user()->school_id)
+                    ->orderBy('teachers.teacher_id', 'DESC')
+                    ->get();
+            }else {
+                    $classtimetables =  ClassSchedule::join('courses', 'courses.id', '=', 'class_schedule.course_id')
+                    ->join('batches', 'batches.id','=', 'class_schedule.batch_id')
+                    ->join('classes', 'classes.class_code','=', 'class_schedule.class_id')
+                    ->join('days', 'days.day_id','=', 'class_schedule.day_id')
+                    ->join('teachers', 'teachers.teacher_id','=', 'class_schedule.teacher_id')
+                    ->join('levels', 'levels.id','=', 'class_schedule.degree_id')
+                    ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+                    ->join('shifts', 'shifts.shift_id','=', 'class_schedule.shift_id')
+                    ->join('times', 'times.time_id','=', 'class_schedule.time_id')
+                    ->join('faculties', 'faculties.faculty_id','=', 'class_schedule.faculty_id')
+                    ->join('departments', 'departments.department_id','=', 'class_schedule.department_id')
+                    ->join('class_rooms', 'class_rooms.classroom_id','=', 'class_schedule.classroom_id')
+                                    // ->where('class_schedule.status','=', 1 )->get();
+                                    // ->get();
+                    ->where('class_schedule.semester_id', $semester_id)
+                    ->where('class_schedule.department_id', $department_id)
+                    ->where('class_schedule.degree_id', $degree_id)
+                    ->where('class_schedule.faculty_id', $faculty_id)
+                    ->where('class_schedule.class_id', $class_id)
+                    // ->where('class_schedule.school_id', auth()->user()->school_id)
+                    ->orderBy('teachers.teacher_id', 'DESC')
+                    ->get();
+            }
 
     $class_name =  ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
                                  ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
                                  ->where('class_schedule.class_id', $class_id)
                                  ->first();
 
-            // dd( $classtimetables); die;
-          if(count($classtimetables)=="0"){
-              Flash::error('No Class Found Under This Course');
+            // dd(back()); die;
+          if(count($classtimetables) == 0){
+              Flash::error('No TimeTable Found Under ' . $grades->semester_name .' <i class="fa fa-exchange"> </i> ' . $exis_class->class_name);
+            return view('timetables.index',compact('class_name','faculty','timeslot','days','timetable','classes','coursese','semesters','departments','levels'))
+            ->with('teachers', $teachers) ->with('classtimetables', $classtimetables);
           }else{
-            return view('timetables.class.timetable',compact('class_name'))
-            ->with('classtimetables', $classtimetables);
-        // }
-    }
+            return view('timetables.index',compact('class_name','faculty','timeslot','days','timetable','classes','coursese','semesters','departments','levels'))
+            ->with('teachers', $teachers) ->with('classtimetables', $classtimetables);
+
+            // return view('timetables.index',compact())
+           
+        }
+    // }
 }
 
 public function Generate_Teacher_Timetables(Request $request)
@@ -503,4 +574,3 @@ public function Generate_Teacher_Timetables(Request $request)
 
 
 }
-

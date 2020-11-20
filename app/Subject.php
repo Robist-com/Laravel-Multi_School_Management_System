@@ -2,5 +2,5 @@
 namespace App;
 class Subject extends \Eloquent {
 	protected $table = 'Subject';
-protected $fillable = ['name','description','class','gradeSystem'];
+protected $fillable = ['name','description','class','gradeSystem', 'school_id'];
 }

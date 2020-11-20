@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\ClassRoom;
 use App\Models\Teacher;
 use Carbon\Carbon;
 use App\Models\User;
-
+use App\School;
+use App\Institute;
 class LoginController extends Controller
 {
     /**
@@ -17,6 +19,67 @@ class LoginController extends Controller
     public function publicHome()
     {
         return view('public.home');
+    }
+
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+    }
+
+    // /**
+    //  * Create a new user instance after a valid registration.
+    //  *
+    //  * @param  array  $data
+    //  * @return \App\User
+    //  */
+    // protected function create(array $data)
+    // {
+    //     return User::create([
+    //         'name' => $data['name'],
+    //         'email' => $data['email'],
+    //         'password' => Hash::make($data['password']),
+    //     ]);
+    // }
+
+    public function RegisterSchool(Request $request)
+    {
+        
+       return view('school.registeration_form');
+    }
+
+    public function PostRegisterSchool(Request $request)
+    {
+        $school = School::create([
+            'name' => $request['school_name'],
+            'email' => $request['email'],
+            'is_active' => 0,
+            'user_id' => 1,
+            ]);
+
+        $user = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'school_id' => $school->id,
+            'password' => Hash::make($request['password']),
+        ]);
+
+        $institute = Institute::create([
+            'name' => $request['school_name'],
+            'email' => $request['email'],
+            'school_id' => $school->id,
+        ]);
+
+        $updateschool =  School::where(['email' => $school->email])->update(['user_id' => $user->id]);
+        // $message = Message::where(['from' => $user_id, 'to' => $my_id])->update(['is_read' => 1]);
+
+        // dd( $user,   $updateschool,   $school);
+
+        return redirect(url('/login'));
+        // return view('school.home.staff');
     }
 
     /**
@@ -160,4 +223,24 @@ class LoginController extends Controller
     {
         return view('public.expired');
     }
+
+    public function change_skin($value)
+	{
+		setcookie("skin", $value, time() + (3600), "/");
+		return back();
+    }
+
+    
+    
+    public function restore()
+    {
+    	ini_set('max_execution_time', 300);
+		Artisan::call("migrate:refresh");
+		Artisan::call("db:seed");
+		\Session::flush();
+        \Session::regenerate();
+		$message =  trans('topbar_menu_lang.success');
+		return redirect('/')->withMessage($message);
+    }
+
 }

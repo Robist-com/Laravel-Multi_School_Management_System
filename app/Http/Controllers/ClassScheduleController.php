@@ -34,6 +34,7 @@ class ClassScheduleController extends AppBaseController
     public function __construct(ClassScheduleRepository $classScheduleRepo)
     {
         $this->classScheduleRepository = $classScheduleRepo;
+        $this->middleware('auth');
     }
 
     /**
@@ -45,43 +46,93 @@ class ClassScheduleController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $batch = Batch::all(); // this function call all the batch from the batch table but we are using modal okay.
-        $classes = Classes::all();
-        $course = Course::all();
-        $day = Day::all();
-        $level = Level::all();
-        $semester =  Semester::where('status', 'on')->get();
-        $shift = Shift::all();
-        $time = Time::all();
-        $classroom = ClassRoom::all();
-        $department = Department::all();
-        $faculty = Faculty::all();
-        $teachers = Teacher::all();
-        // dd($batch);  // we are checking if we will have all aour data's okay.
+        if (auth()->user()->group == "Owner") {
 
-        $classSchedules = $this->classScheduleRepository->all();
+            $batch = Batch::where('school_id', auth()->user()->school->id)->get(); // this function call all the batch from the batch table but we are using modal okay.
+            $classes = Classes::where('school_id', auth()->user()->school->id)->get();
+            $course = Course::where('school_id', auth()->user()->school->id)->get();
+            $day = Day::where('school_id', auth()->user()->school->id)->get();
+            $level = Level::where('school_id', auth()->user()->school->id)->get();
+            $semester =  Semester::where('status', 'on')->get();
+            $shift = Shift::where('school_id', auth()->user()->school->id)->get();
+            $time = Time::where('school_id', auth()->user()->school->id)->get();
+            $classroom = ClassRoom::where('school_id', auth()->user()->school->id)->get();
+            $department = Department::where('school_id', auth()->user()->school->id)->get();
+            $faculty = Faculty::where('school_id', auth()->user()->school->id)->get();
+            $teachers = Teacher::where('school_id', auth()->user()->school->id)->get();
 
-        // WE WILL WRITE OUR RELATIONSHIP HERE OKAAY.
 
-        // BUT LET ME SHOW THE OTHER WAY TO MAKE RELATIONSHIP IN LARAVEL ELOQUENT OKAY.
- 
-        // SO LET'S DO THAT FIRST....
+            // $classSchedules = $this->classScheduleRepository->all();
 
-        $classSchedule = ClassSchedule::join('courses', 'courses.id', '=', 'class_schedule.course_id')
-                                    ->join('batches', 'batches.id','=', 'class_schedule.batch_id')
-                                    ->join('classes', 'classes.class_code','=', 'class_schedule.class_id')
-                                    ->join('days', 'days.day_id','=', 'class_schedule.day_id')
-                                    ->join('levels', 'levels.id','=', 'class_schedule.degree_id')
-                                    ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
-                                    ->join('shifts', 'shifts.shift_id','=', 'class_schedule.shift_id')
-                                    ->join('times', 'times.time_id','=', 'class_schedule.time_id')
-                                    ->join('faculties', 'faculties.faculty_id','=', 'class_schedule.faculty_id')
-                                    ->join('departments', 'departments.department_id','=', 'class_schedule.department_id')
-                                    ->join('class_rooms', 'class_rooms.classroom_id','=', 'class_schedule.classroom_id')
-                                    ->select('class_schedule.id as schedule_id', 'courses.*','batches.*','classes.*','days.*',
-                                            'levels.*', 'semesters.*','shifts.*','times.*','faculties.*', 'departments.*','class_rooms.*')
-                                    // ->where('class_schedule.status','=', 1 )->get();
+            $classSchedules =  ClassSchedule::where('school_id',auth()->user()->school->id)->get();
+
+            $classSchedule = ClassSchedule::join('courses', 'courses.id', '=', 'class_schedule.course_id')
+                            ->join('batches', 'batches.id','=', 'class_schedule.batch_id')
+                            ->join('classes', 'classes.class_code','=', 'class_schedule.class_id')
+                            ->join('days', 'days.day_id','=', 'class_schedule.day_id')
+                            ->join('levels', 'levels.id','=', 'class_schedule.degree_id')
+                            ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+                            ->join('shifts', 'shifts.shift_id','=', 'class_schedule.shift_id')
+                            ->join('times', 'times.time_id','=', 'class_schedule.time_id')
+                            ->join('faculties', 'faculties.faculty_id','=', 'class_schedule.faculty_id')
+                            ->join('departments', 'departments.department_id','=', 'class_schedule.department_id')
+                            ->join('class_rooms', 'class_rooms.classroom_id','=', 'class_schedule.classroom_id')
+                            ->select('class_schedule.id as schedule_id', 'courses.course_name','batches.batch',
+                            'class_schedule.start_date','class_schedule.end_date',
+                            'classes.class_name','days.name','levels.level', 'semesters.semester_name','shifts.shift',
+                            'times.time','faculties.faculty_name', 'departments.department_name','class_rooms.classroom_name')
+                            ->where('class_schedule.school_id',auth()->user()->school->id)
+                            ->groupby('schedule_id','class_schedule.start_date','class_schedule.end_date',
+                            'courses.course_name','batches.batch','classes.class_name','days.name',
+                            'levels.level', 'semesters.semester_name','shifts.shift','times.time',
+                            'faculties.faculty_name', 'departments.department_name','class_rooms.classroom_name')
+                            ->get();
+
+                            // dd( $classSchedule);
+
+        }
+       else {
+
+            $batch = Batch::all();
+            $classes = Classes::all();
+            $course = Course::all();
+            $day = Day::all();
+            $level = Level::all();
+            $semester =  Semester::where('status', 'on')->get();
+            $shift = Shift::all();
+            $time = Time::all();
+            $classroom = ClassRoom::all();
+            $department = Department::all();
+            $faculty = Faculty::all();
+            $teachers = Teacher::all();
+
+            $classSchedules = $this->classScheduleRepository->all();
+
+            $classSchedule = ClassSchedule::join('courses', 'courses.id', '=', 'class_schedule.course_id')
+                            ->join('batches', 'batches.id','=', 'class_schedule.batch_id')
+                            ->join('classes', 'classes.class_code','=', 'class_schedule.class_id')
+                            ->join('days', 'days.day_id','=', 'class_schedule.day_id')
+                            ->join('levels', 'levels.id','=', 'class_schedule.degree_id')
+                            ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+                            ->join('shifts', 'shifts.shift_id','=', 'class_schedule.shift_id')
+                            ->join('times', 'times.time_id','=', 'class_schedule.time_id')
+                            ->join('faculties', 'faculties.faculty_id','=', 'class_schedule.faculty_id')
+                            ->join('schools', 'schools.id','=', 'class_schedule.school_id')
+                            ->join('departments', 'departments.department_id','=', 'class_schedule.department_id')
+                            ->join('class_rooms', 'class_rooms.classroom_id','=', 'class_schedule.classroom_id')
+                            ->select('class_schedule.id as schedule_id', 'courses.course_name','batches.batch',
+                            'classes.class_name','days.name','levels.level', 'semesters.semester_name','shifts.shift',
+                            'times.time','faculties.faculty_name', 'departments.department_name','class_rooms.classroom_name')
+                                    ->groupby('schedule_id', 
+                                    'courses.course_name','batches.batch','classes.class_name','days.name',
+                                    'levels.level', 'semesters.semester_name','shifts.shift','times.time',
+                                    'faculties.faculty_name', 'departments.department_name','class_rooms.classroom_name')
                                     ->get();
+       }
+
+
+       
+
                         // dd($classSchedule);  die;
         return view('class_schedules.index', compact('classSchedule','batch','classes', 'course', 'day', 'level',
         'semester','shift','time', 'classroom','faculty','department','teachers'))
@@ -163,13 +214,87 @@ class ClassScheduleController extends AppBaseController
      *
      * @return Response
      */
-    public function edit(Request $request) // we will use this edit funtion okay
+    public function edit(Request $request, $id) // we will use this edit funtion okay
     {
         // we will use request to fetch the id okay
+        if (auth()->user()->group == "Owner") {
 
-        if($request->ajax()){
-            return response(ClassSchedule::find($request->Scheduleid)); //we are fetching the data from the model okay
+            $batch = Batch::where('school_id', auth()->user()->school->id)->get(); // this function call all the batch from the batch table but we are using modal okay.
+            $classes = Classes::where('school_id', auth()->user()->school->id)->get();
+            $course = Course::where('school_id', auth()->user()->school->id)->get();
+            $day = Day::where('school_id', auth()->user()->school->id)->get();
+            $level = Level::where('school_id', auth()->user()->school->id)->get();
+            $semester =  Semester::where('status', 'on')->where('school_id', auth()->user()->school->id)->get();
+            $shift = Shift::where('school_id', auth()->user()->school->id)->get();
+            $time = Time::where('school_id', auth()->user()->school->id)->get();
+            $classroom = ClassRoom::where('school_id', auth()->user()->school->id)->get();
+            $department = Department::where('school_id', auth()->user()->school->id)->get();
+            $faculty = Faculty::where('school_id', auth()->user()->school->id)->get();
+            $teachers = Teacher::where('school_id', auth()->user()->school->id)->get();
+
+
+            // $classSchedules = $this->classScheduleRepository->all();
+
+            $classSchedules =  ClassSchedule::where('school_id',auth()->user()->school->id)->get();
+
+            $edit_classSchedule = ClassSchedule::join('courses', 'courses.id', '=', 'class_schedule.course_id')
+                            ->join('batches', 'batches.id','=', 'class_schedule.batch_id')
+                            ->join('classes', 'classes.class_code','=', 'class_schedule.class_id')
+                            ->join('days', 'days.day_id','=', 'class_schedule.day_id')
+                            ->join('levels', 'levels.id','=', 'class_schedule.degree_id')
+                            ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+                            ->join('shifts', 'shifts.shift_id','=', 'class_schedule.shift_id')
+                            ->join('times', 'times.time_id','=', 'class_schedule.time_id')
+                            ->join('faculties', 'faculties.faculty_id','=', 'class_schedule.faculty_id')
+                            ->join('departments', 'departments.department_id','=', 'class_schedule.department_id')
+                            ->join('class_rooms', 'class_rooms.classroom_id','=', 'class_schedule.classroom_id')
+                            ->select('class_schedule.id as schedule_id','class_schedule.*')
+                            ->where('class_schedule.school_id',auth()->user()->school->id)
+                            ->where('class_schedule.id', $id)->first();
+
+                           
         }
+       else {
+
+            $batch = Batch::all();
+            $classes = Classes::all();
+            $course = Course::all();
+            $day = Day::all();
+            $level = Level::all();
+            $semester =  Semester::where('status', 'on')->get();
+            $shift = Shift::all();
+            $time = Time::all();
+            $classroom = ClassRoom::all();
+            $department = Department::all();
+            $faculty = Faculty::all();
+            $teachers = Teacher::all();
+
+            $classSchedules = $this->classScheduleRepository->all();
+
+            $edit_classSchedule = ClassSchedule::join('courses', 'courses.id', '=', 'class_schedule.course_id')
+                            ->join('batches', 'batches.id','=', 'class_schedule.batch_id')
+                            ->join('classes', 'classes.class_code','=', 'class_schedule.class_id')
+                            ->join('days', 'days.day_id','=', 'class_schedule.day_id')
+                            ->join('levels', 'levels.id','=', 'class_schedule.degree_id')
+                            ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+                            ->join('shifts', 'shifts.shift_id','=', 'class_schedule.shift_id')
+                            ->join('times', 'times.time_id','=', 'class_schedule.time_id')
+                            ->join('faculties', 'faculties.faculty_id','=', 'class_schedule.faculty_id')
+                            ->join('schools', 'schools.id','=', 'class_schedule.school_id')
+                            ->join('departments', 'departments.department_id','=', 'class_schedule.department_id')
+                            ->join('class_rooms', 'class_rooms.classroom_id','=', 'class_schedule.classroom_id')
+                            ->select('class_schedule.id as schedule_id','class_schedule.*')
+                            ->where('class_schedule.id', $id)->first();
+       }
+
+                        // dd($edit_classSchedule);  die;
+        return view('class_schedules.create', compact('batch','classes', 'course', 'day', 'level',
+        'semester','shift','time', 'classroom','faculty','department','teachers'))
+            ->with('classSchedules', $classSchedules)->with('edit_classSchedule', $edit_classSchedule);
+
+        // if($request->ajax()){
+        //     return response(ClassSchedule::find($request->Scheduleid)); //we are fetching the data from the model okay
+        // }
     }
 
 
@@ -183,13 +308,13 @@ class ClassScheduleController extends AppBaseController
      */
     // we will not use this update function okay we will use the simples way okay
 
-        public function update(Request $request)
+        public function update(Request $request, $id)
         {
 
             $classSchedule = array(
                 // here we will write our input names okay.
                 'class_id'     => $request->class_id, //input names
-                'degree_id'     => $request->degree_id, //input names
+                'degree_id'     => $request->level_id, //input names
                 'course_id'    => $request->course_id, //input names
                 'level_id'     => $request->level_id, //input names
                 'shift_id'     => $request->shift_id, //input names
@@ -198,17 +323,18 @@ class ClassScheduleController extends AppBaseController
                 'day_id'       => $request->day_id,//input names
                 'time_id'      => $request->time_id,//input names
                 'semester_id'  => $request->semester_id,//input names
-                'start_date'   => $request->start_date,//input names
-                'end_date'     => $request->end_date,//input names
-                'schedule_status'  => $request->status//input names
+                'start_date'   => date('Y-m-d', strtotime($request->start_date)),//input names
+                'end_date'     => date('Y-m-d', strtotime($request->end_date)),//input names
+                'schedule_status'  => $request->schedule_status//input names
             );
             // echo "<pre>"; print_r($classSchedule); die;
-            ClassSchedule::FindOrFail($request->Scheduleid)->update($classSchedule);
+            ClassSchedule::findOrFail($id)->update($classSchedule);
                     // now let's try to update okay...
             // echo "<pre>"; print_r($classSchedule); die; // lets debug and see if the data is coming okay
 
             if(empty($classSchedule)) {
                 Flash::error('Class Schedule Updation Failed'); // this code check if its not empty update else send fail message
+                return redirect(route('classSchedules.create'));
             }
             Flash::success('Class Schedule Updated Successfully!');
             return redirect(route('classSchedules.index'));

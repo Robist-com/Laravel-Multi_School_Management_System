@@ -1,24 +1,23 @@
-@extends('layouts.app')
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
 @section('content')
-    <section class="content-header">
-        <h1>
-            Admission
-        </h1>
-    </section>
-    <div class="content">
-        @include('adminlte-templates::common.errors')
-        <div class="box box-primary">
 
-            <div class="box-body">
-                <div class="row">
-                    {!! Form::open(['route' => 'admissions.store']) !!}
 
-                        @include('admissions.fields')
+{!! Form::open(['route' => 'admissions.store']) !!}
 
-                    {!! Form::close() !!}
-                </div>
-            </div>
-        </div>
-    </div>
+@if($template->template == '0')
+
+@include('admissions.fields')
+
+{!! Form::close() !!}
+@else
+
+@include('admissions.fields1')
+
+@endif
+
+
+
 @endsection

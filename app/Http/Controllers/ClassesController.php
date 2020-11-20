@@ -14,6 +14,8 @@ use DB;
 use App\Models\Classes;
 use App\Models\Department;
 use App\Models\Course;
+use App\Models\Semester;
+
 class ClassesController extends AppBaseController
 {
     /** @var  ClassesRepository */
@@ -22,6 +24,7 @@ class ClassesController extends AppBaseController
     public function __construct(ClassesRepository $classesRepo)
     {
         $this->classesRepository = $classesRepo;
+        $this->middleware('auth');
     }
 
     /**
@@ -34,22 +37,39 @@ class ClassesController extends AppBaseController
     public function index(Request $request)
     {
         $classes = $this->classesRepository->all();
-        $departments = Department::all();
+        
 
-		$classes = Classes::join('departments','departments.department_id', '=', 'classes.department_id')
+
+        if (auth()->user()->group == "Owner") {
+		$classe = Classes::join('departments','departments.department_id', '=', 'classes.department_id')
         ->select(DB::raw('classes.id,classes.class_code, 
                           classes.created_at, classes.updated_at,
                           classes.class_name,classes.status,
                           departments.department_name,
                           (select count(admissions.id) 
                           from admissions where class_code=classes.class_code)
-                          as students'))
-		->get();
+                          as students'))->where('classes.school_id', auth()->user()->school->id)->get();
             // dd($classes);
-		$class = array();
+                            $departments = Department::where('school_id', auth()->user()->school->id)->get();
+                            $semesters = Semester::where('status', "on")->where('school_id', auth()->user()->school->id)->get();
 
-        return view('classes.index', compact('class', 'departments'))
-            ->with('classes', $classes);
+		
+    }else {
+        $classe = Classes::join('departments','departments.department_id', '=', 'classes.department_id')
+        ->select(DB::raw('classes.id,classes.class_code, 
+                          classes.created_at, classes.updated_at,
+                          classes.class_name,classes.status,
+                          departments.department_name,
+                          (select count(admissions.id) 
+                          from admissions where class_code=classes.class_code)
+                          as students'))->get();
+
+                          $departments = Department::all();
+                          $semesters = Semester::all();
+    }
+             $class = array();
+        return view('classes.index', compact('class', 'departments','semesters'))
+            ->with('classe', $classe);
     }
 
     /**
@@ -110,14 +130,43 @@ class ClassesController extends AppBaseController
     public function edit($id)
     {
         $classes = $this->classesRepository->find($id);
-        $departments = Department::all();
-        if (empty($classes)) {
+
+        if (auth()->user()->group == "Owner") {
+            $classe = Classes::join('departments','departments.department_id', '=', 'classes.department_id')
+            ->select(DB::raw('classes.id,classes.class_code, 
+                              classes.created_at, classes.updated_at,
+                              classes.class_name,classes.status,
+                              departments.department_name,
+                              (select count(admissions.id) 
+                              from admissions where class_code=classes.class_code)
+                              as students'))->where('classes.school_id', auth()->user()->school->id)->get();
+
+                              $departments = Department::where('school_id', auth()->user()->school->id)->get();
+                              $semesters = Semester::where('status', "on")->where('school_id', auth()->user()->school->id)->get();
+        }else {
+            $classe = Classes::join('departments','departments.department_id', '=', 'classes.department_id')
+            ->select(DB::raw('classes.id,classes.class_code, 
+                              classes.created_at, classes.updated_at,
+                              classes.class_name,classes.status,
+                              departments.department_name,
+                              (select count(admissions.id) 
+                              from admissions where class_code=classes.class_code)
+                              as students'))->get();
+
+                              $departments = Department::all();
+                              $semesters = Department::all();
+        }
+      
+        
+        if (empty($classe)) {
             Flash::error('Classes not found');
 
             return redirect(route('classes.index'));
         }
 
-        return view('classes.edit')->with('classes', $classes)->with('departments', $departments);
+        return view('classes.index', compact('semesters'))->with('classes', $classes)
+        ->with('classe', $classe)
+        ->with('departments', $departments);
     }
 
     /**
@@ -178,6 +227,7 @@ class ClassesController extends AppBaseController
     {
         $classes = $this->classesRepository->find($id);
 
+        
         if (empty($classes)) {
             Flash::error('Classes not found');
 
@@ -237,8 +287,15 @@ class ClassesController extends AppBaseController
     public function getCourses($class)
 	{
 	
-		$course = Course::select('id','course_name','course_code')->where('class',$class)->orderby('course_code','asc')->get();
-		return $course;
+        // $course = Course::select('id','course_name','course_code')
+        // ->where('class',$class)->orderby('course_code','asc')->get();
+
+        $subjects = Course::join('class_schedule','class_schedule.course_id', '=', 'courses.id')
+        ->where('class_schedule.school_id', auth()->user()->school_id)
+        ->where('class_schedule.teacher_id', auth()->user()->teacher_id)
+        ->where('class',$class)->orderby('course_code','asc')->get();
+        
+		return $subjects;
     }
 
 

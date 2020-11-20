@@ -43,7 +43,9 @@ class Transaction extends Model
         'status',
         'semester_fee_id',
         'balance',
-        'transaction_date'
+        'transaction_date',
+        'school_id',
+
     ];
 
     /**
@@ -62,7 +64,8 @@ class Transaction extends Model
         'status' => 'string',
         'semester_fee_id',
         'balance' => 'string',
-        'transaction_date' => 'datetime'
+        'transaction_date' => 'datetime',
+        'school_id' => 'integer',
     ];
 
     /**

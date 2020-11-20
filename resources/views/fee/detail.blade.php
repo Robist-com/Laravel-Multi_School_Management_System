@@ -1,22 +1,22 @@
 
 <style>
-.container{
+/* .container{
 	width:100%;
 	padding: 15px;
 	box-shadow: 0px 0px 2px;
 	margin: 0 auto;
-}
+} */
 
 table {
 	width: 100%;
 	border-collapse: collapse;
-	text-align: left;
+	/* text-align: left; */
 }
 
-tr , th, td {
-	border: 1px solid;
-	padding: 5px;
-}
+/* tr , th, td { */
+	/* border: 1px solid; */
+	/* padding: 5px; */
+/* } */
 
 </style>
 

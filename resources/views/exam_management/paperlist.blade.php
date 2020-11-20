@@ -1,39 +1,62 @@
-@extends('layouts.app')
+@extends('layouts.new-layouts.app')
 @section('style')
 <link href="{{url('/css/bootstrap-datepicker.css')}}" rel="stylesheet">
 @stop
 @section('content')
 
-<section class="content-header">
+<!-- <section class="content-header">
     <h1>Question Lists</h1>
     <button class="btn btn-xs btn-info pull-right" style="padding-bottom:5px; margin-bottom:10px;"><a href="/question" style="color:#fff">back</a></button>
-    </section>
+    </section> -->
 
 <div class="content">
         <div class="clearfix"></div>
         @include('adminlte-templates::common.errors')
         @include('flash::message')
+        
 
         <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
 
-        <div class="box box-primary" data-widget="box-widget">
-        <div class="box-header">
-        <h3 class="box-title">Question Lists</h3>
-            <div class="box-tools">
-            <!-- This will cause the box to collapse when clicked -->
-            <button class="btn btn-box-tool " data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-plus"></i></button>
+        <div class="page-title">
+              <div class="title_left">
+                <h3>MANAGE CLASSES</h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for...">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            </div>
-            <!-- /.box-header -->
-        <div class="box-body collapse">
+
+            <div class="clearfix"></div>
+            <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+            <a class="btn btn-dark btn-round" data-toggle="modal" data-target="#generatePaper-show"> Generate Question Paper</a>
+
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                        <a class="btn btn-dark btn-round" data-toggle="modal" data-target="#generatequestion-show"> Create Question</a>
+                        <!-- <a href="{{route('classes.index')}}"><button type="submit" class="btn btn-round btn-success">Add</button></a> -->
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
         <form role="form" action="{{url('/question/list')}}" method="post"  enctype="multipart/form-data">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <div class="row">
             <div class="col-md-12">
 
-              <div class="col-md-4">
+            <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="form-group">
                     <select id="class" id="class" name="class" class="form-control select_2_single" >
                     <option value="" selected="true" disabled="true">Select Class</option>
@@ -44,13 +67,13 @@
                     </div>
                   </div>
 
-               <div class="col-md-4">
+                  <div class="col-md-4 col-sm-4 col-xs-12">
                   <div class="form-group ">
                       <input type="text" id="session" value="{{date('Y')}}" required="true" class="form-control datepicker2" name="session" value=""  >
                     </div>
                   </div>
 
-              <div class="col-md-4">
+                  <div class="col-md-4 col-sm-4 col-xs-12">
                   <div class="form-group">
                       @if(isset($subjects))
                       {{ Form::select('subject',$subjects,$formdata->subject,['class'=>'form-control','id'=>'subject','required'=>'true'])}}
@@ -67,7 +90,7 @@
             <div class="row">
               <div class="col-md-12">
 
-                <div class="col-md-4">
+              <div class="col-md-4 col-sm-4 col-xs-12">
                   <div class="form-group">
                       <select   name="chapter[]" id="chapter" class="form-control select_2_multiple" multiple data-actions-box="true" data-hide-disabled="true" data-size="5"  required="true">
                       </select>
@@ -75,7 +98,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
+                  <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         <select name="level[]" class="form-control select_2_multiple" multiple data-actions-box="true" data-hide-disabled="true" data-size="5" required>
                           <option value="">---Select a Level---</option>
@@ -88,21 +111,17 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <button class="btn btn-primary pull-right"  type="submit"><i class="glyphicon glyphicon-th"></i>Get List</button>
+              <div class="modal-footer">
+                <button class="btn btn-dark btn-round pull-right"  type="submit"><i class="glyphicon glyphicon-th"></i>Get List</button>
 
               </div>
             </div>
           </form>
+
           @if($questions )
-          <div class="row">
-            <div class="col-md-12" style="clear: both;margin-top: 18px;" >
-            <div class="panel">
-            <div class="panel-body">
-            <div  id="wait"></div>
-            </div>
-            </div>
-              <table id="studentList" class="table table-striped table-bordered" >
+              <!-- <table id="studentList" class="table table-striped table-bordered" > -->
+              <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+
                 <thead>
                 <tr>
                   <th>Class</th>
@@ -134,8 +153,8 @@
 
 
                     ?>
-                    <a title='View' class='btn btn-success' href='{{url("/question/edit/$question->id")}}'> <i class="glyphicon glyphicon-pencil icon-white"></i></a>&nbsp&nbsp
-                   <a title='Delete' class='btn btn-danger' href='{{url("/question/delete/$question->id")}}' onclick="return confirm('Are you sure you want to delete ?');"> <i class="glyphicon glyphicon-trash icon-white"></i></a>
+                    <a title='View' class='btn btn-success' href='{{url("/question/edit/$question->question_id")}}'> <i class="glyphicon glyphicon-pencil icon-white"></i></a>&nbsp&nbsp
+                   <a title='Delete' class='btn btn-danger' href='{{url("/question/delete/$question->question_id")}}' onclick="return confirm('Are you sure you want to delete ?');"> <i class="glyphicon glyphicon-trash icon-white"></i></a>
                     {{--&nbsp&nbsp <a title='View' class='btn btn-success' href=''> <i class="glyphicon glyphicon-phone"></i></a>--}}
                     <?php /*&nbsp&nbsp <a title='View' class='btn btn-success' href='{{url("/fee/collections?class_id=$student->class_code&section=$student->section_id&session=$student->session&type=Monthly&month=$month&fee_name=$fee_name")}}'> <i class="glyphicon glyphicon-phone"></i></a>
                     */ ?>
@@ -144,17 +163,20 @@
                   @endforeach
                 </tbody>
               </table>
-            </div>
-          </div>
+            <!-- </div>
+          </div> -->
           @endif
           </div>
         </div>
       </div>
-    <!-- </div> -->
+    </div>
 </div>
+
+@include('exam_management.generate_exam_paper')
+@include('exam_management.question')
 <!-- /.box-body -->
                 
-</div>
+<!-- </div> -->
 
     @stop
     @section('scripts')
@@ -192,7 +214,7 @@
       // $('#markList').dataTable();
       $('#class').on('change', function (e) {
         getSubjects();
-        getchapter();
+        // getchapter();
        // getexam();
         // getsections();
 
@@ -285,7 +307,7 @@ function getchapter()
      var aclass = $('#class').val();
      var course = $('#course_id').val();
 
-     //alert(section);
+     alert(course);
     $.ajax({
       url: "{{url('/chapter/getList')}}"+'/'+aclass+'?course_id='+course,
       data: {

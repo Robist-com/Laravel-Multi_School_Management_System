@@ -1,15 +1,15 @@
+<div class="table-responsive">
 
-<table style="margin-top: -12px;" id="show-fee-type">
+<table class="table table-striped jambo_table bulk_action"   id="show-fee-type">
 
-                      
                           <thead>
                           <tr>
-                              <th>Grade</th> 
-                              <th>Fee Type</th>
-                              <th>Fee($)</th>
-                              <th>Total Fee Amount</th>
-                              <th>Paid Amount($)</th>
-                              <th>Balance Amount($)</th>
+                              <th style="text-align: center;">Grade</th> 
+                              <th style="text-align: center;">Fee Type</th>
+                              <th style="text-align: right;">Fee($)</th>
+                              <th style="text-align: right;">Total Fee Amount</th>
+                              <th style="text-align: right;">Paid Amount($)</th>
+                              <th style="text-align: right;">Balance Amount($)</th>
                           </tr>
                           </thead>
                           @foreach($fee_structure1 as $fee_struct)
@@ -58,3 +58,4 @@
                           </div>
                           </div>
                             </table>
+                            </div>

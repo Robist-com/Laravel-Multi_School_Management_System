@@ -22,6 +22,10 @@ class HomeFeeStructureController extends AppBaseController
     public function __construct(FeeStructureRepository $feeStructureRepo)
     {
         $this->feeStructureRepository = $feeStructureRepo;
+
+			$this->middleware('auth');
+
+
     }
 
     /**

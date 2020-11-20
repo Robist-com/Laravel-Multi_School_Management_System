@@ -11,6 +11,6 @@ class InvoiceDetails extends Model
         'invoice_id',
         'student_id',
         'transaction_id',
-        'student_fee_id'
+        'student_fee_id', 'school_id'
     ];
 }

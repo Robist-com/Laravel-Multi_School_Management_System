@@ -1,18 +1,19 @@
 <table style="border-collapse:collapse;" class="table table-striped table-bordered table-hover" id="semesters-table">
        <thead>
            <tr>
-           <th style="text-align: center;">Grade</th>
-               <th style="text-align: center;">Code</th>
-               <th style="text-align: center;">Duration</th>
-               <th style="text-align: center;">Level</th>
+            <th style="text-align: center;">Faculty</th>
+            <th style="text-align: center;">Department</th>
+            <th style="text-align: center;">Course</th>
+            <th style="text-align: center;">Degree</th>
+       <!-- <th>Status</th> -->
                <th style="text-align: center;" colspan="3">Action</th>
            </tr>
        </thead>
        <tbody id="accordion">
-        {{-- @if(count($semesters)== 5 )
+        {{-- @if(count($SemesterSubjects)== 5 )
         <p class="alert alert-danger">No Courses Assigned for this Semester <b>{{$semester->semester_id == 6}}</b></p>
         @endif --}}
-           @foreach($semesters as $key => $semester)
+           @foreach($SemesterSubjects as $key => $semester)
            @if ($semester->semester_id == 6)
  
          <tr>

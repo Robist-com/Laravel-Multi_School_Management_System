@@ -1,7 +1,4 @@
-@extends('layouts.app')
 
-@section('content')
-@include('table_style')
     @php
    if(isset($class_id)){
 
@@ -22,84 +19,51 @@
         color:red;
       }
     </style>
-     <section class="content-header">
-      <div class="box box-primary">
-        <div class="box-body">
-      <h2><i class="glyphicon glyphicon-user"></i> @if($class_id=='') Teacher Timetable @else Student Timetable @endif
-        <a href="timetables"><button class="pull-right" title="back to timetable">Back</button></a>
-      </h2>
-    </div>
-    <hr class="line">
-  </div>
-    </section>
-    <div class="content">
-        <div class="clearfix"></div>
+  <div class="x_content">
 
-        @include('flash::message')
-
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
-
-  {{-- <ul class="nav nav-pills">
-    <li class="nav-item active"><a class="nav-link active" data-toggle="pill" href="#home">Monday</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#menu1">Tuesday</a></li>
-    <li class="nav-item"><a  class="nav-link"data-toggle="pill" href="#menu2">Wednesday</a></li>
-    <li class="nav-item"><a  class="nav-link"data-toggle="pill" href="#menu3">Thursday</a></li>
-     <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#menu4">Friday</a></li>
-      <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#menu5">Sturday</a></li>
-       <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#menu6">Sunday</a></li>
-  </ul> --}}
   <h3>
     {{$class_name->class_name }} <strong style="color:black">TIME TABLE</strong>
     <b class="pull-right"> {{$class_name->semester_name }}</b>
   </h3>
 
-  <div class="tab-content">
-         <!-- MONDAY TIME TABLE  -->
-    <div id="home" class="tab-pane in fade active">
-   <div class="pull-right">
-    @include('timetables.printoptions.classes.printbuttons')
-   </div>
-
-      <table style="border-collapse:collapse;" class="table table-striped table-bordered table-hover" id="timetable-table">
+   <div class="table-responsive">
+      <table class="table table-striped jambo_table bulk_action" id="timetable-table">
         <thead>
-       <tr>
-        {{-- @foreach($days as $day) --}}
-        <th>DAYS</th>
-        <th>CODE</th>
-        <th>SUBJECT</th>
-        <th>CLASS</th>
-        <th>CREDIT</th>
-        <th>ROOM</th>
-        <th>GRADE</th>
-        <th>TEACHER</th>
-        <th>TIME</th>
-        {{-- <th colspan="3">ACTION</th> --}}
-        {{-- @endforeach --}}
+        <tr class="headings">
+        <th>
+          <input type="checkbox" id="check-all" class="flat">
+        </th>
+        <th class="column-title">DAYS</th>
+        <th class="column-title">CODE</th>
+        <th class="column-title">SUBJECT</th>
+        <th class="column-title">CLASS</th>
+        <th class="column-title">CREDIT</th>
+        <th class="column-title">ROOM</th>
+        <th class="column-title">GRADE</th>
+        <th class="column-title">TEACHER</th>
+        <th class="column-title">TIME</th>
+        <th class="bulk-actions" colspan="9">
+          <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+        </th>
        </tr>
     </thead>
     <tbody id="accordion">
     @if($classtimetables)
         @foreach ($classtimetables as $teacher)
 
-     <tr>
-       <tr>
+        <tr class="even pointer">
+        <td class="a-center ">
+          <input type="checkbox" class="flat" name="table_records">
+        </td>
         <th>{{$teacher->name}}</th>
-        <td style="text-align: center;">{{$teacher->code}}</a></td>
-        <td style="text-align: center;background-color:#f0f0f0" class="align-middle text-center">{{$teacher->course_name}}</td>
-        <td style="text-align: center;">@if(isset($teacher->class_name)) {{ $teacher->class_name }} @endif</td>
-        <td style="text-align: center;">----</td>
-        <td style="text-align: center;">{{$teacher->classroom_name}}</td>
-        <td style="text-align: center;">{{ $teacher->semester_name}}</td>
-        <td style="text-align: center;"><a href="#" onclick="getteacherinfo('{{$teacher->teacher_id}}')">{{$teacher->first_name}}{{$teacher->last_name}}</a></td>
-        <td style="text-align: center;">{{ $teacher->time}}</td>
-        <td style="text-align: center;">{{ $teacher->end_time}}</td>
-        {{-- <td style="text-align: center;">{{ $teacher->course_name }}</td> --}}
-        {{-- <td style="text-align: center;">
-            <a title='Edit' class='btn btn-info' href='{{url("/timetable/edit")}}/{{$teacher->timetable_id}}'> <i class="glyphicon glyphicon-edit icon-white"></i></a>
-           &nbsp&nbsp<a title='Delete' class='btn btn-danger' onclick="confirmed('{{$teacher->timetable_id}}');" href='#' > <i class="glyphicon glyphicon-trash icon-white"></i></a>
-          </td> --}}
+        <td class="">{{$teacher->code}}</a></td>
+        <td style="background-color:#f0f0f0" class="align-middle text-center">{{$teacher->course_name}}</td>
+        <td class=""">@if(isset($teacher->class_name)) {{ $teacher->class_name }} @endif</td>
+        <td class=""">----</td>
+        <td class=""">{{$teacher->classroom_name}}</td>
+        <td class=""">{{ $teacher->semester_name}}</td>
+        <td class="""><a href="#" title="View Teacher" onclick="getteacherinfo('{{$teacher->teacher_id}}')">{{$teacher->first_name}}{{$teacher->last_name}}</a></td>
+        <td class=""">{{ $teacher->time}} ' ' {{ $teacher->end_time}}</td>
        </tr>
       @endforeach
     @else
@@ -108,49 +72,17 @@
           <td>No class</td>
           <td></td>
           <td></td>
-          
           </tr>
     @endif
 
     </tbody>
     </table>
-    {{-- </div> --}}
-    </div>
-  {{-- </div> --}}
-
-      <!-- TUESDAY TIME TABLE  -->
-    <div id="menu1" class="tab-pane fade">
     </div>
 
-        <!-- WEDNESDAY TIME TABLE  -->
-    <div id="menu2" class="tab-pane fade">
-
-    </div>
-
-            <!-- THURSDAY TIME TABLE  -->
-    <div id="menu3" class="tab-pane">
-
-    </div>
-
-    <!-- FRIDAY TIME TABLE  -->
-    <div id="menu4" class="tab-pane">
-
-      </div>
-
-      <!-- SATURDAY TIME TABLE  -->
-    <div id="menu5" class="tab-pane">
-
-      </div>
-
-          <!-- SUNDAY TIME TABLE  -->
-       <div id="menu6" class="tab-pane" style="width:200px">
-    </div>
   </div>
 </div>
-<div class="text-center">
 
-</div>
-</div>
+<!-- </div> -->
     <!-- The Modal -->
 <div class="modal"  data-backdrop="" id="teacherModal" role="dialog" aria-labelledby="preview-modal" aria-hidden="true" style="margin-top: 100px;" >
   <div class="modal-dialog">
@@ -173,21 +105,18 @@
             </tr>
           </thead>
           <tbody id="tdetails">
-
           </tbody>
           </table>
       </div>
-
       <!-- Modal footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
-
     </div>
   </div>
 </div>
 </div>
-@endsection
+
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
 <script>

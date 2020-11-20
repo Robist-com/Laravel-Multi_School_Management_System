@@ -6,6 +6,7 @@ use App\Http\Requests\CreateFacultyRequest;
 use App\Http\Requests\UpdateFacultyRequest;
 use App\Repositories\FacultyRepository;
 use App\Http\Controllers\AppBaseController;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Flash;
 use App\Models\Faculty;
@@ -19,6 +20,8 @@ class FacultyController extends AppBaseController
     public function __construct(FacultyRepository $facultyRepo)
     {
         $this->facultyRepository = $facultyRepo;
+
+        $this->middleware('auth');
     }
 
     /**
@@ -30,9 +33,20 @@ class FacultyController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $faculties = $this->facultyRepository->all();
+                $department = Department::where('school_id', auth()->user()->school->id)->count();
+                // dd($department);
+        if (auth()->user()->group == "Owner") {
+
+            $faculties = Faculty::where('school_id', auth()->user()->school->id)->get();
+
+        }else {
+
+            $faculties = $this->facultyRepository->all();
+        }
+
+       
             // dd($faculties);
-        return view('faculties.index')
+        return view('faculties.index', compact('department'))
             ->with('faculties', $faculties);
     }
 
@@ -66,6 +80,7 @@ class FacultyController extends AppBaseController
         $faculty->faculty_name = $request->faculty_name;
         $faculty->faculty_code = $request->faculty_code;
         $faculty->faculty_status = $request->faculty_status;
+        $faculty->school_id = $request->school_id;
         $faculty->save();
 
 
@@ -105,13 +120,21 @@ class FacultyController extends AppBaseController
     {
         $faculty = $this->facultyRepository->find($id);
 
+       if (auth()->user()->group == "Owner") {
+
+            $faculties = Faculty::where('school_id', auth()->user()->school->id)->get();
+
+        }else {
+            $faculties = Faculty::all();
+        }
+
         if (empty($faculty)) {
             Flash::error('Faculty not found');
 
             return redirect(route('faculties.index'));
         }
 
-        return view('faculties.edit')->with('faculty', $faculty);
+        return view('faculties.index')->with('faculty', $faculty)->with('faculties', $faculties);
     }
 
     /**

@@ -35,7 +35,9 @@ class Fees extends Model
         'level_id',
         'semester_id',
         'fee_structure_id',
-        'amount'
+        'amount',
+        'school_id',
+
     ];
 
     /**
@@ -49,7 +51,8 @@ class Fees extends Model
         'level_id' => 'integer',
         'semester_id' => 'integer',
         'fee_structure_id' => 'integer',
-        'amount' => 'float'
+        'amount' => 'float',
+        'school_id' => 'integer',
     ];
 
     /**

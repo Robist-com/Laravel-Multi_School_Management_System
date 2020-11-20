@@ -70,7 +70,7 @@
   transform: perspective(400px) rotateY(0deg);
 }*/
 
-img {
+.img {
     width: 100%;
     height: 300px;
     padding: 5em 3em;
@@ -234,7 +234,8 @@ img {
   </table>
   </div> -->
 
-  <table class="table table-hover" id="show-student-gallary">
+  <!-- <table class="table table-hover" id="show-student-gallary"> -->
+  <table id="datatable-checkbox" class="table table-striped table-bordered bulk_action" id="show-student-gallary">
             <thead>
               
             </thead>
@@ -263,7 +264,7 @@ img {
                     <div class="card__content">
                         
                         <div class="card__front">
-                        <img  src="{{asset('student_images/' .$student->image)}}" alt="">
+                        <img  src="{{asset('student_images/' .$student->image)}}" alt="" class="img">
                         <h5 class="card__title">{{$student->first_name ." ". $student->last_name}}</h5>
                         <p class="card__subtitle">Student</p>
                         </div> 

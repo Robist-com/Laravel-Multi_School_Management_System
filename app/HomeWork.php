@@ -16,5 +16,6 @@ class HomeWork extends Model
 	'start_date',
 	'end_date',
 	'status',
+	'school_id'
 	];
 }

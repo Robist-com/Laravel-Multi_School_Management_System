@@ -19,8 +19,14 @@ class gpaController extends Controller {
 	*/
 	public function index()
 	{
-		$gpaes=GPA::all();
-		$gpa = array();
+		if (auth()->user()->group == "Owner") {
+			$gpaes=GPA::where('school_id', auth()->user()->school->id)->get();
+			$gpa = array();
+		}else {
+			$gpaes=GPA::all();
+			$gpa = array();
+		}
+		
 		//return View::Make('app.GPA',compact('gpaes','gpa'));
 		return View('gpa.GPA',compact('gpaes','gpa'));
 	}
@@ -53,6 +59,7 @@ class gpaController extends Controller {
 			$gpa->grade=$request->get('grade');
 			$gpa->markfrom=$request->get('markfrom');
 			$gpa->markto=$request->get('markto');
+			$gpa->school_id=$request->get('school_id');
 			$gpa->save();
 			return Redirect::to('/gpa')->with("success","GPA Created Succesfully.");
 
@@ -73,7 +80,15 @@ class gpaController extends Controller {
 	{
 
 		$gpa = GPA::find($id);
-		$gpaes=GPA::all();
+
+		if (auth()->user()->group == "Owner") {
+			$gpaes=GPA::where('school_id', auth()->user()->school->id)->get();
+			// $gpa = array();
+		}else {
+			$gpaes=GPA::all();
+			// $gpa = array();
+		}
+		
 		//return View::Make('app.GPA',compact('gpaes','gpa'));
 		return View('gpa.GPA',compact('gpaes','gpa'));
 

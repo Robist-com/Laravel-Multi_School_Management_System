@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class NoticeBoard extends Model
 {
-    protected $table = 'notice';
+    protected $table = 'notice', 'school_id';
 }

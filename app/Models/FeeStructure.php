@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\School;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -39,7 +40,8 @@ class FeeStructure extends Model
         'admissionFee',
         'semesterFee',
         'fee_type',
-        'total_amount'
+        'total_amount',
+        'school_id'
 
     ];
 
@@ -58,6 +60,7 @@ class FeeStructure extends Model
         'semesterFee' => 'float',
         'fee_type' => 'string',
         'total_amount' => 'integer',
+        'school_id' => 'integer',
     ];
 
     /**
@@ -75,6 +78,11 @@ class FeeStructure extends Model
         'fee_type' => 'required'
 
     ];
+
+    public function school()
+    {
+        $this->belongsTo('App\School');
+    }
 
     
 }

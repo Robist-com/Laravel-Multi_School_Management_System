@@ -1,48 +1,47 @@
-@extends('layouts.app')
+
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
 @section('content')
-    <section class="content-header">
-        <h1 class="pull-right">
-           <a data-toggle="modal" data-target="#level-add"  id="add-more-level" class="btn btn-success pull-right" style="margin-top: -10px;margin-bottom: 5px"> <i class="fa fa-plus">Add New Level </i></a>
-        </h1>
-<h1 class="pull-right" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px">
-<i class="fa fa-level-up">Levels</i></h1>
-    </section>
-    <div class="content">
-    @include('adminlte-templates::common.errors')
+
+
+@if($template->template == '0')
+
         <div class="clearfix"></div>
 
         @include('flash::message')
+        @include('adminlte-templates::common.errors')
 
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
-            <div class="pull-right">
-            <a href="{{url('pdf-download-level')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-pdf-o text-red" style="color:white"></i> PDF </a>
+        @include('levels.table')
 
-            <a href="{{url('export-excel-xlsx-level')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-excel-o text-green" style="color:white"></i> Excel </a>
+{!! Form::open(['route' => 'levels.store', 'id'=> 'form_advanced_validation']) !!}
 
-            <a href="{{url('pdf-download-level')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-word-o text-blue" style="color:white"></i> Word </a>
+    @include('levels.fields')
 
-            <a href="#" onclick="window.print();" class="btn btn  btn-x"> 
-            <i class="fa fa-print text-light-blue" style="color:white"></i> Print </a>
-            </div>
-            <div class="clearfix"></div>
-                    @include('levels.table')
+{!! Form::close() !!}
+@else
 
-                    {!! Form::open(['route' => 'levels.store', 'id'=> 'frm-level-create']) !!}
+        @include('flash::message')
+        @include('adminlte-templates::common.errors')
 
-                        @include('levels.fields')
+        @include('levels.table1')
 
-                    {!! Form::close() !!}
-            </div>
-        </div>
-        <div class="text-center">
-        
-        </div>
-    </div>
+{!! Form::open(['route' => 'levels.store', 'id'=> 'form_advanced_validation']) !!}
+
+    @include('levels.fields')
+
+{!! Form::close() !!}
+
+@endif
+
 @endsection
+
+
+
+
+
+
+
+
 

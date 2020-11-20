@@ -69,4 +69,25 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     }
+
+    // public function RegisterSchool(Request $request, $data)
+    // {
+        
+    //    return view('school.registeration_form');
+    // }
+
+    // public function PostRegisterSchool(Request $request, $data)
+    // {
+    //     $school = School::create($request->all());
+    //     $user = User::create([
+    //         'name' => $data['name'],
+    //         'email' => $data['email'],
+    //         'school_id' => $school->id,
+    //         'password' => Hash::make($data['password']),
+    //     ]);
+
+    //     dd( $user );
+
+    //     return view('school.staff');
+    // }
 }

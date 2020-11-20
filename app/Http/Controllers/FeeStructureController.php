@@ -11,8 +11,11 @@ use Flash;
 use Response;
 use App\Models\Semester;
 use App\Models\Course;
+use App\Models\Level;
+use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\FeeStructure;
+use App\School;
 
 class FeeStructureController extends AppBaseController
 {
@@ -22,6 +25,8 @@ class FeeStructureController extends AppBaseController
     public function __construct(FeeStructureRepository $feeStructureRepo)
     {
         $this->feeStructureRepository = $feeStructureRepo;
+        $this->middleware('auth');
+            
     }
 
     /**
@@ -33,12 +38,25 @@ class FeeStructureController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $semesters = Semester::where('status', 'on')->get();
-        $courses = Course::all();
-        $faculties = Faculty::all();
-        // $courses = Course::all();
-    //   we  dont need the level part okay
-        $feeStructures = $this->feeStructureRepository->all();
+        if (auth()->user()->group == "Owner") {
+            
+            $semesters = Semester::where('status', 'on')->where('school_id', auth()->user()->school_id)->get();
+            $courses = Course::where('school_id', auth()->user()->school_id)->get();
+            $faculties = Faculty::where('school_id', auth()->user()->school_id)->get();
+            $feeStructures = $this->feeStructureRepository->all();
+
+        $feeStructures = FeeStructure::join('semesters','semesters.id', '=', 'fee_structures.semester_id')
+                                        ->join('faculties','faculties.faculty_id', '=', 'fee_structures.faculty_id')
+                                        ->join('departments','departments.department_id', '=', 'fee_structures.department_id')
+                                        ->join('levels','levels.id', '=', 'fee_structures.degree_id')
+                                        ->select('fee_structures.id as fee_structure_id','fee_structures.*','semesters.*','departments.*','levels.*','faculties.*')
+                                        ->where('fee_structures.school_id', auth()->user()->school_id)->get();
+        }else{
+            $semesters = Semester::where('status', 'on')->get();
+            $courses = Course::all();
+            $faculties = Faculty::all();
+            $schools = School::all();
+            $feeStructures = $this->feeStructureRepository->all();
 
         $feeStructures = FeeStructure::join('semesters','semesters.id', '=', 'fee_structures.semester_id')
                                         ->join('faculties','faculties.faculty_id', '=', 'fee_structures.faculty_id')
@@ -46,6 +64,9 @@ class FeeStructureController extends AppBaseController
                                         ->join('levels','levels.id', '=', 'fee_structures.degree_id')
                                         ->select('fee_structures.id as fee_structure_id','fee_structures.*','semesters.*','departments.*','levels.*','faculties.*')
                                         ->get();
+
+        }
+
         
         return view('fee_structures.index', compact('semesters','faculties'))
         ->with('feeStructures', $feeStructures);
@@ -84,9 +105,13 @@ class FeeStructureController extends AppBaseController
 
     $feeStructure = $this->feeStructureRepository->create($input);
 
-        
+        if ($feeStructure) {
+            Flash::success('Fee Structure saved successfully.');
+        }else {
+            Flash::error('Fee Structure unabled to save successfully.\' please try again!');
+        }
 
-        Flash::success('Fee Structure saved successfully.');
+       
 
         return redirect(route('feeStructures.index'));
     }
@@ -118,11 +143,28 @@ class FeeStructureController extends AppBaseController
      *
      * @return Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+
+        $courses = Course::all();
+       
         $semesters = Semester::where('status', 'on')->get();
         $faculties = Faculty::all();
+        // dd($levels);
+
         $feeStructure = $this->feeStructureRepository->find($id);
+        $levels = Level::where('grade_id', $feeStructure->semester_id)->get();
+        $departments = Department::where('faculty_id', $feeStructure->faculty_id)->get();
+
+// dd($departments);
+        // $feeStructures = $this->feeStructureRepository->all();
+        $feeStructures = FeeStructure::join('semesters','semesters.id', '=', 'fee_structures.semester_id')
+                                        ->join('faculties','faculties.faculty_id', '=', 'fee_structures.faculty_id')
+                                        ->join('departments','departments.department_id', '=', 'fee_structures.department_id')
+                                        ->join('levels','levels.id', '=', 'fee_structures.degree_id')
+                                        ->select('fee_structures.id as fee_structure_id','fee_structures.*','semesters.*','departments.*','levels.*','faculties.*')
+                                        ->where('fee_structures.school_id', auth()->user()->school_id)
+                                        ->get();
 
         if (empty($feeStructure)) {
             Flash::error('Fee Structure not found');
@@ -130,9 +172,10 @@ class FeeStructureController extends AppBaseController
             return redirect(route('feeStructures.index'));
         }
 
-        return view('fee_structures.edit')->with('feeStructure', $feeStructure)
+        return view('fee_structures.index',  compact('semesters','faculties','levels','departments'))->with('feeStructure', $feeStructure)
         ->with('semesters', $semesters)
-        ->with('faculties', $faculties);
+        ->with('faculties', $faculties)
+        ->with('feeStructures', $feeStructures);
     }
 
     /**

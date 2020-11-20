@@ -19,6 +19,7 @@ class AcademicController extends AppBaseController
     public function __construct(AcademicRepository $academicRepo)
     {
         $this->academicRepository = $academicRepo;
+        $this->middleware('auth');
     }
 
     /**

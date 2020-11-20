@@ -19,6 +19,6 @@ class Question extends Model
         'question_type',
         'choices',
         'answer',
-        'points'
+        'points', 'school_id'
     ];
 }

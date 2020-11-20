@@ -1,48 +1,43 @@
-@extends('layouts.app')
+
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
 @section('content')
-    <section class="content-header">
-        <h1 class="pull-right">
-           <a data-toggle="modal" data-target="#courses-add-modal" class="btn btn-success pull-right" style="margin-top: -10px;margin-bottom: 5px" ><i class="fa fa-plus-circle" aria-hidden="true"> Add New Subject</i></a>
-        </h1>
-<h1 class="pull-right" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px">
-<i class="fa fa-id-subscript" aria-hidden="true"> Subjects</i></h1>
-    </section>
-    <div class="content">
+
+
+@if($template->template == '0')
+
         <div class="clearfix"></div>
 
         @include('flash::message')
         @include('adminlte-templates::common.errors')
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
-            <div class="pull-right">
-            <a href="{{url('pdf-download-courses')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-pdf-o text-red" style="color:white"></i> PDF </a>
 
-            <a href="{{url('export-excel-xlsx-courses')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-excel-o text-green" style="color:white"></i> Excel </a>
+        {!! Form::open(['route' => 'courses.store']) !!}
 
-            <a href="{{url('pdf-download-class-courses')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-word-o text-blue" style="color:white"></i> Word </a>
+        @include('courses.fields')
 
-            <a href="{{ url('prints-all-teachers')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-print text-light-blue" style="color:white"></i> Print </a>
-            </div>
-                    {!! Form::open(['route' => 'courses.store']) !!}
+        {!! Form::close() !!}
 
-                    @include('courses.fields')
+        @include('courses.table')
+@else
 
-                    {!! Form::close() !!}
+        @include('flash::message')
+        @include('adminlte-templates::common.errors')
 
-            @include('courses.table')
-            @include('levels.fields')
+        {!! Form::open(['route' => 'courses.store']) !!}
 
-            </div>
+        @include('courses.fields')
 
-        <div class="text-center">
-        
-        </div>
-    </div>
+        {!! Form::close() !!}
+
+        @include('courses.table1')
+
+@endif
+
 @endsection
+
+
+
+
 

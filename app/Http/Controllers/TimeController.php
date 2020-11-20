@@ -21,6 +21,9 @@ class TimeController extends AppBaseController
     public function __construct(TimeRepository $timeRepo)
     {
         $this->timeRepository = $timeRepo;
+
+			$this->middleware('auth');
+
     }
 
     /**
@@ -32,9 +35,17 @@ class TimeController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $shifts = Shift::all();
-        // return $shifts;
-        $times = Time::join('shifts', 'shifts.shift_id', '=', 'times.shift_id')->get();
+        if (auth()->user()->group == "Owner") {
+                $shifts = Shift::where('school_id', auth()->user()->school->id)->get();
+                $times = Time::join('shifts', 'shifts.shift_id', '=', 'times.shift_id')
+                ->select('times.*', 'shifts.shift')
+                ->where('shifts.school_id', auth()->user()->school->id)->get();
+        }else {
+            $shifts = Shift::all();
+                $times = Time::join('shifts', 'shifts.shift_id', '=', 'times.shift_id')
+                ->select('times.*', 'shifts.shift')
+                ->get();
+        }
         return view('times.index',compact('shifts'))
             ->with('times', $times, 'shifts', $shifts);
     }
@@ -56,11 +67,21 @@ class TimeController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateTimeRequest $request)
+    public function store(Request $request)
     {
         $input = $request->all();
 
-        $time = $this->timeRepository->create($input);
+        // dd($input);
+
+        $shift_exist = Time::where(['school_id' => auth()->user()->school_id, 'shift_id' => $request->shift_id, 'time' => $request->time, 'end_time' => $request->end_time])->count();
+
+        if ($shift_exist > 0) {
+
+            Flash::Error('Time with ' .$request->shift_id. ' already exist!.');
+
+            return redirect(route('times.index'));
+        }
+        $time = Time::create($input);
 
         Flash::success('Time saved successfully.');
 
@@ -76,7 +97,7 @@ class TimeController extends AppBaseController
      */
     public function show($id)
     {
-        $time = $this->timeRepository->find($id);
+        $time = Time::find($id);
 
         if (empty($time)) {
             Flash::error('Time not found');
@@ -96,15 +117,19 @@ class TimeController extends AppBaseController
      */
     public function edit($id)
     {
-        $time = $this->timeRepository->find($id);
-        $shifts = Shift::all();
+        $time = Time::find($id);
+        $shifts = Shift::where('school_id', auth()->user()->school_id)->get();
+        // return $shifts;
+        $times = Time::join('shifts', 'shifts.shift_id', '=', 'times.shift_id')
+                    ->select('times.*', 'shifts.shift')
+                    ->where('shifts.school_id', auth()->user()->school->id)->get();
         if (empty($time)) {
             Flash::error('Time not found');
 
             return redirect(route('times.index'));
         }
 
-        return view('times.edit', compact('shifts'))->with('time', $time);
+        return view('times.index', compact('shifts','times'))->with('time', $time);
     }
 
     /**
@@ -115,9 +140,9 @@ class TimeController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateTimeRequest $request)
+    public function update($id, Request $request)
     {
-        $time = $this->timeRepository->find($id);
+        $time = Time::find($id);
 
         if (empty($time)) {
             Flash::error('Time not found');
@@ -125,7 +150,8 @@ class TimeController extends AppBaseController
             return redirect(route('times.index'));
         }
 
-        $time = $this->timeRepository->update($request->all(), $id);
+        // dd($time);
+        $time->update($request->all());
 
         Flash::success('Time updated successfully.');
 

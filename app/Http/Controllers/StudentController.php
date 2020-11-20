@@ -15,16 +15,26 @@ use Carbon\Carbon;
 use App\NoticeBoard;
 use App\Models\Course;
 use App\Models\Admission;
+use App\Models\Faculty;
+use App\Models\Department;
 use App\Models\Semester;
+use App\Models\Batch;
+use App\Models\Level;
+use App\Models\Classes;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ClassSchedule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Auth;
+use App\PromoteStudent;
+use App\Institute;
 
 class StudentController extends Controller
 {
+  
+
     /**
      * Display a listing of the resource.
      *
@@ -37,6 +47,8 @@ class StudentController extends Controller
         $studentCount =Roll::where(['username' => Session::get('studentSession')])->count();
             // dd($studentCount); die;
 
+            $students = Roll::onlineStudent();
+            
         // if($studentCount > 0){
         //     Session::put('studentSession', $student['username']);
         // }
@@ -148,16 +160,18 @@ class StudentController extends Controller
                      ->join('transactions', 'transactions.student_id','=', 'admissions.id')
                      ->join('semesters', 'semesters.id','=', 'transactions.semester_fee_id')
                      ->join('users', 'users.id','=', 'transactions.user_id')
-                     ->join('student_fees', 'student_fees.student_fee_id', '=', 'transactions.fee_id')
+                     ->join('student_fees', 'student_fees.student_id', '=', 'transactions.student_id')
                      ->join('fee_structures', 'fee_structures.id','=', 'transactions.semester_fee_id')
                      ->join('invoice_details', 'invoice_details.student_id','=', 'admissions.id')
-                    //  ->select('transactions.transaction_date','transactions.paid_amount','transactions.remark','transactions.description'
-                    //         ,'student_fees.amount','users.name')
+                     ->select('transactions.transaction_date','transactions.paid_amount','transactions.remark','transactions.description'
+                            ,'transactions.balance','users.name', 'transactions.semester_fee_id', 'invoice_details.invoice_id')
+                    ->groupBy('transactions.transaction_date','transactions.paid_amount','transactions.remark','transactions.description'
+                    ,'transactions.balance','users.name', 'transactions.semester_fee_id', 'invoice_details.invoice_id')
                      ->where(['username' => Session::get('studentSession')])
                      ->get();
 
                      $class_name = Roll::join('admissions','admissions.id','=', 'rolls.student_id')
-                     // ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
+                    //  ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
                                   ->join('class_schedule', 'class_schedule.class_id','=', 'admissions.class_code')
                                   ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
                                   ->join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
@@ -165,12 +179,20 @@ class StudentController extends Controller
                                   ->where(['username' => Session::get('studentSession')])
                                   ->first();
 
-        // dd($studenttransaction ); die;
+                    $student_promote = DB::table('promote_students')->join('admissions','admissions.id','=', 'promote_students.student_id')
+                                                                    ->join('rolls','rolls.student_id','=', 'promote_students.student_id')
+                                                                    ->where(['username' => Session::get('studentSession')])
+                                                                    ->where(['promote_students.school_id' =>  $class_name->school_id])
+                                                                    ->where('grade_id',  $class_name->semester_id)->get();
+
+        // dd($student_promote ); die;
+
+       $student_grades = Semester::where('school_id',  $class_name->school_id)->get();
 
         $enable_grade = Semester::where('status', "on")->get();
-        $class_grade = Roll::where(['username' => Session::get('studentSession')])->GET();
+        $class_grade = Roll::where(['username' => Session::get('studentSession')])->get();
 
-        return view('students.transactions.transaction',compact('studenttransaction', 'class_name','enable_grade','class_grade'));
+        return view('students.transactions.transaction',compact('studenttransaction', 'student_grades', 'student_promote','class_name','enable_grade','class_grade'));
    }
 
    public function GetStudentExamMarks(Request $request)
@@ -323,8 +345,9 @@ class StudentController extends Controller
         ->get();
 
         $uploaded_homework = StudentUploadHomeWork::where('student_id', $students->id)->get();
+        $uploaded_homework1 = StudentUploadHomeWork::where('student_id', $students->id)->get();
         // dd( $uploaded_homework);
-        return view('students.lectures.homework', compact('class_assign',' students','uploaded_homework'));
+        return view('students.lectures.homework', compact('class_assign','uploaded_homework','uploaded_homework1'));
     }
 
     public function UploadStudentHomeWork(Request $request)
@@ -347,6 +370,7 @@ class StudentController extends Controller
         $homework->status = $request->status;
         $homework->teacher_id = $request->teacher_id;
         $homework->homework_id = $request->homework_id;
+        $homework->school_id = $request->school_id;
 
         $homework->save();
 
@@ -392,7 +416,14 @@ class StudentController extends Controller
             $studentCount = Roll::where(['username'=> $student['username'],
             'password'=> $student['password']])->count(); // to check if the student is match okay
 
-            if($studentCount > 0){
+            $studentaccess = Roll::join('admissions', 'admissions.id', '=','rolls.student_id' )
+                                        ->where('status', 1)
+                                        ->where('rolls.username', Session::get('studentSession'))
+                                        ->count();
+// dd( $studentaccess);
+            if ($studentaccess) {
+
+            if($studentCount){
                 Session::put('studentSession', $student['username']);
 
                 Flash::success('Welcome ' .$student['username']);
@@ -410,16 +441,25 @@ class StudentController extends Controller
 
                 // dd($isonline);die;
                 return redirect('/account'); // so let's createe this account
-            }else{
+            }
+            else
+            {
                 
 
                 Flash::error('Your Username or Password is Incorrect!');
 
-                return redirect('/student'); // login page okay
+                return redirect()->back(); // login page okay
             }
-
-        }
     }
+        else 
+    {
+            Flash::error('Your Account is not yet verify yet! Please contact the Administration!');
+
+            return redirect('/student');
+        }
+
+    }
+}
 
     // public function LoginParent(Request $request){
 
@@ -507,7 +547,7 @@ class StudentController extends Controller
     }
 
     // here is the part where we will get the form of the forgot password okay.
-     public function getForgotPassword(){
+     public function getForgotPassword($website){
 
         return view('students.forget-password');
      }
@@ -631,10 +671,132 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function StudentTakeAdmission(Request $request)
     {
-        //
+        $input = $request->all();
+            // dd( $input);
+        if ($request->ajax()) {
+           
+        $isonline =  Roll::where('username', Session::get('studentSession'));
+        $existStudent = Admission::where('email',$request->email)->count();
+
+        if ($existStudent > 0) {
+
+            Flash::error('Student Already Exist');
+            return redirect(url('/'));
+        }
+
+    //    but we will use the simples way of this now let's remove this
+         $file = $request->file('image');
+         if ($file){
+            $extension = $file->getClientOriginalExtension();
+            $new_image_name = time(). '.' .$extension;
+            $file->move(public_path('student_images'), $new_image_name);
+         }else 
+         {
+
+        //  now is the part to store our informayion isde the database okay.
+
+            $student = new Admission;
+            $student->first_name = $request->first_name;
+            $student->last_name = $request->last_name;
+            $student->father_name = $request->father_name;
+            $student->father_phone = $request->father_phone;
+            $student->mother_name = $request->mother_name;
+            $student->gender = $request->gender;
+            $student->phone = $request->phone;
+            $student->dob = $request->dob;
+            $student->email = $request->email;
+            $student->status = $request->status;
+            $student->nationality = $request->nationality;
+            $student->passport = $request->passport;
+            $student->address = $request->address;
+            $student->current_address = $request->current_address;
+            $student->department_id = $request->department_id;
+            $student->faculty_id = $request->faculty_id;
+            $student->semester_id = $request->semester_id;
+            $student->degree_id = $request->degree_id;
+            $student->class_code = $request->class_id;
+            $student->dateregistered = date('Y-m-d');
+            $student->batch_id = $request->batch_id;
+            $student->school_id = $request->school_id;
+            if ($request->user_id == '') {
+                $student->user_id = 0;
+            }else {
+                $student->user_id = Auth::id();
+            }
+             // is the user who has the role to create students okay.
+            if ($file) {
+                $student->image = $new_image_name;
+            }
+            
+
+        // so here we will add condition okay to check if insert to proceed to next level okay.
+            if($student->save()){
+                $student_id =$student->id;
+                $email =$student->email;
+                $student_name =  $student->first_name;
+                $username = 'username';
+                $password = 'password';
+
+            Roll::insert(['student_id' => $student_id, 'username'=>
+             $request->username,'password'=> $request->password, 'semester_id'=> $request->semester_id]);
+
+            PromoteStudent::insert(['student_id' => $student_id,'grade_id' => $request->semester_id,
+            'class_code'=> $request->class_id, 'status' =>'current', 'school_id' => $request->school_id ]);
+
+
+            $message = [
+                'email'=> $email,
+                'first_name'=>$student_name,
+                'username'=>  $request->username,
+                'password'=> $request->password
+    
+                // we can pass this veriables inside our blade okay.
+            ];
+
+
+            // Mail::send('emails.registration-message', $message,function($message)use($email){
+            //     $message->to($email)->subject('Registration Message - Academic Information System');
+            // });
+
+            //  dump($request->all()); die;
+
+            // NewStatus::insert(['student_id' => $student_id, 'semester_id' => $request->semester_id]);
+
+            // return redirect()->route('showStudentRoll', ['student_id' => $student_id]);
+            // return redirect()->route('view_student_timetable', ['student_id' => $student_id]);
+
+       }
     }
+
+    }
+       
+        // Flash::success('Admission ' .$request->first_name. ' ' .$request->last_name. ' Submited successfully.'.' We’ve sent you an email with your login credentials  to ' .$request->email);
+        // return response($student);
+        return response()->json(['message' => 'Admission ' .$request->first_name. ' ' .$request->last_name. ' Submited successfully.'.' We’ve sent you an email with your login credentials  to ' .$request->email]);
+        // return view('students.confirm-registration');
+    }
+
+            function check(Request $request)
+            {
+            if($request->get('email'))
+            {
+            $email = $request->get('email');
+            $data = DB::table("admissions")
+            ->where('email', $email)
+            ->count();
+            if($data > 0)
+            {
+            echo 'not_unique';
+            }
+            else
+            {
+            echo 'unique';
+            }
+            }
+            }
+
 
     /**
      * Display the specified resource.
@@ -681,10 +843,11 @@ class StudentController extends Controller
         //
     }
 
-    public function studentLogout(Request $request){
+    public function studentLogout(Request $request, $website){
 
 
         //  THE LOGOUT OFFLINE CODE START HERE OKAY
+        // dd($request->all());
 
         $ipaddress = $request->ip();
 
@@ -694,20 +857,15 @@ class StudentController extends Controller
 
         // ENDS HERE OKAY
 
-        //  dd($result);die;
+        $url = request()->segment(3);
+
+        // $url = action('UserController@profile', ['id' => 1]);
+
+        //  dd($url);
+         
+
+        return redirect(url('school/login/' .$url))->with('flash_message_success', 'Logged out successfully.');
         session::flush();
-
-
-        //  DON'T WORRY WITH THIS WORNING ERRORS I JUST INSTALL SOME INCOMPLETE PLUGGINS I WILL FIX THEM LATER,
-        // IS NOT AN ERROR OKAY.
-
-        // SO WE WILL STOP HERE TILL NEXT TIME , IN THE NEXT VIDEO WE WILL START THE ATTENANCE PART OKAY STEP BY STEP
-
-        // SO IF YOU HAVE ANY QUESTION OR SUGGESTION KINDLY DROP IT IN THE VIDEO DESCRIPTION I WILL GET BACK TO YOU
-        //  AND IF YOU DONT SUBSCRIBE KINDLY LIKE AND SUBSCRIBE OKAY THANK YOU FOR WATCHING
-
-        return redirect('/')->with('flash_message_success', 'Logged out successfully.');
-
     }
 
     public function language($locale){
@@ -723,7 +881,7 @@ class StudentController extends Controller
 {
     $students= Roll::join('admissions','admissions.id','=','rolls.student_id')
                          ->select('first_name','last_name','rolls.username as studentRollss')
-                         ->where('status','=','1')
+                         ->where('acceptance','=','accept')
                          ->where('class_code','=',$class)
                          ->where('department_id','=',$department)
                         //  ->where('shift','=',$shift)
@@ -735,13 +893,51 @@ public function getForMarksjoin($class,$department,$batch)
 {
     $students= Roll::join('admissions','admissions.id','=','rolls.student_id')
                         ->select('first_name','last_name','rolls.username as studentRollss')
-                        ->where('status','=','1')
+                        ->where('acceptance','=','accept')
                         ->where('class_code','=',$class)
                         ->where('department_id','=',$department)
                     //  ->where('shift','=',$shift)
-                        ->where('batch_id','=',$batch)->get();
+                        ->where('batch_id','=',$batch)
+                        ->get();
                         // dd($students); die;
     return $students;
+}
+
+public function StudentAdmission(Request $request)
+{
+
+    $studentCount =Roll::where(['username' => Session::get('studentSession')])->count();
+
+       // we fetch all admission as well.
+       $student_id = Admission::max('id'); // this roll id will be auto genarated username and password for each stuent okay
+       $roll_id = Roll::max('roll_id'); // this roll id will be auto genarated username and password for each stuent okay
+       $faculties = Faculty::all(); // we fetch all faculty
+       $departments = Department::all(); // we fetch all departments
+       $batches = Batch::all(); // we fetch all departments
+       $levels = Level::all(); // we fetch all departments
+       $classes = Classes::all(); // we fetch all classes
+       $Semester = Semester::where('status', "on")->get(); // we fetch all Semester
+
+       $enable_grade = Semester::where('status', "on")->get();
+
+    $admissions = Admission::join('faculties','faculties.faculty_id', 'admissions.faculty_id')
+    ->join('departments','departments.department_id', 'admissions.department_id')
+    ->join('batches','batches.id', 'admissions.batch_id')
+    ->select('admissions.*','departments.*')
+    ->select('admissions.batch_id', 'batches.id', DB::raw('COUNT(*) as count'))
+    ->groupBy('admissions.batch_id','batches.id')
+    ->paginate(10);
+    if(count($admissions)!=0){
+        $rand_username_password = mt_rand(111609300011 .$student_id +1, 111609300011 .$student_id +1);
+       }elseif(count($admissions)==0){
+           $rand_username_password = mt_rand(1116093000111 .$student_id , 1116093000111 .$student_id );
+       }
+
+    return view('students.take_admission', compact('admissions','levels', 'admission','Semester','classes','student_id','faculties','departments','batches',
+    'roll_id','rand_username_password'));
+
+    return view('school.website.online-admissions', compact('admissions','levels', 'admission','Semester','classes','student_id','faculties','departments','batches',
+    'roll_id','rand_username_password'));
 }
 
 }

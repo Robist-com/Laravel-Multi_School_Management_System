@@ -1,13 +1,10 @@
 @if($marks)
-<div class="row">
-  <div class="col-md-12">
-   
-    <table id="markList" class="table  table-hover">
-      <thead>
+<div class="table">
+    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap js-exportable table-responsive" cellspacing="0" width="100%">
+    <thead>
         <tr>
-          <!-- <th>Regi No</th> -->
           <th>Roll No</th>
-          <th>Name</th>
+          <th>Subject</th>
           <th>Written</th>
           <th>MCQ</th>
           <th>Practical</th>
@@ -22,23 +19,22 @@
       <tbody>
         @foreach($marks as $mark)
         <tr>
-          <td>{{$mark->roll_no}}</td>
-          <td>{{$mark->first_name}} {{$mark->last_name}}</td>
+          <td data-toggle="tooltip" data-placement="right" title="{{$mark->first_name}} {{$mark->last_name}}">{{$mark->roll_no}}</td>
+          <td>@foreach(App\Models\Course::where('course_code', request('subject'))->get() as $course ) {{$course->course_name}} @endforeach</td>
           <td>{{$mark->written}}</td>
           <td>{{$mark->mcq}}</td>
           <td>{{$mark->practical}}</td>
           <td>{{$mark->ca}}</td>
           <td>{{$mark->total}}</td>
 
-          <td>{{$mark->grade}}</td>
+          <td>@if($mark->grade > 'C') <label data-toggle="tooltip" data-placement="left" title="{{$mark->first_name}} {{$mark->last_name}} fail this subject " for="" class="label label-danger">{{$mark->grade}} @else <label for="" class="label label-success">{{$mark->grade}}  @endif</label></td>
           <td>{{$mark->point}}</td>
-          <td>{{$mark->Absent}}</td>
+          <td>@if($mark->Absent == ' off') Yes @else No @endif</td>
           <td>
-            <a title='Edit' class='btn btn-info' href='{{url("/mark/edit")}}/{{$mark->id}}'> <i class="glyphicon glyphicon-edit icon-white"></i></a>
+            <a id="cursor" class='btn btn-dark bg-pink btn-round btn-xs' data-toggle="tooltip" data-placement="left" title="Edit {{$mark->first_name}} {{$mark->last_name}} mark" href='{{url("/teacher/mark/edit")}}/{{$mark->id}}'> <i class="glyphicon glyphicon-edit icon-white"></i></a>
           </td>
           @endforeach
         </tbody>
       </table>
-    </div>
-  </div>
+      </div>
   @endif

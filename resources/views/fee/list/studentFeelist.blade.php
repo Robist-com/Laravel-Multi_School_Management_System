@@ -1,13 +1,12 @@
-<!-- <div class="panel panel-default" style="margin-top: -18px;"> -->
-    <!-- <div class="panel-heading"> -->
-    <h3 style="font-weight:bold;text-transform: uppercase"><i class="fa fa-list"></i> PAYMENT TRANSACTIONS LIST </h3>
-    <!-- </div> -->
-    <!-- <div class="panel-body"> -->
-    <div class="table-responsive">
-    <table style="border-collapse:collapse;" class="table-hover table-bordered" id="list-student-fee">
 
+    <div class="table-responsive">
+    <!-- <table style="border-collapse:collapse;" class="table-hover table-bordered" id="list-student-fee"> -->
+    <table class="table table-striped jambo_table bulk_action" id="list-student-fee">
     <thead>
-        <tr>
+    <tr class="headings">
+        <th>
+            <input type="checkbox" id="check-all" class="flat">
+        </th>
             <th style="text-align:center; color:#">N<sup>o</sup></th>
             <th style="text-align:center; color:#">Grade</th>
             <th style="text-align:center; color:#">Fee Type</th>
@@ -15,8 +14,11 @@
             <th style="text-align:center; color:#">Total Amount</th>
             <th style="text-align:center; color:#">Paid Amount</th>
             <th style="text-align:center; color:#">Balance</th>
-            <th style="text-align:center; color:#">Action</th>
-        </tr>
+            <th class="column-title no-link last"><span class="nobr">Action</span></th>
+            <th class="bulk-actions" colspan="8">
+                <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+            </th>
+            </tr>
     </thead>
 
     <tbody id="tbody-student-fee">
@@ -24,8 +26,10 @@
         {{------------Test-----------------}}
        {{-- {{$readStudentTransaction}} --}}
         @foreach($readStudentFee as $key => $sf)
-
-        <tr data-id="" id="sfeeId">
+        <tr class="even pointer" data-id="" id="sfeeId">
+            <td class="a-center ">
+            <input type="checkbox" class="flat" name="table_records">
+            </td>
         <td style="text-align: center;">{{ $key+1}}</td>
         <td style="text-align: center;">{{ $sf->semester_name}}</td>
         <td style="text-align: center;">{{ $sf->fee_type}}</td>
@@ -69,6 +73,7 @@
 
     </tbody>
     </table>
+    </div>
     </div>
     <!-- </div> -->
     <!-- <div class="panel-footer" style="height:40px;"></div>

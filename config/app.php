@@ -182,6 +182,9 @@ return [
         // Prettus\Repository\Providers\RepositoryServiceProvider::class,
         \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
         \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class, 
+        Brian2694\Toastr\ToastrServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class
+        // MaddHatter\LaravelFullcalendar\ServiceProvider::class,
       //  Anouar\Paypalpayment\PaypalpaymentServiceProvider::class,
 
     ],
@@ -242,6 +245,7 @@ return [
         'Input' => Illuminate\Support\Facades\Input::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Image' => Intervention\Image\Facades\Image::class
 
     ],
 

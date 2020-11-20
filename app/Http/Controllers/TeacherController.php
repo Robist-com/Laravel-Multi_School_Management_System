@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
 use App\Models\ClassSchedule;
 // use Excel;  // because this one is the same with this one okay
 use App\Imports\TeacherImport;
-use App\Models\ClassAssigning;
+use App\Institute;
 use App\Exports\Teacher_Export;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -35,8 +35,15 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\CreateTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
+use App\Models\Department;
+use App\Models\Level;
+use Carbon\Carbon;
+use Exam;
+use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Validator;
+use Laracasts\Flash\Flash as FlashFlash;
+use DateTime;
 class TeacherController extends AppBaseController
 {
     /** @var  TeacherRepository */
@@ -45,6 +52,9 @@ class TeacherController extends AppBaseController
     public function __construct(TeacherRepository $teacherRepo)
     {
         $this->teacherRepository = $teacherRepo;
+
+			$this->middleware('auth');
+
     }
 
     /**
@@ -115,6 +125,15 @@ class TeacherController extends AppBaseController
                                 ->where(['class_schedule.class_id' =>  $request->class_id])
                                 ->get();
 
+        $classStudentListCount = Admission::join('class_schedule', 'class_schedule.class_id','=', 'admissions.class_code')
+            ->join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
+            ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')                                
+            ->join('rolls', 'rolls.student_id','=', 'admissions.id')
+            ->join('departments', 'departments.department_id','=', 'admissions.department_id')
+        ->where('class_schedule.teacher_id', $teacher_id)
+        ->where(['class_schedule.class_id' =>  $request->class_id])
+        ->count();
+
         $teacher_class = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')                                
         ->select('classes.class_code','semesters.semester_name')
@@ -122,11 +141,11 @@ class TeacherController extends AppBaseController
         
         $teacher_class_grade = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')                                
-        ->select('classes.class_code','semesters.semester_name')
+        ->select('classes.class_code','semesters.semester_name', 'classes.class_name')
         ->where('teacher_id',$teacher_id)
         ->where(['class_schedule.class_id' =>  $request->class_id])->get(); 
 
-      return view('teachers.students.studentList',compact('teacher_class','teacher_class_grade'))->with('allStudentList',$allStudentList);
+      return view('teachers.students.studentList',compact('teacher_class','teacher_class_grade','classStudentListCount'))->with('allStudentList',$allStudentList);
     }
 
     public function ClassListInCharge(Request $request)
@@ -134,10 +153,30 @@ class TeacherController extends AppBaseController
         $teacher_id = Auth::user()->teacher_id;
         $allStudentList = Classes::join('class_schedule', 'class_schedule.class_id','=', 'classes.class_code')
                                  ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id') 
+                                 ->join('admissions', 'admissions.class_code','=', 'classes.class_code') 
                                 ->where('class_schedule.teacher_id', $teacher_id)
-                                ->get();
-                                // dd($allStudentList);
+                                ->select('classes.class_name as class_name', 'semesters.semester_name as semester_name', 'classes.class_code as class_code', DB::raw('count(admissions.id) as total_student'))
+                                ->where('admissions.school_id', auth()->user()->school_id)
+                                ->groupBy('class_name', 'semester_name','class_code')->get();
+
+                               
+                                // dd($all_studentDetail);
        return view('teachers.classes.classList')->with('allStudentList',$allStudentList);
+    }
+
+    public function AllStudentDetail_In_Class($class_code)
+    {
+        $teacher_id = Auth::user()->teacher_id;
+        $all_studentDetail = Classes::join('class_schedule', 'class_schedule.class_id','=', 'classes.class_code')
+                                ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id') 
+                                ->join('admissions', 'admissions.class_code','=', 'classes.class_code') 
+                                ->join('rolls', 'rolls.student_id','=', 'admissions.id') 
+                            ->where('class_schedule.teacher_id', $teacher_id)
+                            ->where('admissions.class_code', $class_code)
+                            ->where('admissions.school_id', auth()->user()->school_id)
+                            // ->groupBy('admissions.id')
+                            ->get();
+    return view('teachers.classes.classList')->with('all_studentDetail',$all_studentDetail);
     }
 
     public function SortTeacher(Request $request)
@@ -181,6 +220,7 @@ class TeacherController extends AppBaseController
         $teacherList = Teacher::join('faculties', 'faculties.faculty_id','=', 'teachers.faculty_id')
                                 ->join('departments', 'departments.department_id','=', 'teachers.department_id')
                                 ->get();
+                                // dd($teacherList);
        return view('teachers.teacher.teacherList')->with('teacherList',$teacherList);
     }
 
@@ -216,22 +256,40 @@ class TeacherController extends AppBaseController
         $classes = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
         ->join('teachers', 'teachers.teacher_id','=', 'class_schedule.teacher_id')
-        ->select('class_code','class_name')->orderby('class_code','asc')
+        ->select('classes.class_code','classes.class_name')->orderby('classes.class_code','asc')
         ->where('class_schedule.teacher_id', $teacher_id)
         ->get();
 
         // dd( $classes); die;
+
+        // $class_id = DB::table('classes')->select("*")->where('class_code','=','C-A-0001-GBS')->first();
+
+        //      $class_data = FacadesDB::table('exam')->select('id','type')
+        //      ->where('class_id','=',$class_id->id);
+        //      if($request->get('section')!=''){
+        //          $class_data = $class_data->where('session','=',$request->get('section'));
+        //      }
+        //      $class_data =$class_data->get();
+
+        //      dd($class_data);
         
-		$subjects = Course::all();
-		$batches = ClassSchedule::join('batches', 'batches.id', '=', 'class_schedule.batch_id')
-        ->select('batches.id','batches.batch')->orderby('id','asc')
+        $subjects = Course::join('class_schedule','class_schedule.course_id', '=', 'courses.id')
+        ->where('class_schedule.school_id', auth()->user()->school_id)
+        ->where('class_schedule.teacher_id', auth()->user()->teacher_id)->get();
+        $batches = ClassSchedule::join('batches', 'batches.id', '=', 'class_schedule.batch_id')
+        ->select('batches.id','batches.batch','batches.is_current_batch')->orderby('id','asc')
+        ->where('batches.is_current_batch', 1)
+        ->where('batches.school_id', auth()->user()->school_id)
         ->where('class_schedule.teacher_id', $teacher_id)
         ->get();
 
-
+        // dd( auth()->user()->school_id); die;
+        
 		$class_code =$request->get('class_id');
 		if($class_code !=''){
-           $departments = DB::table('departments')->where('class_code',$class_code)->get();
+           $departments = DB::table('departments')->where('class_code',$class_code)
+           ->where('school_id', auth()->user()->school_id)->get();
+           dd($departments);
 		}else{
 			$eections = array();
 		}
@@ -241,7 +299,7 @@ class TeacherController extends AppBaseController
 		$exam      = $request->get('exam');
 
 		if($exam  !='' && $class_code!=''){
-			$exams = DB::table('exam')->where('id',$exam)->get();
+			$exams = DB::table('exam')->where('id',$exam)->where('school_id', auth()->user()->school->id)->get();
 		}else{
 			$exams = array();
 		}
@@ -265,12 +323,14 @@ class TeacherController extends AppBaseController
 			'mcq'       => 'required',
 			'practical' =>'required',
 			'ca'        =>'required'
-		];
-		$validator = \Validator::make($request->all(), $rules);
+        ];
+        
+        $validator = Validator::make($request->all(), $rules);
+        // dd( $validator);
 		if ($validator->fails())
 		{
             Flash::error( $validator.'are required.');
-                return Redirect::to('/mark/entry');
+                return redirect(url('/mark/entry'));
 		}
 		else {
 			// $subGradeing = Course::select('gradeSystem')->where('course_code',$request->get('subject'))->where('class',$request->get('class'))->first();
@@ -328,6 +388,7 @@ class TeacherController extends AppBaseController
 					$marks->practical = $practicals[$i];
 					$marks->ca = $cas[$i];
 					$isExcludeClass = $request->get('class');
+					$marks->school_id = auth()->user()->school_id;
 					if($isExcludeClass=="cl3" ||  $isExcludeClass=="cl4" || $isExcludeClass=="cl5")
 					{
 						$totalmark = $writtens[$i]+$mcqs[$i]+$practicals[$i]+$cas[$i];
@@ -415,17 +476,30 @@ class TeacherController extends AppBaseController
         $classes = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
         ->join('teachers', 'teachers.teacher_id','=', 'class_schedule.teacher_id')
-        ->select('class_code','class_name')->orderby('class_code','asc')
+        ->select('classes.class_code','classes.class_name')->orderby('classes.class_code','asc')
         ->where('class_schedule.teacher_id', $teacher_id)
         ->get();
 
-        // dd( $classes); die;
+        // dd($teacher_id); die;
         
-		$subjects = Course::all();
-		$batches = ClassSchedule::join('batches', 'batches.id', '=', 'class_schedule.batch_id')
-        ->select('batches.id','batches.batch')->orderby('id','asc')
-        ->where('class_schedule.teacher_id', $teacher_id)
+		// $subjects = Course::all();
+		// $batches = ClassSchedule::join('batches', 'batches.id', '=', 'class_schedule.batch_id')
+        // ->select('batches.id','batches.batch','batches.is_current_batch')->orderby('batches.id','asc')
+        // ->where('class_schedule.teacher_id', $teacher_id)
+        // ->where('batches.is_current_batch', 1)
+        // ->get();
+
+        $subjects = Course::join('class_schedule','class_schedule.course_id', '=', 'courses.id')
+        ->where('class_schedule.school_id', auth()->user()->school_id)
+        ->where('class_schedule.teacher_id', auth()->user()->teacher_id)->get();
+        $batches = ClassSchedule::join('batches', 'batches.id', '=', 'class_schedule.batch_id')
+        ->select('batches.id','batches.batch','batches.is_current_batch')->orderby('id','asc')
+        ->where('batches.is_current_batch', 1)
+        ->where('batches.school_id', auth()->user()->school_id)
+        ->where('class_schedule.teacher_id', auth()->user()->teacher_id)
         ->get();
+
+        // dd($batches); die;
 		
 		//$subjects = Subject::lists('name','code');
 		$marks=array();
@@ -459,23 +533,36 @@ class TeacherController extends AppBaseController
             $classes = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
             ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
             ->join('teachers', 'teachers.teacher_id','=', 'class_schedule.teacher_id')
-            ->select('class_code','class_name')->orderby('class_code','asc')
+            ->select('classes.class_code','classes.class_name')->orderby('classes.class_code','asc')
             ->where('class_schedule.teacher_id', $teacher_id)
             ->get();
             // dd($classes);
-			$subjects = Course::where('class',$request->get('class'))->pluck('course_name','course_code');
-			$batches = Batch::select('id','batch')->orderby('batch','asc')->get();
+			// $subjects = Course::where('class',$request->get('class'))->pluck('course_name','course_code');
+            // $batches = Batch::select('id','batch')->orderby('batch','asc')->get();
+            
+            $subjects = Course::join('class_schedule','class_schedule.course_id', '=', 'courses.id')
+            ->where('class_schedule.school_id', auth()->user()->school_id)
+            ->where('class_schedule.teacher_id', auth()->user()->teacher_id)
+            ->pluck('courses.course_name','courses.course_code');
+
+            $batches = ClassSchedule::join('batches', 'batches.id', '=', 'class_schedule.batch_id')
+            ->select('batches.id','batches.batch','batches.is_current_batch')->orderby('id','asc')
+            ->where('batches.is_current_batch', 1)
+            ->where('batches.school_id', auth()->user()->school_id)
+            ->where('class_schedule.teacher_id', $teacher_id)
+            ->orderby('batch','asc')->get();
+
 			$marks=	DB::table('rolls')
-			// ->join('rolls', 'rolls.roll_id', '=', 'marks.roll')
 			->join('marks', 'marks.roll_no', '=', 'rolls.username')
 			->join('batches', 'batches.id', '=', 'marks.session')
+			// ->join('courses', 'courses.course_code', '=', 'marks.subject')
 			->rightjoin('admissions', 'admissions.id', '=', 'rolls.student_id')
 			->select('marks.id','marks.roll_no','rolls.username', 'admissions.first_name',
 			'admissions.last_name', 'marks.written','marks.mcq',
 			'marks.practical','marks.ca','marks.total','marks.grade','marks.point',
             'marks.Absent',
             'batches.batch')
-			->where('admissions.status', '=', '1')
+			->where('admissions.acceptance', '=', 'accept')
 			->where('admissions.class_code','=',$request->get('class'))
 			->where('marks.class','=',$request->get('class'))
 			->where('marks.department','=',$request->get('department'))
@@ -693,9 +780,9 @@ class TeacherController extends AppBaseController
         ->first();
             
                     //   dd( $exam_term); die;
-        $enable_grade = Semester::where('status', "on")->get();
+        $enable_grade = Semester::where('status', "on")->where('school_id', auth()->user()->school_id)->get();
         $class_grade = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')->
-        where('teacher_id', Auth::user()->teacher_id)->where('class_id',$class_name->class_code)->GET();
+        where('teacher_id', Auth::user()->teacher_id)->where('class_schedule.class_id',$class_name->class_code)->get();
         // dd($class_grade);
         return view('teachers.results.result', compact('isGenerated','class_name','class_assign','class_assign1','enable_grade','class_grade','exam_term'));
 
@@ -711,7 +798,7 @@ class TeacherController extends AppBaseController
         ->where(['teacher_id' =>  $teacher_id])
         ->get();
 
-        return view('teachers.homework.create', compact('isGenerated','class_name','class_assign','class_assign1','enable_grade','class_grade','exam_term'));
+        return view('teachers.homework.create', compact('class_assign1'));
     }
 
     public function SendTeacherHomeWork(Request $request, $class_id)
@@ -726,18 +813,56 @@ class TeacherController extends AppBaseController
         ->where(['class_schedule.class_id' =>  $class_id])
         ->get();
 
+        // dd($class_assign);
+
         $teacher_id  = Auth::user()->teacher_id;
         $class_assign1 = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
         ->where(['teacher_id' =>  $teacher_id])
         ->get();
 
-        return view('teachers.homework.create', compact('isGenerated','class_name','class_assign','class_assign1','enable_grade','class_grade','exam_term'));
+        return view('teachers.homework.create', compact('class_assign','class_assign1'));
+    }
+
+    public function getStudentHomeWork($student_id)
+    {
+        // $student_homework = StudentUploadHomeWork::where('student_id', $student_id)->where('school_id', auth()->user()->school_id)->get()->dd();
+
+        $teacher_id  = Auth::user()->teacher_id;
+        $student_homework = Roll::join('admissions', 'admissions.id', '=', 'rolls.student_id')
+        ->join('student_upload_homeworks', 'student_upload_homeworks.student_id','=', 'admissions.id')
+        ->join('semesters', 'semesters.id','=', 'student_upload_homeworks.semester_id')
+        ->join('classes', 'classes.class_code', '=', 'admissions.class_code')
+        ->join('courses', 'courses.id', '=', 'student_upload_homeworks.subject_id')
+        // ->select('semesters.id as semester_id','semesters.*','courses.id as subject_id',
+        //     'courses.*','student_upload_homeworks.*','admissions.*')
+        ->where(['teacher_id' =>  $teacher_id])
+        ->where(['student_upload_homeworks.student_id' =>  $student_id])
+        ->where('admissions.school_id', auth()->user()->school_id)
+        ->get();
+
+        $class_assign1 = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
+        ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+        ->join('admissions', 'admissions.class_code', '=', 'classes.class_code')
+        ->join('courses', 'courses.id', '=', 'class_schedule.course_id')
+        ->select('semesters.id as semester_id','semesters.*','courses.*',
+            'classes.id as class_id','classes.*','admissions.*')
+        ->where(['teacher_id' =>  $teacher_id])
+        // ->where(['class_code' =>  $id])
+        ->where('class_schedule.school_id', auth()->user()->school_id)
+        // ->groupBy('semesters.id as semester_id','semesters.*','courses.*',
+        // 'classes.id as class_id','classes.*')
+        ->first();
+        // dd($edit_homework);
+        return view('teachers.homework.homework_submit', compact('class_assign','class_assign1','student_homework'));
+
+        return view();
     }
 
     public function CreateHomeWork(Request $request)
     {
         $input = $request->all();
+        dd( $input);
 
         $image =  $request->file('homework_file'); // this request is requesting image file okay.
 
@@ -755,11 +880,12 @@ class TeacherController extends AppBaseController
         $homework->end_date = $request->end_date;
         $homework->status = $request->status;
         $homework->teacher_id = $request->teacher_id;
+        $homework->school_id = auth()->user()->school_id;
 
         $homework->save();
 
         Flash::success('Teacher saved successfully!.');
-        return redirect()->back();
+        return redirect(url('homework-list'));
     }
 
 
@@ -770,10 +896,23 @@ class TeacherController extends AppBaseController
         ->join('semesters', 'semesters.id','=', 'homeworks.semester_id')
         // ->join('courses', 'courses.id','=', 'homeworks.subject_id')
         ->select('semesters.id as semester_id','semesters.*','courses.id as subject_id',
-        'courses.*','homeworks.*')
+        'courses.*','homeworks.*', 'homeworks.id as homework_id')
         ->where(['teacher_id' =>  $teacher_id])
+        ->where('homeworks.school_id', auth()->user()->school_id)
         // ->where(['class_schedule.class_id' =>  $class_id])
         ->get();
+            $date1 = now()->format('Y-m-d');
+            $time1 = now()->format('H:i:00');
+            // echo date("l jS \of F Y h:i:s A");
+            // dd($date1,  $time1 );
+        DB::table('homeworks')
+        
+                ->whereDate('end_date', '=', $date1)
+                ->whereTime('end_date', '=',  $time1)
+                // ->whereTime('end_date', '==',  $date1)
+                // ->whereTime('end_date', '<=', \Carbon\Carbon::parse( $date1))
+                ->get();
+       
         // dd( $class_assign);
         return view('teachers.homework.homeworkList', compact('class_assign'));
     }
@@ -790,6 +929,7 @@ class TeacherController extends AppBaseController
         //     'courses.*','student_upload_homeworks.*','admissions.*')
         ->where(['teacher_id' =>  $teacher_id])
         ->where(['student_upload_homeworks.class_code' =>  $id])
+        ->where('admissions.school_id', auth()->user()->school_id)
         ->get();
 
         $class_assign1 = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
@@ -799,6 +939,7 @@ class TeacherController extends AppBaseController
             'classes.id as class_id','classes.*')
         ->where(['teacher_id' =>  $teacher_id])
         ->where(['class_code' =>  $id])
+        ->where('class_schedule.school_id', auth()->user()->school_id)
         ->first();
         // dd($edit_homework);
         return view('teachers.homework.homework_submit', compact('class_assign','class_assign1'));
@@ -809,19 +950,22 @@ class TeacherController extends AppBaseController
     public function HomeWorkEdit(Request $request, $id)
     {
         $teacher_id  = Auth::user()->teacher_id;
-        $edit_homework = HomeWork::join('courses', 'courses.id', '=', 'homeworks.subject_id')
-        ->join('semesters', 'semesters.id','=', 'homeworks.semester_id')
-        ->select('semesters.id as semester_id','semesters.*','courses.id as subject_id',
-        'courses.*','homeworks.*')
-        ->where(['teacher_id' =>  $teacher_id])
-        ->where(['homeworks.class_code' =>  $id])
-        ->first();
+        $edit_homework = HomeWork::find($id);
+        // $edit_homework = HomeWork::join('courses', 'courses.id', '=', 'homeworks.subject_id')
+        // ->join('semesters', 'semesters.id','=', 'homeworks.semester_id')
+        // ->select('semesters.id as semester_id','semesters.semester_name','courses.id as subject_id',
+        // 'courses.course_name','homeworks.*')
+        // ->where(['teacher_id' =>  $teacher_id])
+        // ->where(['homeworks.id' =>  $id])
+        // ->where('homeworks.school_id', auth()->user()->school_id)
+        // ->first();
 
         $class_assign1 = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
         ->select('semesters.id as semester_id','semesters.*',
             'classes.id as class_id','classes.*')
         ->where(['teacher_id' =>  $teacher_id])
+        // ->where('homeworks.school_id', auth()->user()->school_id)
         ->get();
         // dd($edit_homework);
         return view('teachers.homework.edit', compact('edit_homework','class_assign1'));
@@ -834,13 +978,14 @@ class TeacherController extends AppBaseController
         $image =  $request->file('homework_file'); // this request is requesting image file okay.
         if($image != '')
         {
-            $input = $request->all();
-
+            // $input = $request->all();
+        // dd($image_name);
         $image_name = rand(1111,9999) . '.' . $image->getClientOriginalExtension();
         $image->move(public_path('teacher_homeworks'), $image_name);
     }
     else{
-        $input = $request->all();
+        $image_name = $request->hidden_image;
+        // dd($image_name);
     }
 
         $update_homework = array( // Teacher is the modal of the Teacher where we have all the fillbale attributes.
@@ -875,6 +1020,8 @@ class TeacherController extends AppBaseController
 
     public function TeacherResultByClass(Request $request, $class_id)
     {
+        $session_batch = Batch::where('is_current_batch', 1)->where('school_id', auth()->user()->school_id)->first();
+
         $teacher_id  = Auth::user()->teacher_id;
         $isGenerated=DB::table('meritlist')
         ->join('exam', 'exam.id', '=', 'meritlist.exam')
@@ -883,26 +1030,65 @@ class TeacherController extends AppBaseController
         ->join('class_schedule', 'class_schedule.class_id', '=', 'classes.class_code')
         ->join('semesters', 'semesters.id', '=', 'class_schedule.semester_id')
         ->join('teachers', 'teachers.teacher_id', '=', 'class_schedule.teacher_id')
-        ->select('meritlist.roll_no','exam.type','batches.batch', 'meritlist.class', 
+        ->join('admissions', 'admissions.class_code', '=', 'classes.class_code')
+        ->select('meritlist.roll_no','exam.type','batches.batch', 'batches.id', 'meritlist.class', 
         'meritlist.exam', 'classes.class_name','classes.class_code','meritlist.id as result_id'
-        , 'semesters.semester_name'
+        , 'semesters.semester_name','admissions.image','admissions.first_name','admissions.last_name','admissions.email','admissions.father_name','admissions.phone'
         //  DB::raw('count(*) as total')
          )
         //  ->groupBy('exam')
         ->where(['class_schedule.teacher_id' =>  $teacher_id])
         ->where(['class_schedule.class_id' =>  $class_id])
+        ->where('meritlist.school_id', auth()->user()->school_id)
         ->get();
+
+        $isGeneratedResult=DB::table('meritlist')
+        ->join('exam', 'exam.id', '=', 'meritlist.exam')
+        ->join('classes', 'classes.id', '=', 'exam.class_id')
+        ->join('batches', 'batches.id', '=', 'meritlist.batch')
+        ->join('class_schedule', 'class_schedule.class_id', '=', 'classes.class_code')
+        ->join('semesters', 'semesters.id', '=', 'class_schedule.semester_id')
+        ->join('teachers', 'teachers.teacher_id', '=', 'class_schedule.teacher_id')
+        ->select('meritlist.roll_no','exam.type','batches.batch', 'batches.id', 'meritlist.class', 
+        'meritlist.exam', 'classes.class_name','classes.class_code','meritlist.id as result_id'
+        , 'semesters.semester_name'
+        //  DB::raw('count(*) as total')
+         )
+        //  ->groupBy('exam')
+        
+        ->where(['class_schedule.teacher_id' =>  $teacher_id])
+        ->where(['class_schedule.class_id' =>  $class_id])
+        ->where(['class_schedule.batch_id' =>  $session_batch->id])
+        ->where('meritlist.school_id', auth()->user()->school_id)
+        ->first();
+
+        // dd($isGeneratedResult);
+
+
+        if (!$isGeneratedResult) {
+            FlashFlash::info('Result Session ' . $session_batch->batch . ' is not Pulished Yet! ' . ' We will notifi you when the Result are published.');
+            return redirect(url('teacher/gradesheet'));
+        }
+
+        
 
         $class_assign = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
         ->join('exam', 'exam.id', '=', 'classes.id')
+        ->join('batches', 'batches.id', '=', 'exam.session')
         ->where(['teacher_id' =>  $teacher_id])
         ->where(['class_schedule.class_id' =>  $class_id])
+        ->where(['class_schedule.school_id' => auth()->user()->school_id])
         ->get();
-        
+
+        // dd($class_assign);
         $class_assign1 = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+        ->join('exam', 'exam.id', '=', 'classes.id')
+        ->join('batches', 'batches.id', '=', 'exam.session')
         ->where(['teacher_id' =>  $teacher_id])
+        ->where(['class_schedule.class_id' =>  $class_id])
+        ->where(['class_schedule.school_id' => auth()->user()->school_id])
         ->get();
 
         $exam_term = DB::table('meritlist')
@@ -916,11 +1102,12 @@ class TeacherController extends AppBaseController
         'meritlist.exam', 'classes.class_name','classes.class_code','meritlist.id as result_id','class_schedule.semester_id')
         ->where(['class_schedule.teacher_id' =>  $teacher_id])
         ->where(['class_schedule.class_id' =>  $class_id])
+        ->where(['meritlist.school_id' => auth()->user()->school_id])
         ->first();
 
         // dd($isGenerated);
 
-        return view('teachers.results.result', compact('isGenerated','class_name','class_assign','class_assign1','enable_grade','class_grade','exam_term'));
+        return view('teachers.results.result', compact('isGenerated','class_assign','class_assign1','exam_term'));
     }
 
 	/**
@@ -1067,7 +1254,63 @@ class TeacherController extends AppBaseController
      */
     public function create()
     {
-        return view('teachers.create');
+
+        if (auth()->user()->group == 'Owner') {
+
+            $teachers = Teacher::where('school_id', auth()->user()->school->id)->get();
+            $teacher_id = Teacher::where('school_id', auth()->user()->school->id)->max('teacher_id'); // this roll id will be auto genarated username and password for each stuent okay
+            $roll_id = Roll::max('roll_id'); // this roll id will be auto genarated username and password for each stuent okay
+            $faculties = Faculty::where('school_id', auth()->user()->school->id)->get(); // we fetch all faculty
+            $departments = Department::where('school_id', auth()->user()->school->id)->get(); // we fetch all departments
+            $batches = Batch::where('school_id', auth()->user()->school->id)->get(); // we fetch all departments
+            $levels = Level::where('school_id', auth()->user()->school->id)->get(); // we fetch all departments
+            $classes = Classes::where('school_id', auth()->user()->school->id)->get(); // we fetch all classes
+            $Semester = Semester::where('status', "on")->where('school_id', auth()->user()->school->id)->get();
+            $timetable=array();
+
+            $TeacherTimeTable =  ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
+            ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+            ->join('teachers', 'teachers.teacher_id','=', 'class_schedule.teacher_id')
+            ->where('class_schedule.teacher_id', $teacher_id)
+            ->where('teachers.school_id', auth()->user()->school->id)
+            ->get();
+                $institute = Institute::where('school_id', auth()->user()->school->id)->max('institute_number');
+
+                // $insti = Institute::max( $institute);
+                // dd( $institute);
+            if(count($teachers)!=0){
+                $rand_username_password = mt_rand($institute .$teacher_id +1, $institute .$teacher_id +1);
+            }elseif(count($teachers)==0){
+                $rand_username_password = mt_rand($institute .$teacher_id , $institute .$teacher_id );
+            }
+        }else {
+            $teachers = Teacher::all();
+            $teacher_id = Teacher::max('teacher_id'); // this roll id will be auto genarated username and password for each stuent okay
+            $roll_id = Roll::max('roll_id'); // this roll id will be auto genarated username and password for each stuent okay
+            $faculties = Faculty::all(); // we fetch all faculty
+            $departments = Department::all(); // we fetch all departments
+            $batches = Batch::all(); // we fetch all departments
+            $levels = Level::all(); // we fetch all departments
+            $classes = Classes::all(); // we fetch all classes
+            $Semester = Semester::where('status', "on")->get(); // we fetch all Semester
+    
+            $enable_grade = Semester::where('status', "on")->get();
+
+            $TeacherTimeTable =  ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
+            ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
+            ->join('teachers', 'teachers.teacher_id','=', 'class_schedule.teacher_id')
+            ->where('class_schedule.teacher_id', $teacher_id)
+            ->get();
+        
+            if(count($teachers)!=0){
+                $rand_username_password = mt_rand(222609300011 .$teacher_id +1, 222609300011 .$teacher_id +1);
+            }elseif(count($teachers)==0){
+                $rand_username_password = mt_rand(2226093000111 .$teacher_id , 2226093000111 .$teacher_id );
+            }
+        }
+        // dd($TeacherTimeTable); die;
+        return view('teachers.create',compact('teacher_id','faculties','TeacherTimeTable','Semester','timetable','classes','subjects','batches'))
+            ->with('teachers', $teachers)->with('rand_username_password',$rand_username_password); 
     }
 
     /**
@@ -1107,6 +1350,7 @@ class TeacherController extends AppBaseController
             $teacher->status = $request->status;
             $teacher->dateregistered = $request->dateregistered;
             $teacher->user_id = $request->user_id;
+            $teacher->school_id = auth()->user()->school_id;
             $teacher->image = $image_name; // is the new name of the image okay.
 
                 // dd($teacher);
@@ -1177,7 +1421,17 @@ class TeacherController extends AppBaseController
                                  ->join('teachers', 'teachers.teacher_id','=', 'class_schedule.teacher_id')
                                  ->where('class_schedule.teacher_id', $id)
                                  ->first();
-        return view('teachers.teacher_dashboard', compact('class_name','students_in_charge_total'))->with('teacher', $teacher)
+
+
+                                 $current_month_attendance = Attendance::whereYear('attendance_date', Carbon::now()->year)->whereMonth('attendance_date', Carbon::now()->month)->count();
+
+                                 $last_month_attendance = Attendance::whereYear('attendance_date', Carbon::now()->year)->whereMonth('attendance_date', Carbon::now()->subMonth(1))->count();
+                                 
+                                 $month_before_last_attendance = Attendance::whereYear('attendance_date', Carbon::now()->year)->whereMonth('attendance_date', Carbon::now()->subMonth(2))->count();
+
+                                 dd($month_before_last_attendance);
+                                 
+        return view('teachers.teacher_dashboard', compact('class_name','students_in_charge_total','current_month_attendance','last_month_attendance','month_before_last_attendance'))->with('teacher', $teacher)
         ->with('teachertimetables', $teachertimetables);
 
     }
@@ -1774,6 +2028,7 @@ public function InsertClassAttendance(Request $request) // here is the insert fu
                     'month' => $request->month,
                     'year' => $request->year,
                     'day' => $request->day,
+                    'school_id' => $request->school_id,
                     'attendance_status' => $request->attendance_status[$markattendance],
                     'attendance_date' => $request->attendance_date
                 ];
@@ -1818,6 +2073,7 @@ public function InsertClassAttendance(Request $request) // here is the insert fu
               'attendances.attendance_status',
               'attendances.attendance_id',
               'attendances.semester_id',
+              'attendances.attendance_reason',
               'attendances.class_id',
               'classes.id as class_id',
               'classes.class_code',
@@ -1851,9 +2107,25 @@ public function InsertClassAttendance(Request $request) // here is the insert fu
             $semester_id = $request->semester_id;
             $department_id = $request->department_id;
             $teacher_id = $request->teacher_id;
-            $attend_date = date('d-m-Y');
+            $attend_date = date('Y-m-d');
+
+            $today_attendance = Attendance::where('teacher_id', Auth::user()->teacher_id)
+                                ->where('attendance_date', $attend_date)
+                                ->get();
+  
 
             $teacher_id = Auth::user()->teacher_id;
+
+
+            // $today_attendance = Attendance::join('admissions', 'admissions.id', '=', 'attendances.student_id')
+            // ->join('teachers', 'teachers.teacher_id', '=', 'attendances.teacher_id')
+            // ->where('attendances.teacher_id', $teacher_id)
+            // ->where('admissions.class_code',$class_id)
+            // ->where('attendances.teacher_id', $teacher_id)
+            // ->where('attendances.attendance_date', $attend_date)
+            // ->count();
+
+            // dd($today_attendance);
 
         $attendances = Attendance::join('admissions', 'admissions.id', '=', 'attendances.student_id')
                    ->join('classes', 'classes.class_code', '=', 'attendances.class_id')
@@ -1861,7 +2133,7 @@ public function InsertClassAttendance(Request $request) // here is the insert fu
                    ->join('teachers', 'teachers.teacher_id', '=', 'attendances.teacher_id')
                    ->join('semesters', 'semesters.id', '=', 'attendances.semester_id')
                    ->join('courses', 'courses.id', '=', 'attendances.course_id')
-                   ->join('rolls', 'rolls.roll_id', '=', 'attendances.student_id')
+                   ->join('rolls', 'rolls.student_id', '=', 'attendances.student_id')
                     ->select(
                          'admissions.first_name as student_first_name',
                          'admissions.last_name as student_last_name',
@@ -1876,11 +2148,12 @@ public function InsertClassAttendance(Request $request) // here is the insert fu
                          'classes.id as class_id',
                          'classes.class_code as class_code',
                          'attendances.attendance_date',
+                         'attendances.attendance_reason',
                          'attendances.attendance_status',
                          'classes.class_name')
                 // ->where('attendances.attendance_date', $attend_date)
                 ->where('attendances.teacher_id', $teacher_id)
-                ->orderBy('attendances.attendance_date', 'ASC')
+                ->orderBy('attendances.attendance_date', 'desc')
                 ->get();
 
                 // dd( $attendances); die;
@@ -1917,22 +2190,23 @@ public function InsertClassAttendance(Request $request) // here is the insert fu
                             'classes.class_code',
                             'classes.id as class_id',
                             'courses.id as course_id',
-                           'courses.course_name'
-                            )
+                           'courses.course_name')
                    //->where('admissions.class',$class_id)
                    ->get();
 
+                   
+
                 return view('teachers.attendances.attendanceList',
-            compact('classes','semesters','courses','departments','faculties','class_name', 'students'))
+            compact('classes','class_name', 'students','today_attendance'))
             ->with('attendances', $attendances);
     }
 
 
     public function TeacherUpdateAttendance(Request $request)
     {
-        // $student = $request->all(); //they are not assign with any query okay
-        // $teacher_id = $request->get('teacher_id');//they are not assign with any query okay
-        // // echo "<pre>",print_r($student); die;
+        $student = $request->get('attendance_date'); //they are not assign with any query okay
+        $teacher_id = $request->get('teacher_id');//they are not assign with any query okay
+        // echo "<pre>",print_r($student); die;
         // $attendance_date = $request->get('attendance_date');//they are not assign with any query okay
 
 
@@ -1940,11 +2214,13 @@ public function InsertClassAttendance(Request $request) // here is the insert fu
 
                     $update_data=[
                         'attendance_status' => $request->attendance_status[$id],
+                        'attendance_reason' => $request->attendance_reason[$id],
                         'edit_date' => $request->attendance_date
                     ];
 
-                    $attendance = Attendance::where(['attendance_id' =>$id, 'attendance_date'
-                     => $request->attendance_date])->first();
+                    // $attendance = Attendance::where(['attendance_id' =>$id, 'attendance_date'
+                    //  => $request->attendance_date])->get();
+                    $attendance = Attendance::where(['attendance_id' => $id])->first();
                     //  echo "<pre>",print_r($attendance); die;
 
                     $attendance->update($update_data);
@@ -1953,7 +2229,7 @@ public function InsertClassAttendance(Request $request) // here is the insert fu
 
                 Flash::success('Attendance Updated Successfully!');
                 // return redirect(route('teachers.attendances.attendanceList'));
-                return redirect()->back();
+                return redirect(url('attendance/list'));
             // }
     }
 

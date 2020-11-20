@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Observers\SchoolObserver;
+use App\School;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use \Blade;
+use Illuminate\Support\Facades\Blade as FacadesBlade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,7 +31,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        Blade::setEchoFormat('e(utf8_encode(%s))');
+        FacadesBlade::setEchoFormat('e(utf8_encode(%s))');
+        School::observe(SchoolObserver::class);
 
 
     }

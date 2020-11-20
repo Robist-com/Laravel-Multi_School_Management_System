@@ -34,7 +34,9 @@ class Department extends Model
         'department_name',
         'department_code',
         'department_description',
-        'department_status'
+        'department_status',
+        'school_id',
+
     ];
 
     /**
@@ -48,7 +50,8 @@ class Department extends Model
         'department_name' => 'string',
         'department_code' => 'string',
         'department_description' => 'string',
-        'department_status' => 'boolean'
+        'department_status' => 'boolean',
+        'school_id' => 'integer',
     ];
 
     /**

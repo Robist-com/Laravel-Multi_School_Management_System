@@ -18,6 +18,10 @@ class StudentFeeController extends AppBaseController
     public function __construct(StudentFeeRepository $studentFeeRepo)
     {
         $this->studentFeeRepository = $studentFeeRepo;
+
+			$this->middleware('auth');
+
+
     }
 
     /**

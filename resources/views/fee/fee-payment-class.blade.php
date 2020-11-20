@@ -1,41 +1,61 @@
-@extends('layouts.app')
+@extends('layouts.new-layouts.app')
 @section('content')
 @include('fee.stylesheet.css-payment')
-<section class="content-header">
+<!-- <section class="content-header">
 
 <h1 class="pull-right" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px"><i class="fa fa-money" aria-hidden="true">FEE PAYMENT PORTAL</i></h1>
-<a  class="pull-left btn btn-danger" href="{{url('all/student/list')}}" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px"><i class="fa fa-back-arrow" aria-hidden="true">Return</i></a>
+<a  class="pull-left btn btn-danger" href="{{ url()->full() }}" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px"><i class="fa fa-back-arrow" aria-hidden="true">Return</i></a>
 
-</section>
+</section> -->
+<style>
+#panel_fee{
+visibility:hidden;
+}
+#payment_submitButton{
+  visibility:hidden;
+}
+</style>
 <div class="content">
   <div class="clearfix"></div>
 
   @include('flash::message')
 
-  <div class="clearfix"></div>
-  <div class="box box-primary">
-      <div class="box-body">
-      <div class="pull-right">
-            <a href="{{url('pdf-download-users')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-pdf-o text-red" style="color:white"></i> PDF </a>
+  <div class="page-title">
+              <div class="title_left">
+                <h2>CLASS FEE COLLECTION PORTAL</h2>
+              </div>
 
-            <a href="{{url('export-excel-xlsx-users')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-excel-o text-green" style="color:white"></i> Excel </a>
-
-            <a href="{{url('pdf-download-users')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-word-o text-blue" style="color:white"></i> Word </a>
-
-            <a href="#" onclick="window.print();" class="btn btn  btn-x"> 
-            <i class="fa fa-print text-light-blue" style="color:white"></i> Print </a>
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="roll_no1" id="roll_no1" placeholder="Search by...">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" name="filter1" id="filter1" type="button">Go!</button>
+                    </span>
+                  </div>
+                </div>
+                </div>
             </div>
+
+            <div class="clearfix"></div>
+            <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                  <div class="col-md-2"><span id="loader"><i class="fa fa-spinner fa-3x fa-spin"></i></span></div>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                        <a href="{{url('student/list/fee/collection')}}"><button type="submit" class="btn btn-round btn-warning"><i class="fa fa-refresh" aria-hidden="true"> Refresh </i></button></a>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
             <div class="clearfix"></div>
                     <div class="panel  panel-default"> 
 
-                      <div class="clearfix"></div>
-                    <div class="box box-primary">
-                        <div class="box-body">
-
-                    {{-- @if(count($data)!="0") --}}
                        @foreach ($data as $student)
                        <div class="panel" style="height:10%">
                     <h4 class="col-sm-10 "style="margin-left:15px;font-weight:bolder" id="inputEmail3">{{ $student->username }}</h5>
@@ -87,16 +107,13 @@
                                   <h6  class="col-sm-5 col-form-label" id="inputEmail3">{{$student->class_name}}</h6>
                                 </div>
                               </div>
-                      
-                        </div>
-                        </div>
-                        </div>
-                        </div>
+                      </div>
+                             
                       @include('fee.detail')
-                    </div>
-                    </div>
-                  
-                    <div class="col-md-3" id="fee_type_select" style="display:none1">
+                      </div>
+                     
+                    <div class="col-md-12" id="fee_type_select" style="display:none1">
+                    <hr>
                   <label for="">Fee Type</label>
                   <select name="fee_type" id="fee_type_id" class="form-control select_2_single">
                       <option value="" selected="true" selected="true">Select Fee Type</option>
@@ -105,14 +122,14 @@
                         @endforeach
                     </select>
                     </div>
+                   <hr>
                     <div class="clearfix"></div>
-                      {{--@if(count($readStudentFee)== 0)--}}
                       <form action="{{route('savePayment')}}" method="POST" id="frmPayment">
-                    <!-- {{ csrf_field() }} -->
                          @csrf
+                        
                          <div class="panel-body" id="panel_fee" style="display:none">
                               @include('fee.fee-type')
-                              </div>
+                        </div>
                               <input type="hidden" name="semester_id1" id="semester_id1" class="form-control" value="{{$student->semesterFee}}">         
                               <input type="hidden" name="department_id1" id="department_id1" class="form-control" value="{{$student->semesterFee}}">
                               <input type="hidden" name="level_id1" id="level_id1" class="form-control" value="{{$student->semesterFee}}">
@@ -124,44 +141,38 @@
                               <input type="hidden" name="transact_date" value="{{ date('Y-m-d-H:i:s')}}" id="TransacDate">
                               <!-- <input type="hidden" name="student_fee_id" id="student_fee_id"> -->
                      
-                    <div class="modal-footer">
-                      {{-- <button class="btn btn-lg btn-success pull-right" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button> --}}
-                      <a href="{{route('All_Student_Fee_Transactios',[$student->student_id])}}" target="_blank"><button class="btn btn-lg btn-danger pull-left" type="button"><i class="glyphicon glyphicon-arraw-back"></i> Show all Transactions</button> </a>
-                        <input type="submit" id="btn-go" name="btn-go" class="btn btn-success btn-payment pull-right" value="{{'Save Payment'}}">
-                        @if(count($readStudentFee)!= 0)
-                        {{-- <a href="{{ url('printInvoice','invoice_id') }}" class="btn btn-primary btn-sm" target="_blank">Print</a>--}}
-                        @endif
+                    <div class="modal-footer" id="payment_submitButton">
+                      <a href="{{route('All_Student_Fee_Transactios',[$student->student_id])}}" target="_blank"><button class="btn  btn-danger pull-left btn-round" type="button"><i class="glyphicon glyphicon-arraw-back"></i> Show all Transactions</button> </a>
+                        <input type="submit" id="btn-go" name="btn-go" class="btn btn-success btn-payment pull-right btn-round" value="{{'Save Payment'}}">
                     </div>
-                 {{--@endif--}}
+
                 </form>
                 @endforeach
-              </div>
-            </div>
-             </div>
-            {{-- @endif --}}
-          {{-- </div> --}}
-        </div>
-        {{-- <div class="text-center"> --}}
-          {{-- <div class="box box-primary"> --}}
+            
             <div class="box-body">
-          {{-- <div class="panel-body"> --}}
             @if(count($data)!="0")
             @if(count($readStudentFee)!= 0)
             @include('fee.list.studentFeelist')
             <input type="hidden" value="0" id="disabled">
             @endif
             @endif
+            </div>
+          </div>
+          </div>
+          </div>
+          </div>
+            </div>
+             </div>
+        </div>
+          </div>
 
-        {{-- </div> --}}
-        {{-- </div> --}}
     </div>
-  {{-- </div> --}}
+
   @csrf
           
             <div class="tab-pane" id="messages">
-              {{-- @include('fee.feeTypes.multiFeePayment')  --}}
+
             </div>
-          {{-- </div> --}}
 
             @endsection
 
@@ -181,6 +192,9 @@ $(document).ready(function(){
    method:"POST",
    data:{fee_type:fee_type, _token:_token},
   //  dataType:"json",
+  beforeSend: function(){
+      $('#loader').css("visibility", "visible");
+  },
    success:function(response)
    {
     
@@ -191,7 +205,10 @@ $(document).ready(function(){
     var semesterFee = $('#semesterFee').val();
     $('#totalFee').val(parseInt(semesterFee))
 
-   }
+   },
+   complete: function(){
+                  $('#loader').css("visibility", "hidden");
+              }
   })
  }
 
@@ -208,12 +225,16 @@ $('#roll_id').show();
 $('#show-student-paid').show();
 $('#main_body').show();
 $('#panel_fee').show();
+$('#panel_fee').css("visibility", "visible");
+$('#payment_submitButton').css("visibility", "visible");
 // $('#totalFee').val(semesterFee);
 
 // $('#main_body').show();
   }
   else{
     alert('Please Select fee type')
+    $('#panel_fee').hide()
+    $('#payment_submitButton').css("visibility", "hidden");
   }
 });
     

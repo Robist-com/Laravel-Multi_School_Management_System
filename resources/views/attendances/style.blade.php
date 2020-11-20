@@ -1,11 +1,11 @@
 <style>
-    div label input {
+    /* div label input {
        margin-right:100px;
     }
     body {
         font-family:sans-serif;
     }
-    
+     */
     #ck-button-present {
         margin:4px;
         /* background-color:#EFEFEF; */
@@ -44,12 +44,12 @@
     }
     
     /* ABSENT BUTTON */
-    div label input {
+    /* div label input {
        margin-right:100px;
     }
     body {
         font-family:sans-serif;
-    }
+    } */
     
     #ck-button-absent {
         margin:4px;
@@ -89,12 +89,12 @@
     }
     
     /* LATE BUTTON */
-    div label input {
+    /* div label input {
        margin-right:100px;
     }
     body {
         font-family:sans-serif;
-    }
+    } */
     
     #ck-button-late {
         margin:4px;
@@ -134,12 +134,12 @@
     }
     
     /* SICK BUTTON */
-    div label input {
+    /* div label input {
        margin-right:100px;
     }
     body {
         font-family:sans-serif;
-    }
+    } */
     
     #ck-button-sick {
         margin:4px;

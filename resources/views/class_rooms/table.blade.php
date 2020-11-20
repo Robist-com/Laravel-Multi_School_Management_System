@@ -1,33 +1,162 @@
-@include('table_style')
-<div class="table-responsive">
-<div class="panel">
-    <div class="panel-body">
-    <div  id="wait"></div>
-    </div>
-</div>
-    <table class="table table-striped table-bordered table-hover" id="classRooms-table">
-        <thead>
-            <tr>
-                <th>Classroom Name</th>
-        <th>Classroom Code</th>
-        <th> Description</th>
-        <th> Status</th>
-                <th colspan="3">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach($classRooms as $classRoom)
-            <tr>
-                <td>{!! $classRoom->classroom_name !!}</td>
-            <td class="badge">{!! $classRoom->classroom_code !!}</td>
-            <td>{!! $classRoom->classroom_description !!}</td>
-            <td >
-                <input type="checkbox" data-id="{{ $classRoom->classroom_id }}" name="status" 
-                class="js-switch" {{ $classRoom->classroom_status == 1 ? 'checked' : '' }}>
-                </td>
-                <td>
-                    {!! Form::open(['route' => ['classRooms.destroy', $classRoom->classroom_id], 'method' => 'delete']) !!}
-                    <div class='btn-group'>
+<div class="page-title">
+              <div class="title_left">
+                <h2>MANAGE CLASSROOM</h2>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for...">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="row">
+
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                  @if(isset($classRoom))
+                   <h2>Update Class Room</h2>
+                   @else
+                   <h2>Create Class Room</h2>
+                   @endif
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                        <a href="{{route('classRooms.index')}}"><button type="submit" class="btn btn-round btn-success"><i class="fa fa-plus-circle" aria-hidden="true"> Add </i></button></a>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                  @if(isset($classRoom))
+                  {!! Form::model($classRoom, ['route' => ['classRooms.update', $classRoom->classroom_id], 'method' => 'patch', 'class' => 'form-horizontal form-label-left']) !!}
+                  @else
+                  {!! Form::open(['route' => 'classRooms.store', 'class' => 'form-horizontal form-label-left']) !!}
+                  @endif
+                  
+                   @if(auth()->user()->group == "Admin")
+                   <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                      <select name="school_id" id="school_id" class="form-control">
+                        <option value="">Select School</option>
+                        @foreach(auth()->user()->school->all() as $school)
+                        <option value="{{$school->id}}" @if(isset($classRoom)) @if($school->id === $classRoom->school_id) selected  @endif @endif>{{$school->name}}</option>
+                        @endforeach
+                      </select>
+  
+                    </div>
+                    </div>
+                   @else
+                   <input type="hidden" name="school_id" id="school_id" class="form-control"   value="{{auth()->user()->school->id}}" >
+                   @endif
+
+                    <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <input type="text" name="classroom_name" id="classroom_name" class="form-control" placeholder="Enter ClassRoom Name"  @if(isset($classRoom)) value="{{$classRoom->classroom_name}}" @endif>
+                    </div>
+                    </div>
+
+                    <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <input type="text" name="classroom_code" readonly id="classroom_code" class="form-control" placeholder="Enter ClassRoom Code"  @if(isset($classRoom)) value="{{$classRoom->classroom_code}}" @endif>
+                    </div>
+                    </div>
+                    
+                    <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <textarea name="classroom_description" id="classroom_description" class="form-control" cols="30" rows="2" placeholder="Enter ClassRoom Description" > @if(isset($classRoom)) {{$classRoom->classroom_description}} @endif</textarea>
+                    </div>
+                    </div>
+                
+                    
+
+                    <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                      @if(isset($classRoom))
+                      {!! Form::hidden('classroom_status', '0') !!}
+                    {!! Form::checkbox('classroom_status', '1', null, ['class' => 'flat']) !!} Status
+                    @else
+                    {!! Form::hidden('classroom_status', '0') !!}
+                    {!! Form::checkbox('classroom_status', '1', null, ['class' => 'flat']) !!} Status
+                    @endif
+                    </div>
+                    </div>
+                 
+                    <div class="modal-footer">
+                    @if(isset($classRoom))
+                    {!! Form::submit('Save Changes', ['class' => 'btn btn-dark']) !!}
+                    @else
+                    <button type="submit" class="btn btn-round btn-dark">Save</button>
+                   @endif
+                    </div>
+                   
+                    {!! Form::close() !!}
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Table ClassRoom </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <a class="btn btn-success btn-round"  data-toggle="modal" data-target="#classroom-add-modal"><i class="fa fa-plus-circle" aria-hidden="true"> Add New ClassRoom</i></a>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+
+                  <div class="x_content">
+
+                    <!-- <p>Add class <code>bulk_action</code> to table for bulk actions options on row select</p> -->
+
+                    <div class="table-responsive">
+                      <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                              <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">ClassRoom </th>
+                            <th class="column-title">Code </th>
+                            <th class="column-title">Description </th>
+                            <th class="column-title">Status </th>
+                            <th class="column-title no-link last"><span class="nobr">Action</span>
+                            </th>
+                            <th class="bulk-actions" colspan="7">
+                              <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                        @foreach($classRooms as $classRoom)
+                        <tr class="even pointer">
+                          
+                          <td class="a-center ">
+                            <input type="checkbox" class="flat" name="table_records">
+                          </td>
+                            <td>{!! $classRoom->classroom_name !!}</td>
+                        <td class="badge">{!! $classRoom->classroom_code !!}</td>
+                        <td>{!! $classRoom->classroom_description !!}</td>
+                        <td >
+                            @if($classRoom->classroom_status == 1)
+                            <label for="" style="color:#26B99A"><i class="fa fa-check-circle fa-lg"></i></i></label>
+                            @else
+                            <label for="" style="color:#D9534F"><i class="fa fa-ban fa-lg"></i></label>
+                            @endif
+                        </td>
+                            <td>
+                                {!! Form::open(['route' => ['classRooms.destroy', $classRoom->classroom_id], 'method' => 'delete']) !!}
+                        <div class='btn-group'>
                     <!-- INSIDE HERE WE NEED TO ADD SOME CODES OKAY TO ABLE TO FIND OUR DATAS BY THAT ATTRIBUTES OKAY. -->
                        <a href="http://" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-print"></i></a>
                     <!-- ----------------------------------------------------------------------SHOW SIDE START HERE------------------------------------------------------------------------- -->
@@ -39,7 +168,6 @@
                         data-updated_at="{{$classRoom->updated_at}}" class='btn btn-warning btn-xs'> <i class="glyphicon glyphicon-eye-open"></i>
                         </a> 
 
-<!-- WE DON'T NEED IT OKAY..  -->
                         <!-- ----------------------------------------------------------------SHOW SIDE END HERE---------------------------------------------- -->
                    
                    
@@ -57,9 +185,16 @@
                 </td>
             </tr>
         @endforeach
-        </tbody>
-    </table>
-</div>
+
+                        </tbody>
+                      </table>
+                    </div>
+							
+						
+                  </div>
+                </div>
+              </div>
+            </div>
 
 <!-- HERE I WILL ADDONE MODAL FOR THE VIEW OKAY..  -->
 <!-- I ALREADY CREATED THAT JUST MAKE OUR TUTORIAL EASY OKAY. -->
@@ -180,6 +315,42 @@ modal.find('.modal-body #classroom_id').val(classroom_id);
             }
         });
     });
+
+    $('#classroom_name').on('keyup', function(){
+
+var randomString = function(length) {
+
+var text = "";
+
+// var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+var possible = "ABCDE56789FGHIJKLMNOPQRSTUVWXYZ01234";
+
+for(var i = 0; i < length; i++) {
+
+  text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+}
+
+return text;
+}
+
+// random string length
+var random = randomString(3);
+var class_name = $("#classroom_name").val();
+  
+if (class_name !== '') {
+  var elem = document.getElementById("classroom_code").value = random +'-'+ class_name;
+}else{
+  var elem = document.getElementById("classroom_code").value = '';
+}
+  // alert(random)
+// insert random string to the field
+
+})
+
+// $('#classroom_code').attr('disabled', true);
+
+
 })  
   
     

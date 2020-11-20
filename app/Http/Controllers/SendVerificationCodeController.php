@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\SendVerificationCode;
 class SendVerificationCodeController extends Controller
 {
+
+
     public function getVerify()
     {
         return view('verify');

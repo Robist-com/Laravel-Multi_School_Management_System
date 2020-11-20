@@ -27,8 +27,11 @@ class Time extends Model
 
     public $fillable = [
         'time',
+        'end_time',
         'shift_id',
-        'status'
+        'status',
+        'school_id',
+
     ];
 
 
@@ -39,7 +42,10 @@ class Time extends Model
      */
     protected $casts = [
         'time_id' => 'integer',
-        'time' => 'string'
+        'time' => 'string',
+        'end_time' => 'string',
+        'shift_id' => 'string',
+        'school_id' => 'integer',
     ];
 
     /**

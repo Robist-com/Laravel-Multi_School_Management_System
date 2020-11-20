@@ -49,9 +49,9 @@
 
                <div class="col-md-2">
                   <div class="form-group ">
-                    <label for="session">session</label>
+                    <label for="session">session </label>
                     <select  id="session" name="session" required="true" class="form-control select_2_single" >
-                      @foreach(App\Models\Batch::all(); as $batch)
+                      @foreach(App\Models\Batch::where('school_id', auth()->user()->school_id)->get() as $batch)
                       <option value="{{$batch->id}}">{{$batch->batch}}</option>
                       @endforeach
                     </select>

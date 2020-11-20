@@ -17,7 +17,8 @@ class DayRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'name'
+        'name',
+        'status'
     ];
     protected $primaryKey = 'day_id';
     /**

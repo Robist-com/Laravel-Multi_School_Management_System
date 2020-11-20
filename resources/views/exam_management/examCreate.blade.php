@@ -2,13 +2,13 @@
        <!------------------------------ Modal start from here okay-------------------------------- -->
        <div class="modal fade-center" id="createExam" tabindex="-1" role="dialog"
       aria-labelledby="myModalLabel"
-      aria-hidden="true">
-       <div class="modal-dialog" style="width:90%">
+      aria-hidden="true"  style="margin-left: 20%;">
+       <div class="modal-dialog" style="width:80%">
         <div class="modal-content">
-            <div class="modal-header-store">
-            <button type="button" class="close" data-dismiss="modal"
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" 
             aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Make Exam</h4>
+            <h4 class="modal-title">Create Exam</h4>
             </div>
              <div class="modal-body">
              <div class="panel-body">
@@ -16,9 +16,8 @@
               <form role="form" action="{{url('/insert/exam')}}" method="post">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                    <div class="form-group col-md-2">
-                    <fieldset>
-                        <label for="name">Exam Type  <b>require</b></label>
+                    <div class="form-group col-md-4 col-sm-4 col-xs-12">
+                        <label for="name">Exam Type  <b style="color:red">*</b></label>
                          <select name="type"  id="type" class="form-control select_2_single" required>
                             <option value="1st Term Exam">1st Term Exam</option>
                             <option value="2nd Term Exam">2nd Term Exam</option>
@@ -29,23 +28,20 @@
                           </fieldset>
                         </div>
 
-                        <div class="form-group col-md-2">
-                    <fieldset>
-                        <label for="name">Session  <b>require</b></label>
+                         <div class="form-group col-md-4 col-sm-4 col-xs-12">
+                        <label for="name">Session   <b style="color:red">*</b></label>
                         <input type="text" name="session" value="{{date('Y')}}" id="exam_code_id" class="form-control datepicker2">
                           </fieldset>
                         </div>
 
-                        <div class="form-group col-md-2">
-                    <fieldset>
-                        <label for="name">Exam Date  <b>require</b></label>
+                         <div class="form-group col-md-4 col-sm-4 col-xs-12">
+                        <label for="name">Exam Date   <b style="color:red">*</b></label>
                         <input type="text" name="e_date" id="e_date_id" class="form-control datepicker3">
                           </fieldset>
                         </div>
 
-                        <div class="form-group col-md-3">
-                     <fieldset>
-                        <label for="name">Class Group  <b>require</b></label>
+                        <div class="form-group col-md-4 col-sm-4 col-xs-12">
+                        <label for="name">Class Group   <b style="color:red">*</b></label>
                            <select  name="department_id" class="form-control select_2_single " id="department1" required>
 
                       <option value="">--Select Class Group--</option>
@@ -56,13 +52,9 @@
                     </fieldset>
                     </div>
 
-                      <div class="form-group col-md-3">
-                        <fieldset>
-                        <label for="name">Class <b>require</b></label>
+                    <div class="form-group col-md-8 col-sm-8 col-xs-12">
+                        <label for="name">Class  <b style="color:red">*</b></label>
                            <select name="class[]"  id="class_Create_Question" class="form-control select_2_multiple" multiple data-actions-box="true" data-hide-disabled="true" data-size="5"  required>
-                      <!-- @foreach($classes as $class) -->
-                      <!-- <option value="{{$class->id}}">{{$class->class_name}}</option> -->
-                      <!-- @endforeach -->
                     </select>
                     </fieldset>
                     </div>
@@ -89,7 +81,7 @@
 @section('scripts')
 <script>
 
-$( document ).ready(function() {
+$( document).ready(function() {
 //   getdepartment();
 // alert(1)
  $('#class_Create_Question1').on('change',function() {

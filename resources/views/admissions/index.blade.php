@@ -1,57 +1,39 @@
-@extends('layouts.app')
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
 @section('content')
-    <section class="content-header">
-        <h1 class="pull-right">
-           <a data-toggle="modal" data-target="#admission-add-modal" class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" ><i class="fa fa-plus-circle"> Add New Admission</i></a>
-        </h1>
-      
-<h1 class="pull-right" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px"><i class="fa fa-text-o" aria-hidden="true">Admissions</i></h1>
-<a  class="pull-left btn btn-danger" href="{{url('home')}}" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px"><i class="fa fa-back-arrow" aria-hidden="true">Return</i></a>
 
-    </section>
-        <div class="content">
-        <div class="clearfix"></div>
 
-        @include('flash::message')
-        @include('adminlte-templates::common.errors')
+@if($template->template == '0')
 
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-        <div class="box-body">
-        <div class="pull-right">
-            <a href="{{url('pdf-download-users')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-pdf-o text-red" style="color:white"></i> PDF </a>
+<div class="clearfix"></div>
 
-            <a href="{{url('export-excel-xlsx-users')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-excel-o text-green" style="color:white"></i> Excel </a>
+@include('flash::message')
+@include('adminlte-templates::common.errors')
 
-            <a href="{{url('pdf-download-users')}}" class="btn btn  btn-x"> 
-            <i class="fa fa-file-word-o text-blue" style="color:white"></i> Word </a>
-
-            <a href="#" onclick="window.print();" class="btn btn  btn-x"> 
-            <i class="fa fa-print text-light-blue" style="color:white"></i> Print </a>
-            </div>
+<div class="x_panel">
+          <div class="x_title">
+            <h2>Offline Admission Table </h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+              <a href="{{route('admissions.create')}}" class="btn btn-success btn-round"  data-toggle="modal1" data-target="#batch-add-modal"><i class="fa fa-plus-circle" aria-hidden="true"> Add New Admission</i></a>
+            </ul>
             <div class="clearfix"></div>
-            <h3 style="font-weight:bold;"><i class="fa fa-user" aria-hidden="true"></i> STUDENT ADMISSIONS</h3>
-          
-    <div class="clearfix"></div>
-                    @include('admissions.table')
+          </div>
 
-                {{-- {!! Form::open(['route' => 'admissions.store']) !!} --}}
-            <form action="{{route('admissions.store')}}" method="post" enctype="multipart/form-data">
-                    @csrf
+          <div class="x_content">
 
-                  @include('admissions.fields')
+ @include('admissions.batches-tabs.home')
 
-                  {!! Form::close() !!}
-            </div>
-        </div>
-        <div class="text-center">
-          
-        </div>
-    </div>
+ </div>
+ </div>
 
+@else
 
-  @endsection
+@include('admissions.batches-tabs.home1')
 
+@endif
+
+@endsection

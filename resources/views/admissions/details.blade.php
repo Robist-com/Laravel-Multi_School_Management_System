@@ -5,12 +5,13 @@
 }
 </style>
 <div class="accordian-body collapse " id="demo{{$key}}">
-<div class="panel panel-default">
+<div class="panel panel-default1 jambo_table">
     <div class="panel-heading">
         <h6 style="font-weight:bold; color:red" class="pull"> <b style="color:black">{!! $admission->first_name !!} {!! $admission->last_name !!}</b> Details</h6>
     </div>
+    <div class="table-responsive">
     <div class="panel-body">
-    <table class="table table-striped table-hover"> 
+    <table class="table table-striped jambo_table bulk_action">
         <thead class="color">
 
             <tr>
@@ -55,6 +56,7 @@
           
         </tbody>
     </table>
+</div>
 </div>
 </div>
 </div>

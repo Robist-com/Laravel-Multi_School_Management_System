@@ -3,6 +3,10 @@
 use App\Roll;
 $students = Roll::onlineStudent();
 @endphp
+
+<?php 
+$date = date('Y-m-d');
+?>
 @section('content')
             <style>
                 .names{
@@ -107,32 +111,28 @@ $students = Roll::onlineStudent();
                                 <input type="hidden" name="homework_id" id="id_homework_id" value="{{$homework->homework_id}}" class="form-control" placeholder="Enter Subject ">
                                 <input type="hidden" name="student_id" id="id_student_id" value="{{$homework->student_id}}" class="form-control" placeholder="Enter Subject ">
                                 <input type="hidden" name="status" id="id_status" value="1" class="form-control" placeholder="Enter Subject ">
+                                <input type="hidden" name="school_id" id="school_id" value="{{$students->school_id}}" class="form-control" placeholder="School ID ">
    
                             <tr class="bordered-tr">
                                 <td class="bordered-td" style="text-align: center;">{{$homework->class_code}} </td>
                                 <td class="bordered-td" style="text-align: center;">{{$homework->course_name}} </td>
                                 <td class="bordered-td" style="text-align: center;"> {{$homework->body}}</td>
-                                <td class="bordered-td" style="text-align: center;"><button type="button" class="btn btn-primary btn-xs accordion-toggle"  data-toggle="collapse"
+                                <td class="bordered-td" style="text-align: center;"><button type="button" class="btn btn-primary btn-xs accordion-toggle"  data-toggle="collapse" id="playvideo"
                                 data-target="#demo{{$n}}" title="Click to download"><span class="fa fa-download"></span> {{$homework->file}}</button></td>
                                 <td class="bordered-td" style="text-align: center;">{{$homework->start_date}}</td>
                                 <td class="bordered-td" style="text-align: center;">{{$homework->end_date}}</td>
-
+                               
+                                {{date('Y-m-d')}}
                                 <td style="text-align: center;width:112px;">
+                                  @if($homework->end_date != $date)
+                                  <label for="" class="label label-danger">homework expired</label>
+                                  @else
                                   <a title='Upload Homework'  class='btn btn-default btn-sm'> <input type="file" name="homework_file" id="" required> </a>
                                   <input type="submit" name="" id="upload_id{{$n}}"  class='btn btn-info btn-sm' value="Upload">
-                               
+                                  @endif
                                 </td>
                                 <td>
-                                
-                                @foreach($uploaded_homework as $key => $upload)
-                                    @if($upload->homework_id == $homework->homework_id)
-                                    @if($upload->status == 1)
-                                   <input type="text" class="btn btn-success btn-xs" name="status_name" id="status_id" value='Submitted'>
-                                    @else
-                                    <span class="label label-danger">Pending</span>
-                                    @endif
-                                    @endif
-                                  @endforeach
+                                   <a class="btn btn-success1 btn-xs status_class" name="status_name" id="status_id{{$n}}" > </a>
                                 </td>
                             </tr>
                             <tr>
@@ -173,37 +173,59 @@ $students = Roll::onlineStudent();
 
 @endsection
 
-@section('scripts')
+<style>
+.status_submit{
+    background-color:#00A65A;
+    color:#ffff;
+}
+a.status_submit:hover {
+    color:#ffff;
+}
+
+.status_pending{
+    background-color: red;
+}
+</style>
+
+
+<script src="{{asset('bower_components/jquery/dist/jquery.min.js')}}"></script>
+<!-- Bootstrap 3.3.7 -->
 
 <script>
+
+</script>
+
+<script>
+
 @foreach($uploaded_homework as $key => $upload)
-// $(document).ready(function(){
-    // alert(1);
+$(document).ready(function(){
+     
 
     if(!$('input{{$key}}').val() ){
         $("#upload_id{{$key}}").hide();
+        $("#status_id{{$key}}").removeClass('status_pending').addClass('status_submit').text('Submited');
     }else{
         $("#upload_id{{$key}}").show();
+        $("#status_id{{$key}}").removeClass('status_submit').addClass('status_pending').text('Pending');
     }
 
-// });
+});
 
-function closePdf(){
+// function closePdf(){
 
-var omyFrame = document.getElementById("myframe");
-omyFrame.style.display="none";
-alert(1);
+// var omyFrame = document.getElementById("myframe");
+// omyFrame.style.display="none";
+// // alert(1);
 
-}
+// }
 
-function openPdf(){
-var omyFrame = document.getElementById("myframe");
-omyFrame.style.display="block";
+// function openPdf(){
+// var omyFrame = document.getElementById("myframe");
+// omyFrame.style.display="block";
 
-// alert(1);
+// // alert(1);
 
-}
+// }
 @endforeach
 </script>
 
-@endsection

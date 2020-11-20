@@ -51,7 +51,9 @@ class ClassSchedule extends Model
         'teacher_id',
         'start_date',
         'end_date',
-        'schedule_status'
+        'schedule_status',
+        'school_id',
+
     ];
 
     // protected $primaryKey = 'Scheduleid';
@@ -77,7 +79,8 @@ class ClassSchedule extends Model
         'faculty_id' => 'integer',
         'start_date' => 'date',
         'end_date' => 'date',
-        'schedule_status' => 'tinyint'
+        'schedule_status' => 'tinyint',
+        'school_id' => 'integer',
     ];
 
     /**

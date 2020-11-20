@@ -20,6 +20,10 @@ class ShiftController extends AppBaseController
     public function __construct(ShiftRepository $shiftRepo)
     {
         $this->shiftRepository = $shiftRepo;
+
+			$this->middleware('auth');
+
+
     }
 
     /**
@@ -31,7 +35,8 @@ class ShiftController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $shifts = $this->shiftRepository->all();
+        // $shifts = $this->shiftRepository->all();
+        $shifts = Shift::where('school_id', auth()->user()->school->id)->get();
 
         return view('shifts.index')
             ->with('shifts', $shifts);
@@ -95,6 +100,7 @@ class ShiftController extends AppBaseController
     public function edit($id)
     {
         $shift = $this->shiftRepository->find($id);
+        $shifts = Shift::where('school_id', auth()->user()->school_id)->get();
 
         if (empty($shift)) {
             Flash::error('Shift not found');
@@ -102,7 +108,7 @@ class ShiftController extends AppBaseController
             return redirect(route('shifts.index'));
         }
 
-        return view('shifts.edit')->with('shift', $shift);
+        return view('shifts.index')->with('shift', $shift)->with('shifts', $shifts);
     }
 
     /**

@@ -39,20 +39,29 @@
 <div class="panel-heading">
     <h4 style="font-weight:bold; color:red">STUDENT'S FEES</h4>
 </div>
-    <table  class="table table-striped table-bordered table-hover" id="fees-table">
+    <table class="table table-striped jambo_table bulk_action" id="fees-table">
         <thead>
-            <tr>
-                <th>Course Id</th>
+        <tr class="headings">
+        <th>
+            <input type="checkbox" id="check-all" class="flat">
+        </th>
+        <th>Course Id</th>
         <th>Level Id</th>
         <th>Semester Id</th>
         <th>Fee Structure Id</th>
         <th>Amount</th>
-                <th colspan="3">Action</th>
+        <th class="column-title no-link last"><span class="nobr">Action</span></th>
+        <th class="bulk-actions" colspan="7">
+            <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+        </th>
             </tr>
         </thead>
         <tbody>
         @foreach($fees as $fees)
-            <tr>
+        <tr class="even pointer">
+            <td class="a-center ">
+            <input type="checkbox" class="flat" name="table_records">
+            </td>
                 <td>{{ $fees->course_id }}</td>
             <td>{{ $fees->level_id }}</td>
             <td>{{ $fees->semester_id }}</td>

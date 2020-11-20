@@ -22,6 +22,6 @@ class SendVerificationCode extends Model
     }
 
     protected $fillable = [
-        'name', 'email', 'password','phone','code','activate'
+        'name', 'email', 'password','phone','code','activate', 'school_id'
     ];
 }

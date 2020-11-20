@@ -7,6 +7,11 @@ use DB;
 use PDF;
 class PrintController extends Controller
 {
+    public function construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *

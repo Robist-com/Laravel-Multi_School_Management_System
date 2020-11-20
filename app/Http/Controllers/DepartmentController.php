@@ -23,6 +23,7 @@ class DepartmentController extends AppBaseController
     public function __construct(DepartmentRepository $departmentRepo)
     {
         $this->departmentRepository = $departmentRepo;
+        $this->middleware('auth');
     }
 
     /**
@@ -34,8 +35,21 @@ class DepartmentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $faculties = Faculty::all();
-        $departments = Department::join('faculties', 'faculties.faculty_id', '=' ,'departments.faculty_id')->get();
+        
+
+        if (auth()->user()->group == "Owner") {
+
+            $faculties = Faculty::where('school_id', auth()->user()->school->id)->get();
+            $departments = Department::join('faculties', 'faculties.faculty_id', '=' ,'departments.faculty_id')
+                ->where('departments.school_id', auth()->user()->school->id)->get();
+
+        }else {
+            
+            // $faculties = $this->departmentRepository->all();
+            $departments = Department::join('faculties', 'faculties.faculty_id', '=' ,'departments.faculty_id')->get();
+            $faculties = Faculty::all();
+        }
+
         
         // $this->departmentRepository->all();
 
@@ -102,14 +116,28 @@ class DepartmentController extends AppBaseController
     public function edit($id)
     {
         $department = $this->departmentRepository->find($id);
-        $faculties = Faculty::all();
+
+        if (auth()->user()->group == "Owner") {
+
+            $faculties = Faculty::where('school_id', auth()->user()->school->id)->get();
+            $departments = Department::join('faculties', 'faculties.faculty_id', '=' ,'departments.faculty_id')
+                ->where('departments.school_id', auth()->user()->school->id)->get();
+
+        }else {
+            // $faculties = $this->departmentRepository->all();
+            $departments = Department::join('faculties', 'faculties.faculty_id', '=' ,'departments.faculty_id')->get();
+            $faculties = Faculty::all();
+        }
+        
         if (empty($department)) {
             Flash::error('Department not found');
 
             return redirect(route('departments.index'));
         }
 
-        return view('departments.edit')->with('department', $department)->with('faculties', $faculties);
+        return view('departments.index')->with('department', $department)
+        ->with('faculties', $faculties)
+        ->with('departments', $departments);
     }
 
     /**
@@ -235,8 +263,9 @@ class DepartmentController extends AppBaseController
           ->select(DB::raw('departments.department_id,departments.department_name,
                             (select count(admissions.id) from admissions where  
                             admissions.department_id=departments.department_id 
-                            AND status='.'"1"'.')as students'))
+                            AND admissions.acceptance='.'"accept"'.')as students'))
          ->where('class_schedule.class_id','=',$class)
+         ->where('class_schedule.school_id', auth()->user()->school_id)
           ->get();
         //   dd($departments); die;
         //   class=section.class_code  

@@ -30,6 +30,8 @@ class Classes extends Model
         'class_name',
         'class_code',
         'department_id',
+        'school_id',
+        'grade_id',
         'status'
     ];
 
@@ -43,7 +45,9 @@ class Classes extends Model
         'class_name' => 'string',
         'class_code' => 'string',
         'department_id' => 'integer',
-        'status' => 'string'
+        'school_id' => 'integer',
+        'status' => 'string',
+        'grade_id' => 'integer'
     ];
 
     /**
@@ -54,7 +58,8 @@ class Classes extends Model
     public static $rules = [
         'class_name' => 'required',
         'class_code' => 'required',
-        'department_id' => 'required'
+        'department_id' => 'required',
+        'grade_id' => 'required'
     ];
 
     

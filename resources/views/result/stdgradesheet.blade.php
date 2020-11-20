@@ -1,6 +1,6 @@
 @php 
 use App\Institute;
-$institute = Institute::first();
+$institute = Institute::where('school_id', auth()->user()->school_id)->first();
 @endphp
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

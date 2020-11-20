@@ -31,26 +31,25 @@ use Symfony\Component\HttpFoundation\Request;
 
         public function index()
         {
-            $classes = Classes::all();
-            $departments = Department::all();
+            $classes = Classes::where('school_id', auth()->user()->school_id)->get();
+            $departments = Department::where('school_id', auth()->user()->school_id)->get();
 
             $exams = DB::table('exam')
-            ->join('classes', 'exam.class_id', '=', 'classes.id')
+            ->join('classes', 'exam.class_id', '=', 'classes.class_code')
             ->join('departments', 'exam.department_id', '=', 'departments.department_id')
             ->select('exam.id','exam.type','exam.e_date','exam.session', 'classes.class_name as class', 'departments.department_name as department')
             ->get();
             $exam = array();
-            $classes = DB::table('classes')->get();
-            $department = DB::table('departments')->get();
+            $classes = DB::table('classes')->where('school_id', auth()->user()->school_id)->get();
+            $department = DB::table('departments')->where('school_id', auth()->user()->school_id)->get();
             // dd($exams);
             return view('exam_management.index', compact('department','exam','exams','departments'))
             ->with("classes",  $classes);
-
         }
 
         public function examCreate()
         {
-            $classes = Classes::all();
+            $classes = Classes::where('school_id', auth()->user()->school_id)->get();
 
             // $classes = DB::table('Class')->get();
             // $sections = DB::table('section')->get();
@@ -69,7 +68,7 @@ use Symfony\Component\HttpFoundation\Request;
         * @return \Illuminate\Http\Response
         */
         public function create(){
-            $classes = Classes::all();
+            $classes = Classes::where('school_id', auth()->user()->school_id)->get();
 
             /*$query =DB::table('Student1')
             ->join('Class','Student.class','=','Class.name')
@@ -81,6 +80,11 @@ use Symfony\Component\HttpFoundation\Request;
             return view('exam_management.question', compact('classes'))->with("classes",  $classes);
         }
 
+        public function show(Type $var = null)
+        {
+          return view('');
+        }
+
         /**
         * Store a newly created quiz event in storage.
         *
@@ -89,6 +93,7 @@ use Symfony\Component\HttpFoundation\Request;
         */
         public function store(Request $request)
         {
+            dd($request->all());
 
             $rules=[
 
@@ -310,7 +315,7 @@ use Symfony\Component\HttpFoundation\Request;
             //$students =array();
 
             $questions = Question::join('courses', 'courses.id','=','questions.course_id')
-                                ->select('questions.*','courses.course_name')
+                                ->select('questions.*','questions.id as question_id','courses.course_name')
                                 ->where('class_code',$request->class)
                                 ->where('course_id',$request->course_id)
                                 ->whereIn('chapter',$request->chapter)
@@ -338,7 +343,7 @@ use Symfony\Component\HttpFoundation\Request;
 
             $questions = Question::where('id',$id)->first();
             $course_ids = Course::where('class',$questions->class_code)->get();
-            dd($course_ids);
+            // dd($questions);
             return view('exam_management.questionedit',compact('formdata','classes','questions','course_ids'));
         }
 
@@ -424,7 +429,7 @@ use Symfony\Component\HttpFoundation\Request;
         public function chapters(Request $request,$class){
                       $getmcqs = Question::where('class_code',$request->class)
                                 ->where('course_id',$request->course_id)
-                                ->groupBy('chapter')
+                                // ->groupBy('id','chapter','')
                                 ->get();
 
                                 // dd( $getmcqs);
@@ -448,6 +453,8 @@ use Symfony\Component\HttpFoundation\Request;
 
         public function InsertExam(Request $request)
 	{
+        // dd($request->all());
+
 		$rules=[
 			'type' => 'required',
 			'class' => 'required',
@@ -467,14 +474,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 
 
-			$sexists=Exam::select('*')->where('type','=',$type)->where('department_id','=',$departments->department_id)->where('class_id','=',$request->get('class'))->get();
-			if(count($sexists)>0){
+			$isexists=Exam::select('*')->where('type','=',$type)->where('department_id','=',$departments->department_id)->where('class_id','=',$request->get('class'))->get();
+			if(count($isexists)>0){
 
 				Flash::error('Exam for this departments and class are already exists!! please try another department and class!');
 				return redirect()->back();
 			}
 			else {
-				//echo "<pre>";print_r($request->get('section'));exit;
+				// echo "<pre>";print_r($request->get('section'));exit;
 				foreach($request->get('class') as $class)
 				{
 					$exam = new Exam;
@@ -482,6 +489,7 @@ use Symfony\Component\HttpFoundation\Request;
 					$exam->e_date = $request->get('e_date');
 					$exam->session = $request->get('session');
 					$exam->class_id = $class;
+					$exam->school_id = auth()->user()->school_id;
 					$exam->department_id =  $departments->department_id;
 					$exam->save();
 			    }

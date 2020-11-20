@@ -27,7 +27,9 @@ class Shift extends Model
 
     public $fillable = [
         'shift',
-        'status'
+        'status',
+        'school_id',
+
     ];
 
     /**
@@ -37,7 +39,8 @@ class Shift extends Model
      */
     protected $casts = [
         'shift_id' => 'integer',
-        'shift' => 'string'
+        'shift' => 'string',
+        'school_id' => 'integer',
     ];
 
     /**

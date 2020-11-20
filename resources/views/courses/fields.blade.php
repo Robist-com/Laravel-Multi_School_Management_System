@@ -57,22 +57,7 @@
                     </div>
 
                     <div class="row">
-                      <div class="col-md-12">
-                          <div class="col-md-4" style="display:none">
-                              <div class="form-group">
-                                  <label class="control-label" for="stdgroup">Subject Group <b>*</b></label>
-                                  <div class="input-group">
-                                      <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign  blue"></i></span>
-                                      <select name="semester" class="form-control select_2_single" id="subject_group" >
-                                          <option value="N/A" selected>N/A</option>
-                                          <option value="Bangla"  @if(old('subgroup')=='Bangla') selected @endif>Urdu</option>
-                                          <option value="English"  @if(old('subgroup')=='English') selected @endif>English</option>
-
-
-                                      </select>
-                                  </div>
-                              </div>
-                          </div>
+              
                     <div class="col-md-4">
                       <div class="form-group">
                                 <select name="department" class="form-control select_2_single" id="department_id">
@@ -87,10 +72,6 @@
                             <div class="form-group">
                                                 <select name="class[]" class="form-control select_2_single" multiple data-hide-disabled="true" data-size="5" id="subject_class" >
                                                     <option value="">Select Class</option>
-                                                  {{-- @foreach($classes as $class)
-                                                    <option value="{{$class->class_code}}"  @if(old('class.*')==$class->class_code) selected @endif >{{$class->class_name}}</option>
-                                                  @endforeach --}}
-
                                                 </select>
                                             </div>
                                         </div>
@@ -305,6 +286,41 @@ $(document).ready(function(){
             }
         });
     });
+
+    $('#course_name').on('keyup', function(){
+
+var randomString = function(length) {
+
+var text = "";
+
+// var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+var possible = "ABCDEFGHIJKLMNOP56789QRSTUVWXYZ01234";
+
+for(var i = 0; i < length; i++) {
+
+  text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+}
+
+return text;
+}
+
+// random string length
+var random = randomString(3);
+var class_name = $("#course_name").val();
+  
+if (class_name !== '') {
+  var elem = document.getElementById("course_code").value = random +'-'+ class_name;
+}else{
+  var elem = document.getElementById("course_code").value = '';
+}
+  // alert(random)
+// insert random string to the field
+
+})
+
+// $('#course_code').attr('disabled', true);
+
 }) 
 
 </script>

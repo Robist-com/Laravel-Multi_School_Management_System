@@ -15,6 +15,6 @@ class Marks extends \Eloquent {
     'point',
     'Absent',
     'class',
-	'ca'
+	'ca', 'school_id'
 	];
 }

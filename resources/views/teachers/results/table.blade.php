@@ -50,32 +50,20 @@
 
             </style>
 
-
-    {{-- <body> --}}
-
-      <div class="card">
-        <div class="panel">
-          <div class="panel-heading">
-            <div class="card">
-              <h3 style="text-transform:uppercase; font-weight:bold; margin-left:30%;">
-              
+              <h4 style="text-transform:uppercase; font-weight:bold; 1margin-left:25%; text-align:center">
                 @foreach($class_assign as $exam_term) 
-                <b>{{$exam_term->class_name}}</b> ({{$exam_term->type}}) <b style="color:red"> RESULT CARD</b> ({{$exam_term->session}})</h3>
+                <b>{{$exam_term->class_name}}</b> ({{$exam_term->type}}) <b style="color:red"> RESULT CARD</b> ({{$exam_term->batch}})
                 @endforeach
-              </div>
-          </div>
-          </div>
-        </div>
+                </h4>
+                <hr>
+    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap js-exportable" cellspacing="0" width="100%">
 
-       <div class="card">
-        <div class="table-responsive">
-            <table class="table table-bordered table-responsive-md table-striped text-center">
                 <thead>
                     <tr class="bordered-tr">
                       <th class="bordered-th">Student</th>
-                      <!-- <th class="bordered-th">Class</th> -->
-                      <!-- <th class="bordered-th">Exam</th> -->
-                      <!-- <th class="bordered-th">Exam Year</th> -->
+                      <th class="bordered-th">Father Name</th>
+                      <th class="bordered-th">Father Phone</th>
+                      <th class="bordered-th">Email</th>
                       <th class="bordered-th">Action</th>
                     </tr>
                 </thead>
@@ -85,17 +73,24 @@
                     @foreach ($isGenerated as $n => $result)
 
                             <tr class="bordered-tr">
-                                {{-- <td class="bordered-td" style="text-align: center;background-color:#34495E; color:#fff">{{$mark->id}}</td> --}}
-                                <td class="bordered-td" style="text-align: center;">{{$result->roll_no}} </td>
-                                <!-- <td class="bordered-td" style="text-align: center;">{{$result->class}} </td> -->
-                                <!-- <td class="bordered-td" style="text-align: center;">{{$result->type}} </td> -->
-                                <!-- <td class="bordered-td" style="text-align: center;">{{$result->batch}}</td> -->
-
+                                <td>
+                                <img src="{{asset('student_images/' .$result->image)}}" title="{{$result->first_name}} {{$result->last_name}} {{$result->roll_no}} {{$result->father_name}} "
+                                    class12="rounded-circle1"  width="50" height="50" data-toggle="tooltip" data-placement="top" style="border-radius1:50%; vertical-alight:middle;">
+                                </td>
+                                <td>
+                                {{$result->father_name}}
+                                </td>
+                                <td>
+                                {{$result->phone}}
+                                </td>
+                                <td>
+                                {{$result->email}}
+                                </td>
 
                                 <td style="text-align: center;width:112px;">
-                                    {{-- <a title='Print' target="_blank" class='btn btn-info' href='{{url("/gradesheet/print")}}/{{$result->roll_no}}/{{$result->exam}}/{{$result->class}}'> <i class="glyphicon glyphicon-print icon-printer"></i></a> --}}
+                                    <a title='send email' data-toggle="tooltip" data-placement="left" target="_blank" class='btn btn-info btn-xs' href='{{url("/gradesheet/print")}}/{{$result->roll_no}}/{{$result->exam}}/{{$result->class}}'> <i class="fa fa-envelope-o"></i></a> 
 
-                                    <a href="{{url("/gradesheet/print")}}/{{$result->roll_no}}/{{$result->exam}}/{{$result->class}}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print" title="Print"></i></a>
+                                    <a data-toggle="tooltip" data-placement="top" href="{{url("/gradesheet/print")}}/{{$result->roll_no}}/{{$result->exam}}/{{$result->class}}" target="_blank" class="btn btn-default btn-xs"  title="Print report"><i class="fa fa-print"></i></a>
                                 </td>
                             </tr>
                      @endforeach
@@ -116,8 +111,8 @@
                     @endif
                 </tbody>
             </table>
-        </div>
-    </div><br>
+        <!-- </div>
+    </div><br> -->
 
 <style>
     .active{

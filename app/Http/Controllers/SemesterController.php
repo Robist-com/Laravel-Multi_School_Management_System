@@ -25,6 +25,9 @@ class SemesterController extends AppBaseController
     public function __construct(SemesterRepository $semesterRepo)
     {
         $this->semesterRepository = $semesterRepo;
+
+			$this->middleware('auth');
+
     }
 
     /**
@@ -36,60 +39,38 @@ class SemesterController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $semesters = $this->semesterRepository->all();
+       
         // dd($semesters);
-        $faculties = Faculty::all();
-        $courses = Course::all();
-        $semester = Semester::all();
-        $enable_grade = Semester::where('status', "on")->get();
-        $count_in_active_grade = Semester::where('status', "off")->count();
-        $count_active_grade = Semester::where('status', "on")->count();
-        // dd($enable_grade );count_active_grade
-        // $semesters = Degree::join('semesters','semesters.id', '=', 'degrees.semester_id')->get();
+
+        if (auth()->user()->group == "Owner") {
+        $semesters = Semester::where('school_id', auth()->user()->school_id)->get();
+        $faculties = Faculty::where('school_id', auth()->user()->school_id)->get();
+        $courses = Course::where('school_id', auth()->user()->school_id)->get();
+        $semester = Semester::where('school_id', auth()->user()->school_id)->get();
+        $enable_grade = Semester::where('school_id', auth()->user()->school_id)->get();
+        $count_in_active_grade = Semester::where('status', "off")->where('school_id', auth()->user()->school_id)->count();
+        $count_active_grade = Semester::where('school_id', auth()->user()->school_id)->count();
+
         $semester_id = $request->get('semester_id');
-        // $SemesterSubjects = $this->read_semester_course($semester_id);
 
-        // $Semester1Subjects = SemesterSubjects::join('semesters','semesters.id', '=', 'semester_subjects.semester_id')
-        // ->join('courses','courses.id', '=', 'semester_subjects.course_id')
-        // ->join('departments','departments.department_id', '=', 'semester_subjects.department_id')
-        // ->join('faculties','faculties.faculty_id', '=', 'semester_subjects.faculty_id')
-        // ->join('degrees','degrees.degree_id', '=', 'semester_subjects.degree_id')
-        // ->where('semester_subjects.semester_id',1)
-        // ->where('semester_subjects.department_id',1)
-        // // ->where('semester_subjects.faculty_id',1)
-        // ->get();
+        $check = Semester::where('school_id', auth()->user()->school_id)->get();
+        }else {
+            $semesters = $this->semesterRepository->all();
+            $faculties = Faculty::all();
+            $courses = Course::all();
+            $semester = Semester::get();
+            $enable_grade = Semester::get();
+            $count_in_active_grade = Semester::where('status', "off")->count();
+            $count_active_grade = Semester::count();
 
-        // echo "<pre>";print_r($users);die;
-
-        // $SemesterSubjects = $this->read_semester_course();
+        $semester_id = $request->get('semester_id');
 
         $check = Semester::all();
-
+        }
         return view('semesters.index',compact('faculties','check','courses','semester','enable_grade','count_in_active_grade','count_active_grade'))
             ->with('semesters', $semesters);
-            // ->with('SemesterSubjects', $SemesterSubjects)
-            // ->with('Semester1Subjects', $Semester1Subjects);
+
     }
-
-    // public function read_semester_course()
-    // {
-    //     // $semester_id  = Semester::where();
-    //     // dd($semester_id);
-    //     return SemesterSubjects::leftJoin('semesters','semesters.id', '=', 'semester_subjects.semester_id')
-    //                 ->crossJoin('courses','courses.id', '=', 'semester_subjects.course_id')
-    //                 // ->rightJoin('faculties','faculties.faculty_id', '=', 'semester_subjects.faculty_id')
-    //                 ->leftJoin('departments','departments.department_id', '=', 'semester_subjects.course_id')
-    //                 ->crossJoin('faculties','faculties.faculty_id', '=', 'departments.faculty_id')
-    //                 ->join('degrees','degrees.degree_id', '=', 'semester_subjects.semester_id')
-    //                 // ->where('semester_subjects.id', '=', 'semester_subjects.semester_id' )
-    //                 ->get();
-
-
-    //         $departments = Department::all();
-    //         $courses = Course::all();
-    //     return view('semesters.index',compact('departments','courses','SemesterSubjects'));
-    //     // ->with('semesters', $semesters);
-    // }
 
     /**
      * Show the form for creating a new Semester.
@@ -118,42 +99,6 @@ class SemesterController extends AppBaseController
 
         return redirect(route('semesters.index'));
     }
-
-//     public function createSemester(Request $request)
-//     {
-//         $input = $request->all();
-//         // dd($input);die;
-//         $courses =  $request->get('course_id');
-//         $Existsemesters = SemesterSubjects::select('*')->where('semester_id',$request->get('semester_id'))
-//                                         ->where('course_id',$request->get('course_id'))
-//                                         ->where('department_id',$request->get('department_id'))
-//                                         ->where('degree_id',$request->get('degree_id'))->get();
-// 			if(count($Existsemesters)>0)
-// 			{
-
-// 				Flash::error('deplicate Semester already exists for this Semester !!');
-// 				return redirect()->back();
-//             }
-//             else {
-
-// 			foreach($courses as $course){
-
-//                 $subject = new SemesterSubjects;
-// 				$subject->semester_id = $request->get('semester_id');
-// 				$subject->department_id = $request->get('department_id');
-// 				$subject->degree_id = $request->get('degree_id');
-// 				$subject->faculty_id = $request->get('faculty_id');
-// 				$subject->course_id = $course;
-
-//                 $subject->save();
-//         }
-
-//             Flash::success('Semester Detail saved successfully.');
-
-//         return redirect(route('semesters.index'));
-
-//     }
-// }
 
     public function createDegrees(Request $request)
     {
@@ -210,9 +155,35 @@ class SemesterController extends AppBaseController
      *
      * @return Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $semester = $this->semesterRepository->find($id);
+        $semes = $this->semesterRepository->find($id);
+
+    if (auth()->user()->group == "Owner") {
+        $semesters = Semester::where('school_id', auth()->user()->school_id)->get();
+        $faculties = Faculty::where('school_id', auth()->user()->school_id)->get();
+        $courses = Course::where('school_id', auth()->user()->school_id)->get();
+        $semester = Semester::where('school_id', auth()->user()->school_id)->get();
+        $enable_grade = Semester::where('school_id', auth()->user()->school_id)->get();
+        $count_in_active_grade = Semester::where('status', "off")->where('school_id', auth()->user()->school_id)->count();
+        $count_active_grade = Semester::where('school_id', auth()->user()->school_id)->count();
+
+        $semester_id = $request->get('semester_id');
+
+        $check = Semester::where('school_id', auth()->user()->school_id)->get();
+        }else {
+            $semesters = $this->semesterRepository->all();
+            $faculties = Faculty::all();
+            $courses = Course::all();
+            $semester = Semester::get();
+            $enable_grade = Semester::get();
+            $count_in_active_grade = Semester::where('status', "off")->count();
+            $count_active_grade = Semester::count();
+
+        $semester_id = $request->get('semester_id');
+
+        $check = Semester::all();
+        }
         // dd($semester);
         if (empty($semester)) {
             Flash::error('Semester not found');
@@ -220,7 +191,7 @@ class SemesterController extends AppBaseController
             return redirect(route('semesters.index'));
         }
 
-        return view('semesters.edit')->with('semester', $semester);
+        return view('semesters.index',compact('semesters','faculties','check','courses','semester','enable_grade','count_in_active_grade','count_active_grade'))->with('semes', $semes);
     }
 
     /**

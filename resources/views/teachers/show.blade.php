@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.new-layouts.app')
 
 @section('content')
     {{-- <section class="content-header">
@@ -6,14 +6,14 @@
             Teacher
         </h1>
     </section> --}}
-    <div class="content">
-        <div class="box box-primary">
-            <div class="box-body">
-                <div class="row" style="padding-left: 20px">
+    <!-- <div class="content"> -->
+        <!-- <div class="box box-primary">
+            <div class="box-body"> -->
+                <!-- <div class="row" style="padding-left: 20px"> -->
                     @include('teachers.show_fields')
-                    <a href="{!! route('teachers.index') !!}" class="btn btn-default">Back</a>
-                </div>
-            </div>
-        </div>
-    </div> 
+                    <!-- <a href="{!! route('teachers.index') !!}" class="btn btn-default">Back</a> -->
+                <!-- </div>
+            </div> -->
+        <!-- </div> -->
+    <!-- </div>  -->
 @endsection

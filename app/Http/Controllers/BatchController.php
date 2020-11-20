@@ -19,6 +19,7 @@ class BatchController extends AppBaseController
     public function __construct(BatchRepository $batchRepo)
     {
         $this->batchRepository = $batchRepo;
+        $this->middleware('auth');
     }
 
     /**
@@ -30,10 +31,21 @@ class BatchController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $batches = $this->batchRepository->all();
+        
+
+        if (auth()->user()->group == "Owner") {
+            $batches = Batch::where('school_id' ,auth()->user()->school->id)->get();
+
+            $session = Batch::where('school_id' ,auth()->user()->school->id)->where('is_current_batch', 1)->get();
+        }else{
+            $batches = $this->batchRepository->all();
+            $session = Batch::where('is_current_batch', 1)->get();
+
+        }
+
 
         return view('batches.index')
-            ->with('batches', $batches);
+            ->with('batches', $batches)->with('session',  $session);
     }
 
     /**
@@ -59,7 +71,7 @@ class BatchController extends AppBaseController
 
         $batch = $this->batchRepository->create($input);
 
-        Flash::success( $batch,'saved successfully.');
+        Flash::success( $batch->batch . ' saved successfully.');
 
         return redirect(route('batches.index'));
     }
@@ -95,13 +107,24 @@ class BatchController extends AppBaseController
     {
         $batch = $this->batchRepository->find($id);
 
+        if (auth()->user()->group == "Owner") {
+            $batches = Batch::where('school_id' ,auth()->user()->school->id)->get();
+
+            $session = Batch::where('school_id' ,auth()->user()->school->id)->where('is_current_batch', 1)->get();
+        }else{
+            $batches = $this->batchRepository->all();
+            $session = Batch::where('is_current_batch', 1)->get();
+
+        }
+
+
         if (empty($batch)) {
             Flash::error('Batch not found');
 
             return redirect(route('batches.index'));
         }
 
-        return view('batches.edit')->with('batch', $batch);
+        return view('batches.index')->with('batch', $batch)->with('batches', $batches)->with('session', $session);
     }
 
     /**
@@ -114,8 +137,10 @@ class BatchController extends AppBaseController
      */
     public function update($id, UpdateBatchRequest $request)
     {
+        // dd($request->all() );
         $batch = $this->batchRepository->find($id);
 
+      
         if (empty($batch)) {
             Flash::error('Batch not found');
 

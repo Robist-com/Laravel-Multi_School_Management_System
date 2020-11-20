@@ -1,28 +1,24 @@
 <table style="border-collapse:collapse;" class="table table-striped table-bordered table-hover" id="semesters-table">
-            <thead>
+       <thead>
            <tr>
-           <th style="text-align: center;">Grade</th>
-               <th style="text-align: center;">Code</th>
-               <th style="text-align: center;">Duration</th>
-               <th style="text-align: center;">Level</th>
+           <!-- <th style="text-align: center;">Semester</th> -->
+               <th style="text-align: center;">Faculty</th>
+               <th style="text-align: center;">Department</th>
+               <th style="text-align: center;">Course</th>
+               <th style="text-align: center;">Degree</th>
+       <!-- <th>Status</th> -->
                <th style="text-align: center;" colspan="3">Action</th>
            </tr>
        </thead>
        <tbody id="accordion">
-       {{-- @foreach($Semester1Subjects as $key => $semester) --}}
-           @foreach($semesters as $key => $semester)
-           @if ($semester->id == 8 ) 
+           @foreach($SemesterSubjects as $key => $semester)
+           @if ($semester->semester_id == 8)
  
          <tr>
-            <td style="text-align: center;">{{$semester->semester_name}}</td>
-            <td style="text-align: center;">{{$semester->semester_code}}</td>
-            <td style="text-align: center;">{{$semester->semester_duration}}</td>
-            <td style="text-align: center;">{{$semester->semester_description}}</td>
-            @if($semester->status == 'on')
-            <td style="text-align: center;"><label class="btn btn-success">Active</label></td>
-            @else
-            <td style="text-align: center;"><label class="btn btn-danger">In-Active</label></td>
-            @endif
+          <td style="text-align: center;">{{$semester->faculty_name}}</td>
+          <td style="text-align: center;">{{$semester->department_name}}</td>
+          <td style="text-align: center;">{{$semester->course_name}}</td>
+          <td style="text-align: center;">{{$semester->degree_name}}</td>
           <td style="text-align: center;">
                    {!! Form::open(['route' => ['semesters.destroy', $semester->id], 'method' => 'delete']) !!}
                    <div class='btn-group'>
@@ -47,9 +43,8 @@
                    {!! Form::close() !!}
                </td>
            </tr>
-         @endif 
+         @endif
           @endforeach
      
        </tbody>
      </table>
-    {{-- </div> --}}

@@ -1,5 +1,6 @@
-@php
+<?php
 use App\Models\ClassSchedule;
+use App\Institute;
 $teacher_id = Auth::user()->teacher_id;
 $teacherclass = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')
         ->join('semesters', 'semesters.id','=', 'class_schedule.semester_id')
@@ -9,26 +10,116 @@ $teacherclass = ClassSchedule::join('classes', 'classes.class_code', '=', 'class
         ->where(['teacher_id' =>  $teacher_id])
         ->first();
 
-@endphp
+        $template = Institute::where('school_id', auth()->user()->school_id)->first();
+?>
 
 
-@extends('layouts.app')
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
+
 
 @section('content')
 
-@if(Auth::user()->role_id == 1)
-@include('admins.admin_dashboard')
+@if($template->template == '0')
+@if(Auth::user()->group == 'Owner' || Auth::user()->group == 'Admin' )
+{{-- @include('admins.admin_dashboard') --}}
 
-@else
+@include('school.school_dashboard')
+
+@elseif(Auth::user()->group == 'Teacher' )
 
 @if($teacherclass) 
 @include('teachers.teacher_dashboard')
 
-@else
+@elseif(Auth::user()->group == ' ' && Auth::user()->school_id == '')
 
 <div class="alert alert-warning" style="text-align:center"><h1>You are yet to assigned to a class!</h1><br>we will assign you to a class soon</div>
 
 @endif
 
 @endif
+
+@else
+
+@if(Auth::user()->group == 'Owner' || Auth::user()->group == 'Admin' )
+{{-- @include('admins.admin_dashboard') --}}
+
+@include('school.school_dashboard1')
+
+@elseif(Auth::user()->group == 'Teacher' )
+
+@if($teacherclass) 
+@include('teachers.teacher_dashboard1')
+
+@elseif(Auth::user()->group == ' ' && Auth::user()->school_id == '')
+
+<div class="alert alert-warning" style="text-align:center"><h1>You are yet to assigned to a class!</h1><br>we will assign you to a class soon</div>
+
+@endif
+
+@endif
+
+@endif
+
+<?php 
+
+
+
+$date = date('d-m-Y');
+$current_year = date('Y');
+$last_year = date('Y', strtotime("-1 year"));
+$year_before_last = date('Y', strtotime("-2 year"));
+
+$current_month = date('F');
+$last_month = date('F', strtotime("-1 month"));
+$month_before_last_month = date('F', strtotime("-2 month"));
+$month_before2_last_month = date('F', strtotime("-3 month"));
+
+?>
+
+
+<input type="hidden" name="" id="current_month_attendance_present" value="{{$current_month_attendance_present}}">
+            <input type="hidden" name="" id="current_month_attendance_absent" value="{{$current_month_attendance_absent}}">
+            <input type="hidden" name="" id="current_month_attendance_late" value="{{$current_month_attendance_late}}">
+            <input type="hidden" name="" id="current_month_attendance_sick" value="{{$current_month_attendance_sick}}">
+            
+            <input type="hidden" name="" id="current_year" value="{{$current_year}}">
+            <input type="hidden" name="" id="last_year" value="{{$last_year}}">
+            <input type="hidden" name="" id="year_before_last" value="{{$year_before_last}}">
+
+            <input type="hidden" name="" id="current_month" value="{{$current_month}}">
+            <input type="hidden" name="" id="last_month" value="{{$last_month}}">
+            <input type="hidden" name="" id="month_before_last_month" value="{{$month_before_last_month}}">
+            <input type="hidden" name="" id="month_before2_last_month" value="{{$month_before2_last_month}}">
+
+            <input type="hidden" name="" id="last_month_attendance" value="{{$last_month_attendance}}">
+            <input type="hidden" name="" id="month_before_last_attendance" value="{{$month_before_last_attendance}}">
+            <input type="hidden" name="" id="month_before2_last_attendance" value="{{$month_before2_last_attendance}}">
+
+            <input type="hidden" name="" id="last_month_attendance_present" value="{{$last_month_attendance_present}}">
+            <input type="hidden" name="" id="last_month_attendance_absent" value="{{$last_month_attendance_absent}}">
+            <input type="hidden" name="" id="last_month_attendance_late" value="{{$last_month_attendance_late}}">
+            <input type="hidden" name="" id="last_month_attendance_sick" value="{{$last_month_attendance_sick}}">
+
+            <input type="hidden" name="" id="month_before_last_attendance_present" value="{{$month_before_last_attendance_present}}">
+            <input type="hidden" name="" id="month_before_last_attendance_absent" value="{{$month_before_last_attendance_absent}}">
+            <input type="hidden" name="" id="month_before_last_attendance_late" value="{{$month_before_last_attendance_late}}">
+            <input type="hidden" name="" id="month_before_last_attendance_sick" value="{{$month_before_last_attendance_sick}}">
+
+            <input type="hidden" name="" id="month_before2_last_attendance_present" value="{{$month_before2_last_attendance_present}}">
+            <input type="hidden" name="" id="month_before2_last_attendance_absent" value="{{$month_before2_last_attendance_absent}}">
+            <input type="hidden" name="" id="month_before2_last_attendance_late" value="{{$month_before2_last_attendance_late}}">
+            <input type="hidden" name="" id="month_before2_last_attendance_sick" value="{{$month_before2_last_attendance_sick}}">
+           
+           
+            <input type="hidden" name="" id="online_admission" value="{{$online_admission}}">
+            <input type="hidden" name="" id="offline_admission" value="{{$offline_admission}}">
+
+            <input type="hidden" name="" id="current_session_repeated_students" value="{{$current_session_repeated_students}}">
+            <input type="hidden" name="" id="last_session_repeated_students" value="{{$last_session_repeated_students}}">
+            <input type="hidden" name="" id="year_before_last_session_repeated_students" value="{{$year_before_last_session_repeated_students}}">
+
+
+
+
 @endsection
+

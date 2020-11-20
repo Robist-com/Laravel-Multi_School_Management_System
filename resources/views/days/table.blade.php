@@ -1,53 +1,172 @@
-<style>
-    input:read-only
-    {
-        border:none;
-        border-color:transparent;
-    }
-</style>
-@include('table_style')
-<div class="table-responsive">
-<div class="panel">
-    <div class="panel-body">
-    <div  id="wait"></div>
-    </div>
-</div>
-    <table class="table table-striped table-bordered table-hover" id="days-table">
-        <thead>
-            <tr>
-                <th>Day's</th>
-                <th>Status</th>
-                <th>Created At</th>
-                <th colspan="3">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach($days as $day)
-            <tr>
-                <td>{!! $day->name !!}</td>
-                <td >
-                <input type="checkbox" data-id="{{ $day->day_id }}" name="status" 
-                class="js-switch" {{ $day->status == 1 ? 'checked' : '' }}>
-                </td>
-                <td>{!! date('d-M-Y', strtotime($day->created_at)) !!}</td>
-                <td>
-                    {!! Form::open(['route' => ['days.destroy', $day->day_id], 'method' => 'delete']) !!}
-                    <div class='btn-group'>
-                    <!-- -----------------------------------------------Days view button start here--------------------------------------------------- -->
-                        <a data-toggle="modal" data-target="#day-view-modal" data-day="{{$day->name}}"
-                           data-created_at="{{$day->created_at}}" data-updated_at="{{$day->updated_at}}" data-day_id="{{$day->day_id}}" 
-                           class='btn btn-default btn-xs'> <i class="glyphicon glyphicon-eye-open"></i></a>
-                        <!-- ---------------------------------------------------ends here----------------------------------------------------------------- -->
-                        <a href="{!! route('days.edit', [$day->day_id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a>
-                        {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+<div class="page-title">
+              <div class="title_left">
+                <h2>MANAGE DAYS</h2>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for...">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="row">
+
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                  @if(isset($day))
+                   <h2>Update Day</h2>
+                   @else
+                   <h2>Create Day</h2>
+                   @endif
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                        <a href="{{route('days.index')}}"><button type="submit" class="btn btn-round btn-success"><i class="fa fa-plus-circle" aria-hidden="true"> Add </i></button></a>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                  @if(isset($day))
+                  {!! Form::model($day, ['route' => ['days.update', $day->day_id], 'method' => 'patch', 'class' => 'form-horizontal form-label-left', 'autocomplete' => 'off']) !!}
+                  @else
+                  {!! Form::open(['route' => 'days.store', 'class' => 'form-horizontal form-label-left', 'autocomplete' => 'off']) !!}
+                  @endif
+
+                  @if(auth()->user()->group == "Admin")
+                  <div class="form-group">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                          <select class="form-control" name="school_id" id="school_id">
+                            <option>Choose School</option>
+                            @foreach (auth()->user()->school->all() as $school)
+                            <option value="{{ $school->id }}"
+                            @if(isset($day)){{$day->school_id == $school->id ? 'selected' : ''}} @endif >
+                            {{$school->name}}</option>
+                            @endforeach
+                          </select>
+                        </div>
+                      </div>
+                    @else
+                      <input type="hidden" name="school_id" id="school_id" value="{{auth()->user()->school->id}}">
+                  @endif
+                  
+                    <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Day"  @if(isset($day)) value="{{$day->name}}" @endif>
+                        <br>
+                        <i class="fa fa-info-circle bg-blue"> </i><i> Please do not enter duplicate Day name!</i>
                     </div>
+                    
+                    </div>
+
+
+                    <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                      @if(isset($day))
+                      {!! Form::hidden('status', '0') !!}
+                    {!! Form::checkbox('status', '1', null, ['class' => 'flat']) !!} Status
+                    @else
+                    {!! Form::hidden('status', '0') !!}
+                    {!! Form::checkbox('status', '1', null, ['class' => 'flat']) !!} Status
+                    @endif
+                    </div>
+                    </div>
+                 
+                    <div class="modal-footer">
+                    @if(isset($day))
+                    {!! Form::submit('Save Changes', ['class' => 'btn btn-dark']) !!}
+                    @else
+                    <button type="submit" class="btn btn-round btn-dark">Save</button>
+                   @endif
+                    </div>
+                   
                     {!! Form::close() !!}
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
-</div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Table Days </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <a class="btn btn-success btn-round"  data-toggle="modal" data-target="#day-add-modal"><i class="fa fa-plus-circle" aria-hidden="true"> Add New Day</i></a>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+
+                  <div class="x_content">
+
+                    <!-- <p>Add class <code>bulk_action</code> to table for bulk actions options on row select</p> -->
+
+                    <div class="table-responsive">
+                      <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                              <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">Day</th>
+                            <th class="column-title">Status</th>
+                            <th class="column-title">Created</th>
+                            <th class="column-title no-link last"><span class="nobr">Action</span>
+                            </th>
+                            <th class="bulk-actions" colspan="7">
+                              <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                        @foreach($days as $day)
+                        <tr class="even pointer">
+                          
+                          <td class="a-center ">
+                            <input type="checkbox" class="flat" name="table_records">
+                          </td>
+                            <td>{!! $day->name !!}</td>
+                            <td >
+                            @if($day->status == '1')
+                                <label for="" style="color:#26B99A"><i class="fa fa-check-circle fa-lg"></i></i></label>
+                            @else
+                            <label for="" style="color:#D9534F"><i class="fa fa-ban fa-lg"></i></label>
+                            @endif
+                            </td>
+                            <td>{!! date('d-M-Y', strtotime($day->created_at)) !!}</td>
+                            <td>
+                            {!! Form::open(['route' => ['days.destroy', $day->day_id], 'method' => 'delete']) !!}
+                            <div class='btn-group'>
+                            <!-- -----------------------------------------------Days view button start here--------------------------------------------------- -->
+                                <a data-toggle="modal" data-target="#day-view-modal" data-day="{{$day->name}}"
+                                data-created_at="{{$day->created_at}}" data-updated_at="{{$day->updated_at}}" data-day_id="{{$day->day_id}}" 
+                                class='btn btn-default btn-xs'> <i class="glyphicon glyphicon-eye-open"></i></a>
+                                <!-- ---------------------------------------------------ends here----------------------------------------------------------------- -->
+                                <a href="{!! route('days.edit', [$day->day_id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a>
+                                {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            </div>
+                            {!! Form::close() !!}
+                            </td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
 
 <!-- we gonna past it here  -->
 <!-- soyou can write this code at your end okay -->

@@ -39,8 +39,10 @@ class Attendance extends Model
         'attendance_status',
         'edit_date',
         'day',
+        'school_id',
         'month',
-        'year'
+        'year',
+        'attendance_reason'
     ];
 
     /**
@@ -59,7 +61,9 @@ class Attendance extends Model
         'edit_date' => 'string',
         'day' => 'string',
         'month' => 'string',
-        'year' => 'string'
+        'year' => 'string',
+        'school_id' => 'integer',
+        'attendance_reason' => 'string',
     ];
 
     /**

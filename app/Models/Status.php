@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Status extends Model
 {
     protected $fillable = [
-        'teacher_id'
+        'teacher_id',  'school_id',
+   
     ];
     protected $primaryKey = 'status_id';
 

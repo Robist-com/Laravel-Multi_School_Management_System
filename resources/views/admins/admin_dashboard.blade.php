@@ -176,7 +176,7 @@
       <!-- /.col -->
       <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
-          <span class="info-box-icon bg-lime"><i class="glyphicon glyphicon-refresh">{{$batchCount}}</i></span>
+          <span class="info-box-icon bg-lime"><i class="glyphicon glyphicon-refresh">{{$transactionsCount}}</i></span>
 
           <div class="info-box-content">
             <span class="info-box-text alert"><a href="{{route('transactions.index')}}">TRANSACTIONS</a> </span>

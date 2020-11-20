@@ -22,6 +22,9 @@ class LevelController extends AppBaseController
     public function __construct(LevelRepository $levelRepo)
     {
         $this->levelRepository = $levelRepo;
+
+			$this->middleware('auth');
+
     }
 
     /**
@@ -33,12 +36,22 @@ class LevelController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $levels = $this->levelRepository->all();
-        $courses = Course::all();
-        $semester =Semester::all();
-        $department =Department::all();
+        if (auth()->user()->group == "Owner") {
+
+            // $level =  Level::where('school_id', auth()->user()->school_id)->get();
+            $levels =  Level::where('school_id', auth()->user()->school_id)->get();
+            $course = Course::where('school_id', auth()->user()->school_id)->get();
+            $semester =Semester::where('school_id', auth()->user()->school_id)->where('status', 'on')->get();
+            $department =Department::where('school_id', auth()->user()->school_id)->get();
+
+        }else {
+            $levels = $this->levelRepository->all();
+            $course = Course::all();
+            $semester =Semester::all();
+            $department =Department::all();
+        }
         // echo "<pre>"; print_r( $course); die;
-        return view('levels.index', compact('courses','semester','department'))
+        return view('levels.index', compact('course','semester','department'))
             ->with('levels', $levels);
     }
 
@@ -77,11 +90,21 @@ class LevelController extends AppBaseController
             }
             else {
 			foreach($level as $semester){
-            $degree = new Level;
+            $degree =  new Level;
+            // ::createOrUpdate([
+            //     'course_id' => $semester,
+            //     'grade_id' => $request->semester_id,
+            //     'level' => $request->level,
+            //     'status' => $request->status,
+            //     'school_id' => $request->school_id,
+            //     'level_description' => $request->level_description;
+            //     // $degree->save();
+            // ]);
             $degree->course_id = $semester;
             $degree->grade_id = $request->semester_id;
             $degree->level = $request->level;
             $degree->status = $request->status;
+            $degree->school_id = $request->school_id;
             $degree->level_description = $request->level_description;
             $degree->save();
 
@@ -103,7 +126,7 @@ class LevelController extends AppBaseController
      */
     public function show($id)
     {
-        $level = $this->levelRepository->find($id);
+        $level =  Level::where('school_id', auth()->user()->school_id)->find($id);
 
         if (empty($level)) {
             Flash::error('Level not found');
@@ -123,17 +146,26 @@ class LevelController extends AppBaseController
      */
     public function edit($id)
     {
-        $level = $this->levelRepository->find($id);
-        $course = Course::all();
-        $courseID = Course::find($course);
-        //  echo "<pre>"; print_r( $course); die;
+        // $level = Level::find($id);
+        // $levels = Level::find($id);
+        // $semester =Semester::all();
+        // $department =Department::all();
+        // $course = Course::all();
+        // $courseID = Course::find($course);
+
+        $level =  Level::where('school_id', auth()->user()->school_id)->find($id);
+        $levels =  Level::where('school_id', auth()->user()->school_id)->get();
+        $course = Course::where('school_id', auth()->user()->school_id)->get();
+        $semester =Semester::where('school_id', auth()->user()->school_id)->where('status', 'on')->get();
+        $department =Department::where('school_id', auth()->user()->school_id)->get();
+        //  echo "<pre>"; print_r( $semester); die;
         if (empty($level)) {
             Flash::error('Level not found');
 
             return redirect(route('levels.index'));
         }
 
-        return view('levels.edit',  compact('course','courseID'))->with('level', $level);
+        return view('levels.index',  compact('course','semester','department','levels'))->with('level', $level);
     }
 
     /**
@@ -146,15 +178,27 @@ class LevelController extends AppBaseController
      */
     public function update($id, UpdateLevelRequest $request)
     {
-        $level = $this->levelRepository->find($id);
-
+        $level = Level::find($id);
+        
         if (empty($level)) {
             Flash::error('Level not found');
 
             return redirect(route('levels.index'));
         }
 
-        $level = $this->levelRepository->update($request->all(), $id);
+        $levels =  $request->get('course_id');
+
+        // dd($request->semester_id);
+        foreach($levels as $semester){
+           
+            $level->update(['course_id' => $semester,
+            'grade_id' => $request->semester_id,
+            'level' => $request->level,
+            'status' => $request->status,
+            'school_id' => $request->school_id,
+            'level_description' => $request->level_description]);
+        }
+        // $level = $this->levelRepository->update($request->all(), $id);
 
         Flash::success('Level updated successfully.');
 

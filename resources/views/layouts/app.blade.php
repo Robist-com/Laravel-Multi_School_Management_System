@@ -55,6 +55,8 @@
     <script src="{{asset('/js/easion.js')}}"></script> --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
     @include('inbox.compo')
 @php
     use App\Inbox;
@@ -399,6 +401,15 @@ i.fa{ /* Chrome, Firefox, Opera, Safari 10.1+ */
   animation: spin 2s linear infinite;
 }
 
+.navbar{
+    background: #605ca8;
+    
+}
+
+.navbar-brand{
+color : #ffff !important;
+}
+
 /* Safari */
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
@@ -456,7 +467,7 @@ select {
 </style>
 
 
-<body class="skin-purple-light sidebar-mini sidebar-collapse ">
+<body class="skin-purple-light sidebar-mini sidebar-collapse " style="font-family:'Garamond'">
 @if (!Auth::guest())
     <div class="wrapper">
         <!-- Main Header -->
@@ -625,21 +636,21 @@ select {
 
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{!! url('/') !!}">
-                    InfyOm Generator
+                   Admission Form
                 </a>
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
+                <!-- <ul class="nav navbar-nav">
                     <li><a href="{!! url('/home') !!}">Home</a></li>
-                </ul>
+                </ul> -->
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
-                    <li><a href="{!! url('/login') !!}">Login</a></li>
-                    <li><a href="{!! url('/register') !!}">Register</a></li>
+                    <!-- <li><a href="{!! url('/student') !!}">Login</a></li> -->
+                    <!-- <li><a href="{!! url('/register') !!}">Register</a></li> -->
                 </ul>
             </div>
         </div>

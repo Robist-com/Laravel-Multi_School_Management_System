@@ -340,104 +340,104 @@
 
 
         
-$(document).ready(function () {
+// $(document).ready(function () {
     
-        $('#master').on('click', function(e) {
-        var rowCount = '<label class="btn btn-primary " >Total Row Selected is : ' +$('#teachers-table tbody tr').length + ' </label>';
-         if($(this).is(':checked',true))  
-         {
-            $(".sub_chk").prop('checked', true); 
+//         $('#master').on('click', function(e) {
+//         var rowCount = '<label class="btn btn-primary " >Total Row Selected is : ' +$('#teachers-table tbody tr').length + ' </label>';
+//          if($(this).is(':checked',true))  
+//          {
+//             $(".sub_chk").prop('checked', true); 
 
-            $("table").has(".contact").css('background-color','Plum');
-            $("table").has(".contact").css('color','White');
-            $('.delete-modal').hide();
+//             $("table").has(".contact").css('background-color','Plum');
+//             $("table").has(".contact").css('color','White');
+//             $('.delete-modal').hide();
 
-            $("#divoutput").html(rowCount);
+//             $("#divoutput").html(rowCount);
             
 
-         } else {  
-            $(".sub_chk").prop('checked',false);  
-            $("table").has(".contact").css('background-color','');
-            $("table").has(".contact").css('color','');
-            $('.delete-modal').show();
-            $("#divoutput").html('');
-         }  
-        });
+//          } else {  
+//             $(".sub_chk").prop('checked',false);  
+//             $("table").has(".contact").css('background-color','');
+//             $("table").has(".contact").css('color','');
+//             $('.delete-modal').show();
+//             $("#divoutput").html('');
+//          }  
+//         });
 
 
-        $('.delete_all').on('click', function(e) {
+//         $('.delete_all').on('click', function(e) {
 
-            var allVals = [];  
-            $(".sub_chk:checked").each(function() {  
-                allVals.push($(this).attr('data-id'));
-            });  
-
-
-            if(allVals.length <=0)  
-            {  
-                alert("Please select row.");  
-            }  else {  
+//             var allVals = [];  
+//             $(".sub_chk:checked").each(function() {  
+//                 allVals.push($(this).attr('data-id'));
+//             });  
 
 
-                var check = confirm("Are you sure you want to delete this rows?");  
-                if(check == true){  
+//             if(allVals.length <=0)  
+//             {  
+//                 alert("Please select row.");  
+//             }  else {  
 
 
-                    var join_selected_values = allVals.join(","); 
+//                 var check = confirm("Are you sure you want to delete this rows?");  
+//                 if(check == true){  
 
 
-                    $.ajax({
-                        url: $(this).data('url'),
-                        type: 'DELETE',
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                        data: 'promote_ids='+join_selected_values,
-                        success: function (data) {
-                            if (data.success) {
-
-                            $(".sub_chk:checked").each(function() {  
-                                $(this).parents("tr").remove();
-                            });
-                                toastr.options.closeButton = true;
-                                toastr.options.closeMethod = 'fadeOut';
-                                toastr.options.closeDuration = 100;
-                                toastr.options.positionClass = 'toast-top-full-width';
-                                toastr.success(data.success);
-
-                                $("#divoutput").html('');
-                                $("#master").prop('checked',false);
-
-                            } else if (data.error) {
-                                toastr.options.closeButton = true;
-                                toastr.options.closeMethod = 'fadeOut';
-                                toastr.options.closeDuration = 100;
-                                toastr.options.positionClass = 'toast-top-full-width';
-                                toastr.error(data.error);
-                            } else {
-                                alert('Whoops Something went wrong!!');
-                            }
-                        },
-                        error: function (data) {
-                            alert(data.responseText);
-                        }
-                    });
+//                     var join_selected_values = allVals.join(","); 
 
 
-                  $.each(allVals, function( index, value ) {
-                      $('table tr').filter("[data-row-id='" + value + "']").remove();
-                  });
-                }  
-            }  
-        });
+//                     $.ajax({
+//                         url: $(this).data('url'),
+//                         type: 'DELETE',
+//                         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//                         data: 'promote_ids='+join_selected_values,
+//                         success: function (data) {
+//                             if (data.success) {
+
+//                             $(".sub_chk:checked").each(function() {  
+//                                 $(this).parents("tr").remove();
+//                             });
+//                                 toastr.options.closeButton = true;
+//                                 toastr.options.closeMethod = 'fadeOut';
+//                                 toastr.options.closeDuration = 100;
+//                                 toastr.options.positionClass = 'toast-top-full-width';
+//                                 toastr.success(data.success);
+
+//                                 $("#divoutput").html('');
+//                                 $("#master").prop('checked',false);
+
+//                             } else if (data.error) {
+//                                 toastr.options.closeButton = true;
+//                                 toastr.options.closeMethod = 'fadeOut';
+//                                 toastr.options.closeDuration = 100;
+//                                 toastr.options.positionClass = 'toast-top-full-width';
+//                                 toastr.error(data.error);
+//                             } else {
+//                                 alert('Whoops Something went wrong!!');
+//                             }
+//                         },
+//                         error: function (data) {
+//                             alert(data.responseText);
+//                         }
+//                     });
 
 
-        $('[data-toggle=confirmation]').confirmation({
-            rootSelector: '[data-toggle=confirmation]',
-            onConfirm: function (event, element) {
-                element.trigger('confirm');
-            }
-        });
+//                   $.each(allVals, function( index, value ) {
+//                       $('table tr').filter("[data-row-id='" + value + "']").remove();
+//                   });
+//                 }  
+//             }  
+//         });
 
-    });
+
+//         $('[data-toggle=confirmation]').confirmation({
+//             rootSelector: '[data-toggle=confirmation]',
+//             onConfirm: function (event, element) {
+//                 element.trigger('confirm');
+//             }
+//         });
+
+//     });
 
 $(document).ready(function () {
 

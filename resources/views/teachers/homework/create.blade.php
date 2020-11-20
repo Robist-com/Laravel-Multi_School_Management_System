@@ -1,51 +1,81 @@
-@extends('layouts.app')
+
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
 @section('content')
 
-<section class="content-header">
 
-<h1 class="pull-right" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px"><i class="fa fa" aria-hidden="true">HADLE CLASSES </i></h1>
-<a  class="pull-left btn btn-danger" href="{{url('home')}}" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px"><i class="fa fa-back-arrow" aria-hidden="true">Return</i></a>
-    </section>
+@if($template->template == '0')
 
-     <div class="content">
+        @include('teachers.admindefault.homework.create')
+ 
+@else
 
-            <div class="clearfix"></div>
-            <div class="box box-primary">
-                <div class="box-body">
-                <h3 style="font-weight:bold"><i class="fa fa-user-o"></i> HANDLE CLASSES</h3>
-                <hr class="line">
-                    <!-- Split button -->
-              <div class="btn-group">
-                    <button type="button" class="btn btn-danger">SELECT CLASS</button>
-                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu">
-                    @foreach($class_assign1 as $grade) 
-                    <li>
-                    <a data-toggle="tooltip" title="{{$grade->class_name}}" class="dropdown-item" href="{{url('send-class-homework', $grade->class_code)}}">
-                    <label for=""  class="active">{{$grade->semester_name}} </label> | {{$grade->class_code}}
-                    </a></li>
-                    @endforeach
-                    </ul>
-                    </div>
-                    <div class="row">
-                    </div>
-                    <h3 > @if(isset($class_assign)) @foreach ($class_assign as $n => $result) <b style="font-weight:bold; color:red">{{$result->semester_name}}</b>  <b>{{$result->course_name}}</b> @endforeach  @endif</h3>
-                     <a href="{{url('homework-list')}}"><button class="btn btn-info">Homework List</button></a>
-                
-                </div>
-            </div>
-            <div class="">
+  @include('teachers.adminbsb.homework.create')
 
-            @if(isset($class_assign))
-                @include('teachers.homework.table')
-            @endif 
-
-            </div>
-        </div>
-
+  @include('admins.id_cards.style')
+@endif
 
 @endsection
+
+
+@section('js')
+        <script type="text/javascript">
+ 
+           //  Exportable table
+        $('.js-exportable').DataTable({
+            dom: 'Bfrtip',
+            responsive: true,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+
+$(document).ready(function(){
+// alert(1)
+  var deleteLinks = document.querySelectorAll('#addAttendance');
+
+    for (var i = 0; i < deleteLinks.length; i++) {
+        deleteLinks[i].addEventListener('click', function(event) {
+            event.preventDefault();
+
+            var choice = confirm(this.getAttribute('data-confirm'));
+
+            if (choice) {
+                  document.getElementById("attendance_form").submit(); //form id
+            }
+        });
+    }
+
+})
+
+$('input[type="file"]').each(function(){
+  // Refs
+  var $file = $(this),
+      $label = $file.next('label'),
+      $labelText = $label.find('input[name="edit"]'),
+      labelDefault = $labelText.text();
+  
+  // When a new file is selected
+  $file.on('change', function(event){
+    var fileName = $file.val().split( '\\' ).pop(),
+        tmppath = URL.createObjectURL(event.target.files[0]);
+    //Check successfully selection
+		if( fileName ){
+            $label
+        .addClass('file-ok')
+        .css('background-image', 'url(' + tmppath + ')');
+			$labelText.text(fileName);
+           
+    }else{
+      $label.removeClass('file-ok');
+			$labelText.text(labelDefault);
+    }
+  });
+  
+// End loop of file input elements  
+});
+
+        </script>
+        @endsection

@@ -17,7 +17,10 @@ class TimeRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'time'
+        'time',
+        'time_end',
+        'shift_id',
+        'school_id'
     ];
     protected $primaryKey = 'time_id';
     /**

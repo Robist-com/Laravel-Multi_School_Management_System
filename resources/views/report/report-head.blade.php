@@ -1,7 +1,6 @@
 
 
 
-@include('table_style')
 <style>
 .style > a{
     text-decoration:none;
@@ -30,27 +29,27 @@
 </style>
 
 <div class="table-responsive">
-<div class="panel">
-    <div class="panel-body">
+<!-- <div class="panel">
+    <div class="panel-body"> -->
     <div  id="wait"></div>
 
-    <button class="btn btn-info style"><a  href="{{ route('FeeReport') }}" data-toggle="modal" data-target1="#generatePaper-show">Transaction Rport </button></a>
-    <button class="btn btn-info style "  ><a href="{{ route('FeeReport') }}" data-toggle="modal" data-target1="#generatequestion-show">Fee Report</button></a>
-    <button class="btn btn-info style" ><a href="#" data-toggle="modal" data-target="#ReportList">Attendance Report</button></a>
-    <!-- <a href="#"> <button class="btn bg-navy pull-right" data-toggle="modal" data-target="#ReportList">Attendance Report</button></a> -->
+    <button class="btn btn-info btn-round style"><a  href="{{ route('FeeReport') }}" data-toggle="modal" data-target1="#generatePaper-show">Student Rports </button></a>
+    <button class="btn btn-info btn-round style"><a  href="{{ route('FeeReport') }}" data-toggle="modal" data-target1="#generatePaper-show">Transaction Rports </button></a>
+    <button class="btn btn-info btn-round style "  ><a href="{{ route('FeeReport') }}" data-toggle="modal" data-target1="#generatequestion-show">Finance Reports</button></a>
+    <button class="btn btn-info btn-round style" ><a href="#" data-toggle="modal" data-target="#ReportList">Attendance Report</button></a>
 
-    <button class="btn btn-info style" ><a  href="paper/generate"  data-target="1#generatepaper-show"> Generate  Paper</button></a>
-    <button class="btn btn-info style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
-    <!-- <button class="btn btn-info style" ><a data-toggle="modal" data-target="#generatequestion-show"> Generate  Paper</button></a> -->
-    <!-- <button class="btn btn-info style">Make Paper</button> -->
-    <!-- <button class="btn btn-info style">Make Paper</button> -->
-    <!-- <button class="btn btn-info style">Make Paper</button>
-    <button class="btn btn-info style">Make Paper</button>
-    <button class="btn btn-info style">Make Paper</button>
-    <button class="btn btn-info style">Make Paper</button> -->
-    <!-- <button class="btn btn-info style">Make Paper</button> -->
-    </div>
-</div>
+    <button class="btn btn-info btn-round style" ><a  href="paper/generate"  data-target="1#generatepaper-show"> Generate  Paper</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+    <button class="btn btn-info btn-round style" ><a data-toggle="modal" data-target="#createExam"> Create Exam</button></a>
+
 
 
 @include('attendances.attendance_report.report_list')

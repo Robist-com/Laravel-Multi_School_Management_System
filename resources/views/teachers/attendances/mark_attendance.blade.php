@@ -2,7 +2,7 @@
 @include('attendances.style') 
 
 @php
-   $date = date('d-m-Y');
+   $date = date('Y-m-d');
 
    $monthly = date('F', strtotime($date));
    $year = date('Y', strtotime($date));
@@ -11,7 +11,8 @@
 @if ($classes)
 <div class="table-responsive">
 
-    <table class="table  table-hover" id="student">
+    <!-- <table class="table  table-hover" id="student"> -->
+    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap datatable-responsive js-exportable" cellspacing="0" width="100%">
         <thead>
             <tr>
             <th>Roll No.</th>
@@ -20,7 +21,7 @@
                 <th>Absent</th>
                 <th>Late</th>
                 <th>Sick</th>
-                {{-- <th>hllo</th> --}}
+                <th>Reason</th> 
             </tr>
         </thead>
         <tbody>
@@ -39,15 +40,16 @@
             <input type="hidden" name="month" id="month" value="{{$monthly}}">
             <input type="hidden" name="year" id="year" value="{{$year}}">
             <input type="hidden" name="day" id="day" value="{{$day}}">
+            <input type="hidden" name="school_id" id="school_id" value="{{auth()->user()->school_id}}">
             </td>
             <td>
             <input class="atten" type="hidden" name="student_id[]" id="student_id" value="
             {{$item->student_id}}" class="form-control"
-            style="border:none;" readonly>
+            style="border:none;" readonly >
             <label for=""> {{$item->student_firstname }} {{$item->student_lastname}}</label>
             </td>
             <td align="center">
-            <div id="ck-button-present">
+            <div id="ck-button-present" class="fa fa-check-o">
             <label>
             <input style="cursor:pointer;" class="atten" type="radio"id="attendance_status"
             name="attendance_status[{{$item->student_id}}]" value="present" / checked >
@@ -69,7 +71,7 @@
             <td align="center">
             <div id="ck-button-late">
             <label>
-            <input class="atten" type="radio"id="attendance_status"
+            <input class="atten fa fa-check-o" type="radio"id="attendance_status"
             name="attendance_status[{{$item->student_id}}]" value="late" />
             <span>Late</span>
             </label>
@@ -85,9 +87,13 @@
             </label>
             </div>
             </td>
+
+            <td align="center">
+            <input class="form-control" type="text"  id="attendance_reason"
+            name="attendance_reason[{{$item->student_id}}]" placeholder="enter reason if available" />
+            </td>
             </tr>
             @endforeach
-
 
         </tbody>
 
@@ -95,4 +101,6 @@
 </div>
 
 @endif
+
+
 

@@ -60,11 +60,16 @@ class Admission extends Model
         'status',
         'dateregistered',
         'user_id',
-        'class_id',
+        'class_code',
         'department_id',
         'faculty_id',
-        'level_id',
+        'degree_id', // degree_id
         'semester_id',
+        'school_id',
+        'batch_id',
+        'online_admission',
+        'acceptance',
+        'matrital',
         'image'
     ];
 
@@ -91,12 +96,16 @@ class Admission extends Model
         'status' => 'boolean',
         'dateregistered' => 'date',
         'user_id' => 'integer',
-        'class_id' => 'string',
+        'class_code' => 'string',
         'department_id' => 'integer',
         'faculty_id' => 'integer',
-        'level_id' => 'integer',
+        'degree_id' => 'integer',
         'semester_id' => 'integer',
-        'image' => 'string'
+        'school_id' => 'integer',
+        'image' => 'string',
+        'acceptance' => 'string',
+        'online_admission' => 'string',
+        'matrital' => 'string'
     ];
 
     /**
@@ -112,7 +121,7 @@ class Admission extends Model
         'mother_name' => 'required',
         'gender' => 'required',
         'email' => 'required',
-        'dob' => 'required',
+        // 'dob' => 'required',
         'phone' => 'required',
         'address' => 'required',
         'current_address' => 'required',
@@ -123,7 +132,7 @@ class Admission extends Model
         'user_id' => 'required',
         'department_id' => 'required',
         'faculty_id' => 'required',
-        'class_id' => 'required'
+        'class_code' => 'required'
     ];
 
     public function semester_detail()
@@ -142,5 +151,10 @@ class Admission extends Model
 		
 	}
 
+
+    public function school()
+    {
+        return $this->belongsTo('App\School');
+    }
     
 }

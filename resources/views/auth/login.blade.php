@@ -52,14 +52,14 @@ $institute = Institute::first();
     </div>
 
     <!-- /.login-logo -->
-    <div class="login-box-body">
+    <div class="login-box-body" >
         <p class="login-box-msg">Sign in to start your session</p>
 
         <form method="post" action="{{ url('login/action') }}">
             {!! csrf_field() !!}
 
             <div class="form-group has-feedback {{ $errors->has('email') ? ' has-error' : '' }}">
-                <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Email">
+                <input type="email" class="form-control" name="email" id="username" value="{{ old('email') }}" placeholder="Email">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                 @if ($errors->has('email'))
                     <span class="help-block">
@@ -69,7 +69,7 @@ $institute = Institute::first();
             </div>
 
             <div class="form-group has-feedback{{ $errors->has('password') ? ' has-error' : '' }}">
-                <input type="password" class="form-control" placeholder="Password" name="password">
+                <input type="password" class="form-control" id="password" placeholder="Password" name="password">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 @if ($errors->has('password'))
                     <span class="help-block">
@@ -94,32 +94,66 @@ $institute = Institute::first();
             </div>
         </form>
 
-        <a href="{{ url('/password/reset') }}">I forgot my password</a><br>
-        <a href="{{ url('/register') }}" class="text-center">Register a new membership</a>
-        <br><br>
-        <div class="btn-group">
-       <a href="{{ url('/student') }}" class="text-center btn btn-rounded btn-primary"> <i class="fa fa-key">  Login As Student</i> </a>
-        </div>
-        <div class="btn-group">
-        <a href="{{ url('/parent') }}" class="text-center btn btn-rounded btn-primary"> <i class="fa fa-key">  Login As Parent</i> </a>
-    </div>
-        <div class="btn-group">
-        <a href="{{ url('/') }}" class="text-center btn btn-rounded btn-primary"><i class="fa fa-home"> Home</i>  </a>
+                    <div class="row">
+                      <div class="btn-group" data-toggle1="buttons">
+                        <label class="btn btn-success">
+                            <input type="hidden" name="" id="admin_username" value="3939919@gmail.com">
+                            <input type="hidden" name="" id="admin_password" value="superadmin">
+                            <input type="radio" class="form-checkbox" name="checkku"> admin  
+                        </label>
+                        <label class="btn btn-info">
+                        <input type="hidden" name="" id="teacher_username" value="admin@admin.com">
+                        <input type="hidden" name="" id="teacher_password" value="superadmin">
+                          <input type="radio" name="options" id="teacher_id"> Teacher
+                        </label>
+                        <label class="btn btn-warning">
+                        <!-- <input type="hidden" name="" id="student_username" value="411160930000111">
+                        <input type="hidden" name="" id="student_password" value="411160930000111"> -->
+                        <input type="hidden" name="" id="student_username" value="ala@gmail.com">
+                        <input type="hidden" name="" id="student_password" value="superadmin">
+                          <input type="radio" name="options" id="student_id"> School
+                        </label>
+                        <!-- <label class="btn btn-warning">
+                        <input type="hidden" name="" id="parent_username" value="ala@gmail.com">
+                        <input type="hidden" name="" id="parent_password" value="superadmin">
+                          <input type="radio" name="options" id="parent_id"> School
+                        </label> -->
+                        <!-- <label class="btn btn-dark">
+                        <input type="hidden" name="" id="accountant_username" value="411160930000111">
+                        <input type="hidden" name="" id="accountant_password" value="411160930000111">
+                          <input type="radio" name="options" id="accountant_id"> Accountant
+                        </label> -->
+                        
+                      </div>
+                      </div>
+
+                        <a href="{{ url('/password/reset') }}">I forgot my password</a><br>
+                        <a href="{{ url('/register') }}" class="text-center">Register a new membership</a>
+                        <br><br>
+                        <div class="btn-group">
+                        <a href="{{ url('/student') }}" class="text-center btn btn-rounded btn-primary"> <i class="fa fa-key">  Login As Student</i> </a>
+                        </div>
+                        <div class="btn-group">
+                        <a href="{{ url('/parent') }}" class="text-center btn btn-rounded btn-primary"> <i class="fa fa-key">  Login As Parent</i> </a>
+                        </div>
+                        <div class="btn-group">
+                        <a href="{{ url('/') }}" class="text-center btn btn-rounded btn-primary"><i class="fa fa-home"> Home</i>  </a>
        
-    </div>
-    </div>
+                        </div>
+                        </div>
+
     <!-- /.login-box-body -->
-</div>
+                </div>
 <!-- /.login-box -->
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<!-- AdminLTE App -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/js/adminlte.min.js"></script>
+            <!-- AdminLTE App -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/js/adminlte.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
-<script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
+<!-- <script>
     $(function () {
         $('input').iCheck({
             checkboxClass: 'icheckbox_square-blue',
@@ -127,6 +161,138 @@ $institute = Institute::first();
             increaseArea: '20%' // optional
         });
     });
-</script>
+    </script> -->
+    <script>
+
+    $(document).ready(function(){	
+        var admin_username = $('#admin_username').val();
+        var admin_password = $('#admin_password').val();
+
+        var teacher_username = $('#teacher_username').val();
+        var teacher_password = $('#teacher_password').val();
+
+        var student_username = $('#student_username').val();
+        var student_password = $('#student_password').val();
+
+	
+		$('.form-checkbox').click(function(){
+			if($(this).is(':checked')){
+                
+            $('#username').val(admin_username);
+            $('#password').val(admin_password);
+			}else{
+                $('#username').val('');
+                $('#password').val('');
+			}
+        });
+        
+        $('#teacher_id').click(function(){
+			if($(this).is(':checked')){
+                
+            $('#username').val(teacher_username);
+            $('#password').val(teacher_password);
+			}else{
+			$('#username').val('');
+            $('#password').val('');
+			}
+        });
+        
+        $('#student_id').click(function(){
+			if($(this).is(':checked')){
+                
+            $('#username').val(student_username);
+            $('#password').val(student_password);
+			}else{
+			$('#username').val('');
+            $('#password').val('');
+			}
+		});
+	});
+
+    </script>
+
+
+    <!-- <script>
+
+        $(document).ready(function() {
+
+        var remember = $('#admin_id').val($(this).is(':checked'));
+        alert(remember)
+        if (remember == 'true') 
+        {
+            alert(1)
+            var email = $.cookie('email');
+            var password = $.cookie('password');
+            // autofill the fields
+            $('#email').val(email);
+            $('#password').val(password);
+        }
+
+
+        $("#login").submit(function() {
+        if ($('#remember').is(':checked')) {
+            var email = $('#email').val();
+            var password = $('#password').val();
+
+            // set cookies to expire in 14 days
+            $.cookie('email', email, { expires: 14 });
+            $.cookie('password', password, { expires: 14 });
+            $.cookie('remember', true, { expires: 14 });                
+        }
+        else
+        {
+            // reset cookies
+            $.cookie('email', null);
+            $.cookie('password', null);
+            $.cookie('remember', null);
+        }
+        });
+        });
+
+
+    $(document).ready(function() {
+    //set initial state.
+    // $('#admin_id').val($(this).is(':checked'));
+    
+    // $('#checkbox1').change(function() {
+        if($(this).is(":checked")) {
+            $('#username').val(admin_username);
+            $('#password').val(admin_password);
+
+            // var returnVal = confirm("Are you sure?");
+            // $(this).attr("checked", returnVal);
+        }
+        $('#username').val($(this).is(':checked'));        
+    // });
+});
+
+
+    $(document).ready(function() {
+
+        var admin_username = $('#admin_username').val();
+        var admin_password = $('#admin_password').val();
+
+
+            // $('#username').val(admin_username);
+            // $('#password').val(admin_password);
+        
+        // alert(admin_username)
+        // alert(admin_password)
+
+   
+
+    $('#username').change(function() {
+        if(this.checked) {
+            var returnVal = confirm("Are you sure?");
+            $(this).prop("checked", returnVal);
+        }
+        $('#admin_id').val(this.checked);        
+    });
+});
+
+    // $('#admin_id').on('click', function(){
+    //     alert(this.val())
+    // })
+</script> -->
 </body>
 </html>

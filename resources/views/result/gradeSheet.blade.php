@@ -192,7 +192,7 @@
 function getdepartment()
 {
  var aclass = $('#class').val();
- //  var session = $('#session').val();
+  var session = $('#session').val();
   if(session==''){
     session =2020;
   }

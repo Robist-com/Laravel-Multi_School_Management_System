@@ -31,7 +31,9 @@ protected $primaryKey = 'id';
         'level',
         'course_id',
         'level_description',
-        'status'
+        'status',
+        'school_id',
+
     ];
 
     /**
@@ -44,7 +46,8 @@ protected $primaryKey = 'id';
         'level' => 'string',
         'course_id' => 'integer',
         'status' => 'tinyint',
-        'level_description' => 'string'
+        'level_description' => 'string',
+        'school_id' => 'integer',
     ];
 
     /**

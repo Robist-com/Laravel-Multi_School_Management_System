@@ -1,29 +1,33 @@
-@extends('layouts.app')
+
+<?php   $template = App\Institute::where('school_id', auth()->user()->school_id)->first(); ?>
+
+@extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
 @section('content')
-    <section class="content-header">
-        <h1 class="pull-left"><i class="fa fa-calendar">  Attendance</i></h1>
-        <h1 class="pull-right">
-            {{-- <a data-toggle="modal" data-target="#attendance-show" class="btn btn-success pull-right" style="margin-top: -10px;margin-bottom: 5px"><i class="fa fa-pencil"> Mark Attendance</i></a> --}}
-            <a href="{{url('class/attendance/list')}}" class="btn btn-success pull-right" style="margin-top: -10px;margin-bottom: 5px"><i class="fa fa-pencil"> Mark Attendance</i></a>
-        </h1>
-    </section>
-    <div class="content">
+
+
+@if($template->template == '0')
+
         <div class="clearfix"></div>
 
         @include('flash::message')
+        @include('adminlte-templates::common.errors')
 
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
-                    @include('attendances.attendance')
+        @include('attendances.admindefault.attendance')
+            <!-- </div> -->
+
+@else
+
+        @include('flash::message')
+        @include('adminlte-templates::common.errors')
+
+        @include('attendances.adminbsb.attendance')
+            <!-- </div> -->
 
 
-            </div>
-        </div>
-        <div class="text-center">
-    
-    </div>
-  </div>
+@endif
+
 @endsection
+
+
 

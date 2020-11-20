@@ -34,6 +34,7 @@ class ClassAssigningController extends AppBaseController
     public function __construct(ClassAssigningRepository $classAssigningRepo)
     {
         $this->classAssigningRepository = $classAssigningRepo;
+        $this->middleware('auth');
     }
 
     /**

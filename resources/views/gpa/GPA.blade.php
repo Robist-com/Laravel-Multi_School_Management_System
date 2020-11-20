@@ -1,5 +1,5 @@
-@extends('layouts.app')
-@include('table_style')
+@extends('layouts.new-layouts.app')
+<!-- @include('table_style') -->
 @section('content')
 @if (Session::get('success'))
 <div class="alert alert-success">
@@ -8,14 +8,34 @@
 
 </div>
 @endif
-<div class="row">
-<div class="box col-md-12">
-        <div class="box-inner">
-            <div data-original-title="" class="box-header well">
-                <h2><i class="glyphicon glyphicon-user"></i> Grading Rules</h2>
 
-            </div>
-          <div class="box-content">
+<div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                  <h2><i class="glyphicon glyphicon-user"></i> Grading Rules</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+ 
+            
+
+
             @if (count($errors) > 0)
                                   <div class="alert alert-danger">
                                       <strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -27,11 +47,29 @@
                                   </div>
                   @endif
                    @if($gpa)
-                     <form role="form" action="{{url('/gpa/update')}}" method="post" enctype="multipart/form-data">
+                     <form role="form" action="{{url('/gpa/update')}}" method="post" enctype="multipart/form-data" autocomplete="off">
                        <input type="hidden" name="id" value="{{$gpa->id}}">
                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
                      <div class="row">
                      <div class="col-md-12">
+                        @if(auth()->user()->group == "Admin")
+                      <div class="form-group">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-building blue"></i></span>
+                          <select name="school_id" id="school_id" class="form-control">
+                            <option value="">Select School</option>
+                            @foreach(auth()->user()->school->all() as $school)
+                            <option value="{{$school->id}}" @if(isset($classRoom)) @if($school->id === $classRoom->school_id) selected  @endif @endif>{{$school->name}}</option>
+                            @endforeach
+                          </select>
+      
+                        </div>
+                        </div>
+                        </div>
+                      @else
+                      <input type="hidden" name="school_id" id="school_id" class="form-control"   value="{{auth()->user()->school->id}}" >
+                      @endif
                        <div class="col-md-4">
                            <div class="form-group">
                          <label for="for">Grade For[100 Marks]</label>
@@ -92,14 +130,34 @@
 
                      </div>
                    </div>
-                    <button class="btn btn-primary pull-right" type="submit"><i class="glyphicon glyphicon-plus"></i>Update</button>
-                      </form>
+                 
+                    <button class="btn btn-primary pull-right btn-round" type="submit"><i class="glyphicon glyphicon-plus"></i>Update</button>
+                    <a href="{{url('gpa')}}" class="btn btn-default btn-round pull-right"> Cancel </a>   
+                  </form>
                     @else
-                    <form role="form" action="{{url('/gpa/create')}}" method="post" enctype="multipart/form-data">
+                    <form role="form" action="{{url('/gpa/create')}}" method="post" enctype="multipart/form-data" autocomplete="off">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                     <div class="row">
                     <div class="col-md-12">
+                    @if(auth()->user()->group == "Admin")
+                   <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-building blue"></i></span>
+                      <select name="school_id" id="school_id" class="form-control">
+                        <option value="">Select School</option>
+                        @foreach(auth()->user()->school->all() as $school)
+                        <option value="{{$school->id}}" @if(isset($classRoom)) @if($school->id === $classRoom->school_id) selected  @endif @endif>{{$school->name}}</option>
+                        @endforeach
+                      </select>
+  
+                    </div>
+                    </div>
+                    </div>
+                   @else
+                   <input type="hidden" name="school_id" id="school_id" class="form-control"   value="{{auth()->user()->school->id}}" >
+                   @endif
                       <div class="col-md-4">
                           <div class="form-group">
                         <label for="for">Grade For</label>
@@ -162,7 +220,7 @@
                   </div>
 
 
-                      <button class="btn btn-primary pull-right" type="submit"><i class="glyphicon glyphicon-plus"></i>Add</button>
+                      <button class="btn btn-dark btn-round pull-right" type="submit"><i class="glyphicon glyphicon-plus "></i>Add</button>
                       <br>
                         </form>
                     @endif
@@ -173,7 +231,8 @@
                 @if(count($gpaes)>0)
                 <div class="row">
                   <div class="col-md-12">
-                    <table id="gpaList" class="table table-striped table-bordered table-hover">
+                    <!-- <table id="gpaList" class="table table-striped table-bordered table-hover"> -->
+                    <table id="datatable-keytable" class="table table-striped table-bordered">
                                                                <thead>
                                                                    <tr>
                                                                        <th>GPA For</th>
@@ -212,7 +271,7 @@
                                                                      <td>{{$gpa->markto}}</td>
 
                                                              <td>
-                                                                       <a title='Edit' class='btn btn-info' href='{{url("/gpa/edit")}}/{{$gpa->id}}'> <i class="glyphicon glyphicon-edit icon-white"></i></a>&nbsp&nbsp<a title='Delete' class='btn btn-danger' href='{{url("/gpa/delete")}}/{{$gpa->id}}'> <i class="glyphicon glyphicon-trash icon-white"></i></a>
+                                                                       <a title='Edit' class='btn btn-info btn-sm' href='{{url("/gpa/edit")}}/{{$gpa->id}}'> <i class="glyphicon glyphicon-edit icon-white"></i></a>&nbsp&nbsp<a title='Delete' class='btn btn-danger btn-sm' href='{{url("/gpa/delete")}}/{{$gpa->id}}'> <i class="glyphicon glyphicon-trash icon-white"></i></a>
                                                                      </td>
                                                                  @endforeach
                                                                  </tbody>
@@ -222,15 +281,12 @@
                 </div>
                 @endif
 
-
-
-
-
-
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
-</div>
-</div>
 @stop
 @section('script')
 <script type="text/javascript">

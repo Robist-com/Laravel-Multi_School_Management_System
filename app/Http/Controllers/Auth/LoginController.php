@@ -43,6 +43,25 @@ class LoginController extends Controller
             // }
         }
 
+        public function change_skin($value)
+	{
+		setcookie("skin", $value, time() + (3600), "/");
+		return back();
+    }
+
+    
+    
+    public function restore()
+    {
+    	ini_set('max_execution_time', 300);
+		Artisan::call("migrate:refresh");
+		Artisan::call("db:seed");
+		\Session::flush();
+        \Session::regenerate();
+		$message =  trans('topbar_menu_lang.success');
+		return redirect('/')->withMessage($message);
+    }
+
   
    
     /**

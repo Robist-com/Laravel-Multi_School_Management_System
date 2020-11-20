@@ -13,9 +13,52 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+
+// // Route::resource('admission', 'ApiAdmissionController');
+
+// // Route::get('student', 'ApiStudentController@getStudent')->name('student.index');
+// // Route::get('admission', 'ApiAdmissionController@getAdmission')->name('admission.index');
+
+// // Route::middleware('auth:api')->get('/user', function (Request $request) {
+
+// //     return $request->user();
+
+// //     // Route::resource('admission', 'ApiAdmissionController');
+// //     Route::get('admission', 'ApiAdmissionController@getAdmission')->name('admission.index');
+// //  });
+ 
+// //  Route::post('login', 'API\PassportController@login');
+ 
+// //  Route::post('register', 'API\PassportController@register');
+ 
+//  Route::group(['middleware' => 'auth:api'], function(){
+ 
+    // Route::get('admission', 'ApiAdmissionController@getAdmission')->name('admission.index');
+ 
+//  });
+
+
+ Route::middleware('auth:api')->get('/user', function (Request $request) {
+
     return $request->user();
-});
+ 
+ });
 
+ Route::get('admission', 'ApiAdmissionController@getAdmission')->name('admission.index')->middleware('auth:api');;
+ 
+ Route::post('login', 'API\AdmissionController@login');
+ 
+ Route::post('register', 'API\AdmissionController@register');
+ 
+ Route::group(['middleware' => 'auth:api'], function(){
+ 
+ Route::post('get-details', 'API\AdmissionController@getDetails');
 
-Route::resource('admissions', 'AdmissionsAPIController');
+//  Route::get('admission', 'API\AdmissionController@getAdmission')->name('admission.index');
+
+ 
+ });

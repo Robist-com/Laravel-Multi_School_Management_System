@@ -10,6 +10,6 @@ class PromoteStudent extends Model
 	protected $fillable = ['student_id',
 	'grade_id',
 	'class_code',
-	'status'
+	'status', 'school_id'
 	];
 }

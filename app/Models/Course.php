@@ -35,7 +35,9 @@ class Course extends Model
         'class',
         'department',
         'gradeSystem',
-        'status'
+        'status',
+        'school_id',
+
     ];
 
     /**
@@ -51,7 +53,8 @@ class Course extends Model
         'class' => 'string',
         'department' => 'string',
         'gradeSystem' => 'integer',
-        'status' => 'tyinyinteger'
+        'status' => 'tyinyinteger',
+        'school_id' => 'integer',
     ];
 
     /**
