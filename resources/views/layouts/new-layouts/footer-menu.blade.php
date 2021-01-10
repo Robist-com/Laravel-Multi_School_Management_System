@@ -1,5 +1,5 @@
 <div class="sidebar-footer hidden-small">
-    <a data-toggle="modal" data-target=".settings-modal">
+    <a data-toggle="modal1" data-target=".settings-modal">
       <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
     </a>
     <a data-toggle="tooltip" data-placement="top" title="FullScreen" id="fullscreen">

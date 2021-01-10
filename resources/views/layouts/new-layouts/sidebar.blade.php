@@ -390,9 +390,9 @@
             <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                     href="{{route('roles.index')}}" aria-expanded="false"><i class="fa fa-lock"></i><span
                         class="hide-menu">Role</span></a></li>
-            <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+            {{-- <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                     href="{{route('permissions.index')}}" aria-expanded="false"><i
-                        class="fa fa-lock fa fa-unlock"></i><span class="hide-menu">Permission</span></a></li>
+                        class="fa fa-lock fa fa-unlock"></i><span class="hide-menu">Permission</span></a></li> --}}
 
 
 
@@ -407,74 +407,74 @@
                 </ul>
             </li> --}}
 
-            @if(in_array('school_view',$permision) || in_array('school_add',$permision) ||
-            in_array('school_update',$permision) || in_array('school_delete',$permision))
+            {{-- @if(in_array('school_view',$permision) || in_array('school_add',$permision) || --}}
+            {{-- in_array('school_update',$permision) || in_array('school_delete',$permision)) --}}
             <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" aria-expanded="false"><i
                         class="fa fa-building" aria-hidden="true"></i><span class="fa fa-chevron-down"></span> School
                 </a>
                 <ul aria-expanded="false" class="nav child_menu">
 
-                    @if(in_array('school_view',$permision))
+                    {{-- @if(in_array('school_view',$permision)) --}}
                     <li class="sidebar-item"><a href="{{ route('school.index') }}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Manage School </span></a></li>
-                    @endif
+                    {{-- @endif --}}
                     {{-- @if(in_array('school_delete',$permision))
                     <li class="sidebar-item"><a href="{{ url('manage') }}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Fee Structutre </span></a></li>
                     @endif --}}
                 </ul>
             </li>
-            @endif
+            {{-- @endif --}}
 
             <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" aria-expanded="false"><i
                         class="fa fa-paw" aria-hidden="true"></i><span class="fa fa-chevron-down"></span> Academics </a>
                 <ul aria-expanded="false" class="nav child_menu">
-                    @if(in_array('class_add',$permision))
+                    {{-- @if(in_array('class_add',$permision)) --}}
                     <li class="sidebar-item"><a href="{{route('classes.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-outline"></i><span class="hide-menu"> Add Classes </span></a></li>
-                    @endif
+                    {{-- @endif --}}
                     {{-- @if(in_array('batch_add',$permision))--}}
                     <li class="sidebar-item"><a href="{{route('batches.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Session </span></a></li>
                     {{-- @endif  --}}
 
-                    @if(in_array('subject_add',$permision))
+                    {{-- @if(in_array('subject_add',$permision)) --}}
                     <li class="sidebar-item"><a href="{{route('courses.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Subject </span></a></li>
-                    @endif
+                    {{-- @endif --}}
 
-                    @if(in_array('level_add',$permision))
+                    {{-- @if(in_array('level_add',$permision)) --}}
                     <li class="sidebar-item"><a href="{{route('levels.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Level </span></a></li>
-                    @endif
+                    {{-- @endif --}}
 
-                    @if(in_array('day_add',$permision))
+                    {{-- @if(in_array('day_add',$permision)) --}}
                     <li class="sidebar-item"><a href="{{route('days.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Days </span></a></li>
-                    @endif
+                    {{-- @endif --}}
 
-                    @if(in_array('shift_add',$permision))
+                    {{-- @if(in_array('shift_add',$permision)) --}}
                     <li class="sidebar-item"><a href="{{route('shifts.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Shifts </span></a></li>
-                    @endif
+                    {{-- @endif --}}
 
-                    @if(in_array('class_add',$permision))
+                    {{-- @if(in_array('class_add',$permision)) --}}
                     <li class="sidebar-item"><a href="{{route('times.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Times </span></a></li>
-                    @endif
-                    @if(in_array('classroom_add',$permision))
+                    {{-- @endif --}}
+                    {{-- @if(in_array('classroom_add',$permision)) --}}
                     <li class="sidebar-item"><a href="{{route('classRooms.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Rooms </span></a></li>
-                    @endif
+                    {{-- @endif --}}
 
                     {{-- @if(in_array('class_add',$permision))
                     <li class="sidebar-item"><a href="{{route('academics.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Academics </span></a></li>
                     @endif --}}
-                    @if(in_array('grade_add',$permision))
+                    {{-- @if(in_array('grade_add',$permision)) --}}
                     <li class="sidebar-item"><a href="{{route('semesters.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Grade </span></a></li>
-                    @endif
+                    {{-- @endif --}}
                 </ul>
             </li>
 
@@ -606,8 +606,8 @@
                 </ul>
             </li>
 
-            <li class="sidebar-item"><a href="{{url('user.salary')}}" class="sidebar-link"><i
-                        class="fa fa-money"></i><span class="hide-menu">Salary</span></a></li>
+            {{-- <li class="sidebar-item"><a href="{{url('user.salary')}}" class="sidebar-link"><i
+                        class="fa fa-money"></i><span class="hide-menu">Salary</span></a></li> --}}
 
             <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark"
                     href="javascript:void(0)" aria-expanded="false"><i class="fa fa-credit-card "
@@ -921,6 +921,7 @@
                 </ul>
             </li>
 
+            @if (App\Models\ClassSchedule::count() > 0) {
             <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark"
                     href="javascript:void(0)" aria-expanded="false"><i class="fa fa-fax" aria-hidden="true"></i><span
                         class="fa fa-chevron-down"></span> Results </a>
@@ -932,8 +933,9 @@
               <li class="sidebar-item"><a href="{{url('county.home')}}" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Country </span></a></li> -->
                 </ul>
             </li>
+            @endif
 
-            <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark"
+            {{-- <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark"
                     href="javascript:void(0)" aria-expanded="false"><i class="fa fa-money" aria-hidden="true"></i><span
                         class="fa fa-chevron-down"></span> Salaries </a>
                 <ul aria-expanded="false" class="nav child_menu">
@@ -944,7 +946,7 @@
                                 class="mdi mdi-note-outline"></i><span class="hide-menu"> Salary Types </span></a></li>
 
                 </ul>
-            </li>
+            </li> --}}
         </ul>
     </div>
 </div>
