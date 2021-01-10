@@ -78,7 +78,7 @@
                 <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <select name="department" class="form-control select_2_single" id="department_id">
-                            <option value="">Select Department</option>
+                            <option value="">Select Class Group </option>
                             @foreach ($department as $department)
                             <option value="{{ $department->department_id}}"
                                 @if(isset($course)){{$department->department_id == $course->department ? 'selected' : ''}}
@@ -157,7 +157,7 @@
     <div class="col-md-8 col-sm-8 col-xs-8">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Table Subjects </h2>
+                <h2> Subjects List </h2>
                 <ul class="nav navbar-right panel_toolbox">
                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </li>
@@ -181,7 +181,7 @@
                                 <th class="column-title">Subject</th>
                                 <th class="column-title">Code</th>
                                 <th class="column-title">Class</th>
-                                <th class="column-title">Department</th>
+                                <th class="column-title">Class Group</th>
                                 <th class="column-title">Status</th>
                                 <th class="column-title no-link last"><span class="nobr">Action</span>
                                 </th>
@@ -242,3 +242,69 @@
         </div>
     </div>
 </div>
+
+
+ @section('scripts')
+
+<script>
+//   $(document).ready(function(){
+//     alert(1)
+//   })
+$('#department_id').on('change',function(e){
+
+var department_id = $(this).val();
+var class_id = $('#subject_class')
+    $(class_id).empty();
+$.get("{{ route('dynamicDepartmentsWithClass') }}",{department_id:department_id},function(data){  
+    
+console.log(data);
+$.each(data,function(i,c){
+$(class_id).append($('<option/>',{
+value : c.class_code,
+text  : c.class_name +'-'+ c.class_code
+}))
+}) 
+})
+});
+
+$(document).ready(function(){
+
+$('#course_name').on('keyup', function(){
+
+var randomString = function(length) {
+
+var text = "";
+
+// var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+var possible = "ABCDEFGHIJKLMNOP56789QRSTUVWXYZ01234";
+
+for(var i = 0; i < length; i++) {
+
+  text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+}
+
+return text;
+}
+
+// random string length
+var random = randomString(3);
+var class_name = $("#course_name").val();
+  
+if (class_name !== '') {
+  var elem = document.getElementById("course_code").value = random +'-'+ class_name;
+}else{
+  var elem = document.getElementById("course_code").value = '';
+}
+  // alert(random)
+// insert random string to the field
+
+})
+
+// $('#course_code').attr('disabled', true);
+
+}) 
+
+</script>
+    
+@endsection

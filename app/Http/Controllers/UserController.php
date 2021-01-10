@@ -34,9 +34,28 @@ class UserController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->all();
-        $roles = Role::all();
-        return view('users.index', compact('roles'))
+        // $users = $this->userRepository->all();
+        if (auth()->user()->group == 'Owner') {
+
+            $users = User::where('school_id', auth()->user()->school_id)->get();
+
+            $roles = Role::where('school_id', auth()->user()->school_id)->get();
+
+            // $SchoolOwnerusers = User::where('group', 'Owner')->get();
+        }
+        else {
+           $users = User::where('group', 'Staff')
+                       ->Orwhere('group', 'Admin')
+                       ->get();
+
+        $roles = Role::where('name', '!=', 'Owner')->where('name', '!=', 'Teacher')
+        ->where('name', '!=', 'Parent')->where('name', '!=', 'Student')
+        ->where('name', '!=', 'Client')->get();
+
+        $SchoolOwnerusers = User::where('group', 'Owner')->get();
+        }
+        
+        return view('users.index', compact('roles', 'SchoolOwnerusers'))
             ->with('users', $users );
     }
 

@@ -19,6 +19,7 @@ class CreateStudentFees extends Migration
             $table->integer('fee_id')->nullable(); // fee_structure_id
             $table->integer('level_id')->nullable();
             $table->float('amount', 8,2)->nullable();
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

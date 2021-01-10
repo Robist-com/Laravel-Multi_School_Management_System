@@ -20,7 +20,7 @@ class Inboxes extends Migration
             $table->string('flag')->nullable();
             $table->string('remember_token')->nullable();
             $table->tinyInteger('status')->default(0);
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
 
             $table->timestamps();

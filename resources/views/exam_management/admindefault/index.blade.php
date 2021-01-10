@@ -1,6 +1,13 @@
 @extends('layouts.new-layouts.app')
 @section('content')
 
+@if (count($classes) == 0)
+<span><i class="fa fa-info"></i> <marquee behavior="" direction="">Classes Table is Empty Please create classes to able to create Exam</marquee> <a href="{{ route('classes.index') }}" class="btn btn-sm btn-dark"> Create Class</a> </span>
+@endif
+@if(count($department) == 0)
+<span><i class="fa fa-info"></i> <marquee behavior="" direction="">Student Group is Empty Please create group to able to create Exam</marquee> <a href="{{ route('departments.index') }}" class="btn btn-sm btn-dark"> Create Group</a> </span>
+@endif
+
 
     <div class="content">
         <div class="clearfix"></div>

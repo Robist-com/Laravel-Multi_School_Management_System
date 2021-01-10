@@ -3,7 +3,235 @@
 @section('content')
 
 
+<!-- 
+  -----------
+  Visit Patternwall.net for free background patterns! 
+  -----------
+-->
 
+
+<style>
+  @import "compass/css3";
+/* FontAwesome - The best icon font ever :) https://fortawesome.github.io/Font-Awesome/ Thanks to Dave Gandy and all involved in FontAwesome !!! */
+ [class^="icon"], [class*=" icon"] {
+	 font-family: FontAwesome;
+	 font-weight: normal;
+	 font-style: normal;
+	 text-decoration: inherit;
+	 -webkit-font-smoothing: antialiased;
+}
+ .iconUser:before {
+	 content: "\f007";
+	 margin-right: 6px;
+}
+ .iconAdd {
+	 color: gray;
+	 cursor: pointer;
+	 float: right;
+	 font-size: 28px;
+	 margin-top: 6px;
+}
+ .iconAdd:before {
+	 content: "\f067";
+}
+ .iconAdd:hover {
+	 color: #9a9a9a;
+}
+ .iconRemove {
+	 cursor: pointer;
+	 color: gray;
+}
+ .iconRemove:before {
+	 content: "\f00d";
+}
+ .patternwall {
+	 position: absolute;
+	 bottom: 20px;
+	 right: 20px;
+}
+
+ .clear {
+	 clear: both;
+}
+ .permissionWrapper {
+	 width: 600px;
+	 margin: 50px auto;
+}
+ .listFilterLabel {
+	 color: gray;
+}
+ .listFilterInput {
+	 margin: 0 0 20px 10px;
+	 height: 28px;
+	 line-height: 28px;
+	 color: gray;
+	 padding: 0 10px;
+	 background-color: #2e2e2e;
+	 border: solid 1px #343434;
+}
+ .listFilterInput:focus {
+	 outline: none;
+}
+ .permissionsTable {
+	 width: 100%;
+	 color: #5a5a5a;
+}
+ .permissionsTable tr {
+	 background-color: #ffffff;
+}
+ .permissionsTable th, .permissionsTable td {
+	 height: 42px;
+	 font-size: 14px;
+	 font-weight: normal;
+	 padding: 0 5px;
+}
+ .permissionsTable th:first-child, .permissionsTable td:first-child {
+	 text-align: left;
+	 padding: 4px 10px;
+}
+ .permissionsTable th:last-child, .permissionsTable td:last-child {
+	 width: 25px !important;
+}
+ .permissionsTable th:not(:first-child), .permissionsTable td:not(:first-child) {
+	 width: 60px;
+}
+ .permissionsTable thead th {
+	 border-bottom: solid 3px #2e2e2e;
+}
+ .permissionsTable tbody tr td:first-child {
+	 /* font-style: italic; */
+}
+ .permissionsTable tbody tr:hover {
+   background-color: #2A3F54;
+   color: #fff
+}
+ .permissionsTable tbody tr.focused {
+   background-color: #2A3F54;
+   color: #fff
+}
+ .permissionsTable tbody .userName {
+	 display: inline-block;
+	 width: 90%;
+}
+ .permissionTag {
+	 -webkit-user-select: none;
+	 -moz-user-select: none;
+	 user-select: none;
+	 cursor: pointer;
+	 text-align: center;
+	 font-size: 12px;
+}
+ .permissionTag[data-perm=view].multi {
+	 background-color: #c1c1c1;
+}
+ .permissionTag[data-perm=view].active {
+	 color: white;
+	 background-color: #8dca35;
+}
+ .permissionTag[data-perm=edit].multi {
+	 background-color: #c1c1c1;
+}
+ .permissionTag[data-perm=edit].active {
+	 color: white;
+	 background-color: #ffab00;
+}
+ .permissionTag[data-perm=delete].multi {
+	 background-color: #c1c1c1;
+}
+ .permissionTag[data-perm=delete].active {
+	 color: white;
+	 background-color: #ffab00;
+}
+ .permissionTag[data-perm=owner].multi {
+	 background-color: #c1c1c1;
+}
+ .permissionTag[data-perm=owner].active {
+	 color: white;
+	 background-color: #ff702a;
+}
+ .permissionTag[data-perm=admin].multi {
+	 background-color: #c1c1c1;
+}
+ .permissionTag[data-perm=admin].active {
+	 color: white;
+	 background-color: #ff702a;
+}
+ 
+</style>
+
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:600&display=swap');
+ * {
+	 box-sizing: border-box;
+}
+ *::before, *::after {
+	 box-sizing: border-box;
+}
+ body {
+	 font-family: 'Source Sans Pro', sans-serif;
+	 display: flex;
+	 align-items: center;
+	 justify-content: center;
+	 margin: 0;
+	 min-height: 100vh;
+}
+ input[type="checkbox"] {
+	 position: relative;
+	 width: 1.5em;
+	 height: 1.5em;
+	 color: #363839;
+	 border: 1px solid #bdc1c6;
+	 border-radius: 4px;
+	 appearance: none;
+	 outline: 0;
+	 cursor: pointer;
+	 transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
+}
+ input[type="checkbox"]::before {
+	 position: absolute;
+	 content: '';
+	 display: block;
+	 top: 2px;
+	 left: 7px;
+	 width: 8px;
+	 height: 14px;
+	 border-style: solid;
+	 border-color: #fff;
+	 border-width: 0 2px 2px 0;
+	 transform: rotate(45deg);
+	 opacity: 0;
+}
+ input[type="checkbox"]:checked {
+	 color: #fff;
+	 border-color: #06842c;
+	 background: #06842c;
+}
+ input[type="checkbox"]:checked::before {
+	 opacity: 1;
+}
+ input[type="checkbox"]:checked ~ label::before {
+	 clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+ label {
+	 position: relative;
+	 cursor: pointer;
+	 font-size: 1.5em;
+	 font-weight: 600;
+	 padding: 0 0.25em 0;
+	 user-select: none;
+}
+ label::before {
+	 position: absolute;
+	 content: attr(data-content);
+	 color: #9c9e9f;
+	 clip-path: polygon(0 0, 0 0, 0% 100%, 0 100%);
+	 text-decoration: line-through;
+	 text-decoration-thickness: 3px;
+	 text-decoration-color: #363839;
+	 transition: clip-path 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+ 
+</style>
 
 <style>
 #datatable-buttons thead,
@@ -12,56 +240,7 @@
 </style>
 
 <?php 
-/*$permission_fields = array(
-  'Student view',
-  'Student Update',
-  'Student Delete',
-  'Add Student Attendance',
-  'View Student Attendance',
-  'View Student Monthly Reports',
-  'Add Marks',
-  'View Marks',
-  'Delete Marks',
-  'Generate Result',
-  'Search Result',
-  'promote Student',
-  'Add Fess',
-  'View Fess',
-  'Delete Fess',
-  'View Fess Report',
-  'View Result Reports',
-  'View Attendance Reports',
-  'View Sms/voice log Reports',
-  //'View Student Monthly Reports',
-  'Class View',
-  'Class Add',
-  'Class update',
-  'Class delete',
-  'Sections view',
-  'Section add',
-  'Section update',
-  'Section View',
-  'Teacher View',
-  'Teacher Add',
-  'Teacher update',
-  'Teacher delete',
-  'Teacher timetable add',
-  'Teacher timetable view',
-  'Send Sms/Voice',
-  'Setting GPA Rule view',
-  'GPA Rule add',
-  'GPA Rule update',
-  'GPA Rule delete',
-  'holidays add',
-  'holidays view',
-  'holidays delete',
-  'Class off view',
-  'Class off add',
-  'Class off delete',
-  'Institute information add',
-  'Grade system (auto,manual)',
 
-  );*/
 $permission_fields = array(
           'Student View',
           'Student Add',
@@ -175,346 +354,113 @@ $permission_fields = array(
         );
 
 ?>
-<div class="page-title">
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Admin</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">School</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="teacher-tab" data-toggle="tab" href="#teacher" role="tab" aria-controls="teacher" aria-selected="false">Teacher</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="student-tab" data-toggle="tab" href="#student" role="tab" aria-controls="student" aria-selected="false">Student</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade in active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    {{-- ADMIN PERMISSIONS --}}
+    <div id="permissionWrapper" class="permissionWrapper1">
+      <h4>Admin Permissions</h4>
+<div class="clear"></div><br>
+@include('permissions.admindefault.admin_permission')
+  </div>
+  </div>
+
+  {{-- OWNER PERMISSION --}}
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+    <h4>School Permissions</h4>
+    <div class="clear"></div><br>
+    @include('permissions.admindefault.school_permission')
+
+  </div>
+  {{-- TEACHER PERMISSION --}}
+  <div class="tab-pane fade" id="teacher" role="tabpanel" aria-labelledby="contact-tab">
+   <h4>Teacher Permissions</h4>
+    <div class="clear"></div><br>
+    @include('permissions.admindefault.teacher_permission')
+  </div>
+  {{-- STUDENT PERMISSION --}}
+  <div class="tab-pane fade" id="student" role="tabpanel" aria-labelledby="contact-tab">
+   <h4>Student Permissions</h4>
+    <div class="clear"></div><br>
+    @include('permissions.admindefault.student_permission')
+  </div>
+</div>
 
 
-              <div class="title_left">
-                <h3>Permissions</h3>
-              </div>
-              
-               
-
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" name="roll_no1" id="roll_no1" placeholder="Search by...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" name="filter1" id="filter1" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-                </div>
-            </div>
-
-            <div class="clearfix"></div>
-            <div class="row">
-
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title ">
-                    <h2 style="font-weight:bold">Permissions</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-                  @include('flash::message')
-                @include('adminlte-templates::common.errors')
-
-                  <form role="form" >
-                      <button class="btn btn-dark btn-round pull-right"  type="submit"><i class="glyphicon glyphicon-th"></i> Get List</button>
-              
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <input type="checkbox" @if(request('admin')) checked @endif  name="admin"  data-toggle="toggle" data-on="Check Admin" data-off="Uncheck Admin" data-onstyle="info" data-offstyle="warning">
-                                    </div>
-                                    </div>
-                                     
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                                 <input type="checkbox" @if(request('teacher')) checked @endif  name="teacher" data-toggle="toggle" data-on="Check Teacher" data-off="Uncheck Teacher" data-onstyle="info" data-offstyle="warning">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                                 <input type="checkbox" @if(request('student')) checked @endif  name="student" data-toggle="toggle" data-on="Check Student" data-off="Uncheck Student" data-onstyle="info" data-offstyle="warning">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                                 <input type="checkbox" @if(request('parent')) checked @endif  name="parent" data-toggle="toggle" data-on="Check Parent" data-off="Uncheck Parent" data-onstyle="info" data-offstyle="warning">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                                 <input type="checkbox" @if(request('accountant')) checked @endif  name="accountant" data-toggle="toggle" data-on="Check Accountant" data-off="Uncheck Accountant" data-onstyle="info" data-offstyle="warning">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                                 <input type="checkbox" @if(request('school_owner')) checked @endif  name="school_owner" data-toggle="toggle" data-on="Check School Owner" data-off="Uncheck School Owner" data-onstyle="info" data-offstyle="warning">
-                                        </div>
-                                    </div>
-                                    
-                                <!-- </div>
-                            </div> -->
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                   
-
-                                </div>
-                            </div>
-                            <br>
-                        </form>
-                        
-                        </div>
-                            </div>
-                                </div>
-                            </div>
-            <div class="page-title">
-              <div class="title_left">
-                <h3>Select Creterials</h3>
-              </div>
-            </div>
-
-            <div class="clearfix"></div>
-            <div class="row">
-
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title ">
-                    <h2 style="font-weight:bold">Permissions</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  @if(request('admin') || request('teacher') || request('student') || request('parent') || request('accountant')  || request('school_owner'))
-                  <div class="x_content ">
-                  @else
-                  <div class="x_content collapse">
-                  @endif
-            <div id="user-permissions">
-            <form role="form" action="{{route('permissions.store')}}" method="post" enctype="multipart/form-data">
-                   
-           <button class="btn btn-dark btn-round pull-right" id="btnsave" type="submit"><i class="glyphicon glyphicon-plus"></i>Save Permission</button>
-                   
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 
-            <table style="width:100%" id="permissione" class="table responsive table-bordered">
-            <!-- <table id="datatable-buttons" class="table table-striped table-bordered"> -->
 
-            <thead>
-    <tr>
-      <!-- {{$admin}}==={{$teacherd}} -->
-      <th>Permissions</th>
-     @if($admin=="yes")
-     <th>
-     <div class="toggle">Admin</div>
-     <input type="checkbox"  data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger"  id="checkAll">
-     </th>
-     @endif
-     @if($teacherd=="yes")
-      <th> 
-      <div class="toggle">Teachers</div>
-      <input type="checkbox" data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger"  id="checkAll1"></th>
-      @endif
-      @if($studentss=="yes")
-      <th> 
-      <div class="toggle">Students</div>
-      <input type="checkbox" data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger"   id="checkAll2"></th>
-      @endif
-       @if($accountant=="yes")
-      <th> 
-      <div class="toggle">Accuntant</div>
-      <input type="checkbox" data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger"  id="checkAll3"></th>
-      @endif 
-      @if($owner=="yes")
-      <th> 
-      <div class="toggle">School</div>
-      <input type="checkbox" data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger"  id="checkAll4"></th>
-      @endif 
-    </tr>
-  </thead>
-   <tbody>
-   <?php 
-      $i       = 0 ;
-      $student = count($permission_fields);
-      
-     /*if($studentss=="yes"){
-      
-        }
-       else{
-        $teacher =  $student  + count($permission_fields);
-        }*/
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
 
-      $teacher  =   $student  + count($permission_fields);
-       $accounnt  =   $teacher  + count($permission_fields);
-       $school_owner  =   $accounnt  + count($permission_fields);
-      //echo $teacher + $student;
+      </div>
+    </div>
+  </div>
+</div>
 
-     // echo "<pre>";print_r($permissions->toArray());
-       //echo $studentss;
-   ?>
-    @foreach($permission_fields as $permission_field)
 
-    <?php $field_name = str_replace(" ","_",strtolower($permission_field)); 
-    ?>
 
-    @if($permissions)
 
-    <tr>
 
-      <td width="50">{{$permission_field}}</td>
-      
-      @if($permissions[$i]->permission_group=='admin')
-      @if($admin=="yes")
-      <td width="50">
-        <div class="btn-group btn-toggle">
-            <input class="cb-element chb admins" data-toggle="toggle" id="admin_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="admin[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox"  @if($permissions[$i]->permission_type=='yes') checked @endif  >                                            
-        </div>
-      </td>
-      @endif
-      @endif
-      
-       @if($permissions[$teacher]->permission_group=='teacher')
-       @if($teacherd=="yes")
-        <td width="50">
-          <div class="btn-group btn-toggle">
-            <input class="cb-element1 chb" data-toggle="toggle" id="teacher_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="teacher[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox"   @if($permissions[$teacher]->permission_type=='yes') checked @endif >                                            
-          </div>
-
-          </div>
-        </td>
-      @endif
-      @endif
-      
-       @if($permissions[$student]->permission_group=='student')
-       @if($studentss=="yes")
-      <td width="50">
-        <div class="btn-group btn-toggle">
-          <input class="cb-element2 chb" data-toggle="toggle" id="student_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="student[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox" @if($permissions[$student]->permission_type=='yes') checked @endif >                                            
-        </div>
-      </td>
-      @endif
-      @endif
-     
-      @if($permissions[$accounnt]->permission_group=='accountant')
-      @if($accountant=="yes")
-     
-      <td width="50">
-        <div class="btn-group btn-toggle">
-          <input class="cb-element3 chb" data-toggle="toggle" id="accutant_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="accutant[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox" @if($permissions[$accounnt]->permission_type=='yes') checked @endif >                                            
-        </div>
-      </td>
-      @endif
-      @endif
-
-      @if($permissions[$school_owner]->permission_group=='owner')
-      @if($owner=="yes")
-     
-      <td width="50">
-        <div class="btn-group btn-toggle">
-          <input class="cb-element4 chb" data-toggle="toggle" id="school_owner_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="school_owner[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox" @if($permissions[$school_owner]->permission_type=='yes') checked @endif >                                            
-        </div>
-      </td>
-      @endif
-      @endif
-
-    </tr>
-    <?php 
-     $i++ ;
-     $student++ ;
-     $teacher++;
-     $accounnt++;
-     $school_owner++;
-    ?>
-   @else
-
-    <tr>
-      <td>{{$permission_field}}</td>
-      @if($admin=="yes")
-      <td>
-        <div class="btn-group btn-toggle">
-            <input class="cb-element chb" data-toggle="toggle" id="admin_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="admin[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox"  >                                            
-        </div>
-      </td>
-      @endif
-     @if($teacherd=="yes")
-      <td>
-        <div class="btn-group btn-toggle">
-          <input class="cb-element1 chb" data-toggle="toggle" id="teacher_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="teacher[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox"    >                                            
-        </div>
-
-        </div>
-      </td>
-      @endif
-      @if($studentss=="yes")
-      <td>
-        <div class="btn-group btn-toggle">
-          <input class="cb-element2 chb" data-toggle="toggle" id="student_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="student[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox" >                                            
-        </div>
-      </td>
-      @endif
-      @if($accountant=="yes")
-      <td>
-        <div class="btn-group btn-toggle">
-          <input class="cb-element3 chb" data-toggle="toggle" id="accutant_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="accutant[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox" >                                            
-        </div>
-      </td>
-    </tr>
-   @endif
-
-   @if($owner=="yes")
-      <td>
-        <div class="btn-group btn-toggle">
-          <input class="cb-element4 chb" data-toggle="toggle" id="school_owner_{{$field_name}}" data-on="Yes" data-off="No" data-width="100"   name="school_owner[{{$field_name}}]" data-onstyle="success" data-offstyle="danger" type="checkbox" >                                            
-        </div>
-      </td>
-    </tr>
-   @endif
-   @endif
-    @endforeach
-    
-  </tbody>
-           
-            </table>
-            </div>
-           
-        <!--button save -->
-        <div class="row">
-         <div class="col-md-12">
-           <button class="btn btn-dark btn-round pull-right" id="btnsave" type="submit"><i class="glyphicon glyphicon-plus"></i> Save Permission</button>
-             
-             </form>
-
-            <div id="push"></div>
-        
-            </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-
-        <style>
-        /* This only works with JavaScript, 
-		   if it's not present, don't show loader */
-		.no-js #loader { display: none;  }
-		.js #loader { display: block; position: absolute; left: 100px; top: 0; }
-        </style>
 
 @stop
 @section('scripts')
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script>
+
+   window.onload = function() {
+    var admincheckbox = document.getElementsByClassName("check");
+    admincheckbox.addEventListener('click', function() {
+      if(admincheckbox.checked){
+        alert('Yes');
+      } else {
+        alert('No');
+      }
+    });
+  }
+  // var me   = 'no';
 $( document ).ready(function() {
+
+//         $("input[type=checkbox]").click(function() {
+//           if (!$(this).prop("checked")) {
+//               $(".check").prop("checked", false);
+//               $(".check").val("no");
+//           }else{
+//             $(".check").prop("checked", true);
+//             $(".check").val("yes");
+//           }
+// });
+  
+ 
+    // $('.check').prop("checked") ? 'yes' : 'no' ;
+
+      //   if($('.check').is(":checked")){
+      //   $(".check").prop("checked", true);
+      //   $(".check").val("yes");
+
+      // }else{
+      //   $(".check").prop("checked", false);
+      //   $(".check").val("no");
+        
+      // }
+
 
   $('#permissione').DataTable();
 
@@ -623,6 +569,125 @@ $("#adminchckwww").click(function(e) {
       //$('input:checkbox[name=admin]').each(function () { alert($(this)); $(this).prop('checked', false); });
     }
 });
+
+
+
+
+// set the root states
+var initPermissionRootState = function(item){
+  var body = $("#permissionsBody");
+  var rowCount    = body.find("tr").length;
+  var perm        = item.attr("data-perm");
+  var selectCount = body.find("[data-perm=" + perm + "].active").length;
+
+  if(rowCount == selectCount){
+    $("#" + perm).removeClass("multi").addClass("active");
+  }else if(selectCount > 0){
+    $("#" + perm).removeClass("active").addClass("multi");
+  }else{
+    $("#" + perm).removeClass("active").removeClass("multi");
+  }
+}
+$("#permissionWrapper").on("click", "#addUser", function(){
+  var template = '<tr class="addState">' +
+                   '<td><span class="iconUser"></span><span contenteditable="false" class="userName"></span></td>' + 
+                   '<td><div class="permissionTag active" data-perm="view">View</div></td>' +
+                   '<td><div class="permissionTag" data-perm="edit">Edit</div></td>' +
+                   '<td><div class="permissionTag" data-perm="delete">Delete</div></td>' +
+                   '<td><div class="permissionTag" data-perm="owner">Owner</div></td>' +
+                   '<td><div class="permissionTag" data-perm="admin">Admin</div></td>' +
+                   '<td><a href="#" class="iconRemove deleteUser" title="Remove this user"></a></td>' +
+                 '</tr>';
+  var user = $(template);
+  $("#permissionsBody").prepend(user);
+
+  setTimeout(function(){
+    user.removeClass("addState");
+  }, 50);
+
+  initPermissionRootState(user.find("[data-perm=view]"));
+  initPermissionRootState(user.find("[data-perm=edit]"));
+  initPermissionRootState(user.find("[data-perm=delete]"));
+  initPermissionRootState(user.find("[data-perm=owner]"));
+  initPermissionRootState(user.find("[data-perm=admin]"));
+                                    
+  user.find(".userName").trigger("focus");
+  return false;
+});
+$("#permissionsBody").on("focusin", ".userName", function(){
+  $(this).parent().parent().addClass("focused");
+}).on("focusout", ".userName", function(){
+  $(this).parent().parent().removeClass("focused");
+}).on("click", ".deleteUser", function(){
+  var parent = $(this).parent().parent();
+  parent.addClass("removeState");
+  setTimeout(function(){
+    parent.remove();
+  }, 400);
+});
+
+
+// trigger root permission state
+$("#checkAll").on("click", function(){
+  var me   = $(this);
+
+  if(me.hasClass("active")){
+    me.removeClass("active");
+    $(".check").prop("checked", false);
+    $(".check").val("no");
+
+  }else{
+    me.addClass("active");
+    $(".check").prop("checked", true);
+    $(".check").val("yes");
+    
+  }
+
+  initPermissionRootState(me);
+});
+
+
+
+// bind root permission state click and init
+$("#permissionsHead").on("click", ".permissionTag", function(){
+  var me   = $(this);
+  var perm = me.attr("data-perm");
+  var body = $("#permissionsBody");
+
+  if(me.hasClass("active")){
+    me.removeClass("active");
+    body.find("[data-perm=" + perm + "].active:visible").trigger("click");
+  }else{
+    me.removeClass("multi");
+    body.find("[data-perm=" + perm + "]:not(.active):visible").trigger("click");
+  }
+
+}).find(".permissionTag").each(function(i, e){
+  initPermissionRootState($(e));
+})
+
+// init filter inputs --------------------------------------------------------------------
+$("#permissionWrapper").on("keyup", ".listFilterInput", function(){
+  var me    = $(this);
+  var val   = $.trim(me.val());
+  var items = $("#" + me.attr("id").replace("input", "list")).find("tr");
+  
+  if(val.length > 0){
+    var item = null;
+    
+    $.each(items, function(i, e){
+      item = $(e);
+      if(!item.hasClass("doNotFilter")){
+        (item.text().toUpperCase().indexOf(val.toUpperCase()) >= 0) ? item.show() 
+        : item.hide();
+      }
+    });
+  }else{
+    items.show();
+  }
+});
+
+
 </script>
 @stop
 

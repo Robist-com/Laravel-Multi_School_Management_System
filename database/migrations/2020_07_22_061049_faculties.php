@@ -18,7 +18,7 @@ class Faculties extends Migration
             $table->string('faculty_name')->nullable();
             $table->string('faculty_code')->nullable();
             $table->tinyInteger('faculty_status')->default(1);
-
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
 

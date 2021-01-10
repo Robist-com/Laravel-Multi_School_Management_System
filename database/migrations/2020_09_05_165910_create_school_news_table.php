@@ -19,6 +19,7 @@ class CreateSchoolNewsTable extends Migration
             $table->text('body');
             $table->string('image')->nullable();
             $table->tinyInteger('status')->default(0);
+            $table->date('news_date')->nullable();
             $table->unsignedBigInteger('school_id');
             $table->softDeletes();
             $table->timestamps();

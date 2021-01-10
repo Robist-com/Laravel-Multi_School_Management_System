@@ -73,7 +73,7 @@
         @foreach($allStudentList as $teacher)
             <tr id="tr_{{$teacher->id}}" class="contact">
             <td><a  href="{!! route('teachers.show', [$teacher->teacher_id]) !!}" title="View Profile">
-            <img src="{{asset('student_images/' .$teacher->image)}}" alt=""
+            <img src="{{$teacher->image != '' ? asset('student_images/' .$teacher->image) : asset('student_images/profile.jpg')}}" alt=""
                 class="rounded-circle"  width="50" height="50" style="border-radius:50%; vertical-alight:middle;"></a>
             </td>
             <td> 

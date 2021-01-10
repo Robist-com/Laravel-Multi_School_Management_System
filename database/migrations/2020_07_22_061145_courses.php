@@ -33,7 +33,7 @@ class Courses extends Migration
             $table->integer('ppass');
             $table->string('description')->nullable();
             $table->tinyInteger('status')->default(1);
-
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
 

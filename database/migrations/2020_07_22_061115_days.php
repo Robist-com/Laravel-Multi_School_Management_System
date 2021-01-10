@@ -16,7 +16,8 @@ class Days extends Migration
         Schema::create('days', function (Blueprint $table) {
             $table->bigIncrements('day_id');
             $table->string('name')->nullable();
-
+            $table->tinyInteger('status')->default(0);
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
 

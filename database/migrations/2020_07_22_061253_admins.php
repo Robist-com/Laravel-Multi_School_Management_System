@@ -21,6 +21,7 @@ class Admins extends Migration
             $table->string('email')->nullable();
             $table->string('password')->nullable();
             $table->string('status')->nullable();
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

@@ -18,7 +18,8 @@ class CreateSchoolsTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreign('user_id')
+            // ->references('id')->on('users')->onDelete('cascade');
             $table->boolean('is_active')->default(false);
 
             $table->text('description')->nullable();

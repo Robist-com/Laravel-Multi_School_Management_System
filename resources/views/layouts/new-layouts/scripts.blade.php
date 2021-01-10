@@ -109,6 +109,8 @@
 <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js')}}"></script> --}}
 {!! Toastr::message() !!} 
 
+@livewireScripts
+
  {{--sweetalert box for deleting start--}}
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.28.8/dist/sweetalert2.all.min.js"></script>
 

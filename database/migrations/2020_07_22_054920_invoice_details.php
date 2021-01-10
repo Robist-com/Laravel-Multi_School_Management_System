@@ -16,6 +16,7 @@ class InvoiceDetails extends Migration
         Schema::create('invoice_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

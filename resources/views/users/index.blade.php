@@ -1,16 +1,17 @@
-@extends('layouts.app')
+
+@extends(auth()->user()->group == 'Owner' ? 'layouts.new-layouts.app' : 'layouts.new-layouts.admin_app')
+
 
 @section('content')
     <section class="content-header">
         <h1 class="pull-right">
-        @if(Auth::user()->role_id == 1)
+        @if(Auth::user()->group == 'Admin' || Auth::user()->group == 'Owner' )
            <a data-toggle='modal' data-target='#user-add-modal' class="btn btn-success pull-right" style="margin-top: -10px;margin-bottom: 5px" href="">Add New User</a>
        @endif
         </h1>
 
-<h1 class="pull-right" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px">
-<span class="fa fa-u-o">Users</span></h1>
-<a  class="pull-left btn btn-danger" href="{{url('home')}}" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px"><i class="fa fa-back-arrow" aria-hidden="true">Return</i></a>
+{{-- <h1 class="pull-right" style="margin-top: -10px;margin-bottom: 5px;margin-right: 50px">
+<span class="fa fa-u-o">Users</span></h1> --}}
 
     </section>
     <div class="content">
@@ -18,9 +19,7 @@
         @include('flash::message')
         @include('adminlte-templates::common.errors')
 
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
+            {{-- <div class="box-body">
             <div class="pull-right">
             <a href="{{url('pdf-download-users')}}" class="btn btn  btn-x"> 
             <i class="fa fa-file-pdf-o text-red" style="color:white"></i> PDF </a>
@@ -33,13 +32,10 @@
 
             <a href="#" onclick="window.print();" class="btn btn  btn-x"> 
             <i class="fa fa-print text-light-blue" style="color:white"></i> Print </a>
-            </div>
+            </div> --}}
             <div class="clearfix"></div>
             @include('users.table')
         </div>
-        </div>
-        <div class="text-center">
-        
         </div>
     </div>
 
@@ -54,8 +50,9 @@
       </div>
       <div class="modal-body">
 
-      {!! Form::open(['route' => 'users.store']) !!}
-
+      {{-- {!! Form::open(['route' => 'users.store', 'autocomplete' => 'off']) !!} --}}
+        <form action="{{ route('users.store') }}" method="post" autocomplete="off">
+          @csrf
             @include('users.fields')
 
       </div>

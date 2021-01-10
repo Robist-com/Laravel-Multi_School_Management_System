@@ -449,7 +449,7 @@
                 </a>
             </li>
 
-            <li>
+            {{-- <li>
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">work</i>
                     <span>Front Office</span>
@@ -462,7 +462,7 @@
                     <li><a href="form_upload.html">Form Upload</a></li>
                     <li><a href="form_buttons.html">Form Buttons</a></li>
                 </ul>
-            </li>
+            </li> --}}
 
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
@@ -591,12 +591,12 @@
                 </ul>
             </li>
 
-            <li>
+            {{-- <li>
                 <a href="{{route('roles.index')}}">
                     <i class="material-icons">monetization_on</i>
                     <span>Salary</span>
                 </a>
-            </li>
+            </li> --}}
 
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
@@ -711,7 +711,7 @@
                     <!-- <li ><a href="{{url('add/staff/member')}}" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Add Staff Member </span></a></li> -->
                 </ul>
             </li>
-
+{{-- 
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">store</i>
@@ -732,7 +732,7 @@
                                 class="mdi mdi-note-outline"></i><span class="hide-menu"> Item Supplier </span></a></li>
                     <!-- <li ><a href="{{url('add/staff/member')}}" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Add Staff Member </span></a></li> -->
                 </ul>
-            </li>
+            </li> --}}
 
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
@@ -740,8 +740,8 @@
                     <span>Reports</span>
                 </a>
                 <ul class="ml-menu">
-                    <li ><a href="{{ route('Reports') }}" class="sidebar-link"><i
-                                class="mdi mdi-note-outline"></i><span class="hide-menu"> All Reports </span></a></li>
+                    {{-- <li ><a href="{{ route('Reports') }}" class="sidebar-link"><i
+                                class="mdi mdi-note-outline"></i><span class="hide-menu"> All Reports </span></a></li> --}}
                     <li ><a href="{{ route('getstudentInormation') }}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Student Reports </span></a></li>
                     <li ><a href="{{ route('Finance') }}" class="sidebar-link"><i
@@ -750,25 +750,25 @@
                     <li ><a href="{{ route('feeStructures.index') }}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Search Fee Payment </span></a>
                     </li>
-                    <li ><a href="{{ route('studentFees.index') }}" class="sidebar-link"><i
-                                class="mdi mdi-note-plus"></i><span class="hide-menu"> Fee Structutre </span></a></li>
-                    <li ><a href="{{route('levels.index')}}" class="sidebar-link"><i
-                                class="mdi mdi-note-plus"></i><span class="hide-menu"> User Log </span></a></li>
-                    <li ><a href="{{route('days.index')}}" class="sidebar-link"><i
-                                class="mdi mdi-note-plus"></i><span class="hide-menu"> Fee Discount </span></a></li>
-                    <li ><a href="{{route('shifts.index')}}" class="sidebar-link"><i
+                    {{-- <li ><a href="{{ route('studentFees.index') }}" class="sidebar-link"><i
+                                class="mdi mdi-note-plus"></i><span class="hide-menu"> Fee Structutre </span></a></li> --}}
+                    {{-- <li ><a href="{{route('levels.index')}}" class="sidebar-link"><i
+                                class="mdi mdi-note-plus"></i><span class="hide-menu"> User Log </span></a></li> --}}
+                    {{-- <li ><a href="{{route('days.index')}}" class="sidebar-link"><i
+                                class="mdi mdi-note-plus"></i><span class="hide-menu"> Fee Discount </span></a></li> --}}
+                    {{-- <li ><a href="{{route('shifts.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Human Resources </span></a></li>
                     <li ><a href="{{route('times.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Examination </span></a></li>
                     <li ><a href="{{route('times.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Online Examination </span></a>
-                    </li>
-                    <li ><a href="{{route('AttendaceReport')}}" class="sidebar-link"><i
+                    </li> --}}
+                    {{-- <li ><a href="{{route('AttendaceReport')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Attendance </span></a></li>
                     <li ><a href="{{route('academics.index')}}" class="sidebar-link"><i
                                 class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Academics </span></a></li>
                     <li ><a href="{{route('semesters.index')}}" class="sidebar-link"><i
-                                class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Grade </span></a></li>
+                                class="mdi mdi-note-plus"></i><span class="hide-menu"> Add Grade </span></a></li> --}}
                 </ul>
             </li>
 

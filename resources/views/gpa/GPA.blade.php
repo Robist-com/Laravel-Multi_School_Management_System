@@ -236,7 +236,7 @@
                                                                <thead>
                                                                    <tr>
                                                                        <th>GPA For</th>
-                                                                       <th>GPA Name</th>
+                                                                       <th>GPA Point</th>
                                                                        <th>Grade</th>
                                                                        <th>Mark From</th>
 

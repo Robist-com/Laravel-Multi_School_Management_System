@@ -27,7 +27,7 @@ class Questions extends Migration
             $table->string('type')->nullable();
             $table->string('level')->nullable();
             $table->string('logo')->nullable();
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->unsignedBigInteger('course_id')->nullable();
             $table->timestamps();
             $table->softDeletes();

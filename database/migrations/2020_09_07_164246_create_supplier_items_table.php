@@ -15,6 +15,7 @@ class CreateSupplierItemsTable extends Migration
     {
         Schema::create('supplier_items', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
         });
     }

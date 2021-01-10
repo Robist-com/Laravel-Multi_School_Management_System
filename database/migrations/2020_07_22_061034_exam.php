@@ -20,7 +20,7 @@ class Exam extends Migration
             $table->string('department_id')->nullable();
             $table->string('type')->nullable();
             $table->date('e_date')->nullable();
-
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
 

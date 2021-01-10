@@ -1,7 +1,12 @@
 <?php
+
 namespace App;
-class Institute extends \Eloquent {
-	protected $table = 'institute';
+
+use Illuminate\Database\Eloquent\Model;
+
+class Institute extends Model
+{
+   	protected $table = 'institute';
 	protected $fillable = ['name','establish','name','email','web','phoneNo','address','logo', 'school_id'];
 
 
@@ -9,9 +14,4 @@ class Institute extends \Eloquent {
     {
         return $this->belongsTo('App\School');
     }
-    
-
-   
-
-
 }

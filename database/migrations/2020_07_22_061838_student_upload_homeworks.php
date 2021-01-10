@@ -18,7 +18,7 @@ class StudentUploadHomeworks extends Migration
             $table->string('class_code')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->string('file')->nullable();
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('teacher_id')->nullable();
             $table->unsignedBigInteger('semester_id')->nullable();

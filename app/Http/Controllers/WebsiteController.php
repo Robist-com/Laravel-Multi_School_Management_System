@@ -32,10 +32,16 @@ use App\Models\ClassSchedule;
 use Illuminate\Support\Facades\DB;
 use App\MediaManager; 
 use App\SchoolNews;
+use GuzzleHttp\Middleware;
 
 class WebsiteController extends Controller
 {
     
+    public function __construct()
+    {
+        //    $this->Middleware->(auth);
+    }
+
     public function Website($website)
     {
         $institute =  Institute::where('web', $website)
@@ -48,7 +54,7 @@ class WebsiteController extends Controller
 
             $school_event = School_Event::join('institute', 'institute.school_id', '=', 'school_events.school_id')
             ->select('school_events.name as event_name', 'school_events.image', 'institute.name')
-            ->where('school_id', auth()->user()->school_id)->where('status', 1)->get();
+            ->where('institute.school_id', auth()->user()->school_id)->where('status', 1)->get();
         }else {
             $school_banner = SchoolBanner::join('institute', 'institute.school_id', '=', 'school_banners.school_id')
                 ->select('school_banners.name as banner_name', 'school_banners.banner_image', 'institute.name')

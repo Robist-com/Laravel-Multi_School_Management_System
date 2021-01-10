@@ -35,8 +35,9 @@
 <?php 
 use App\Institute;
 use Illuminate\Support\Str;
-$url = request()->segment(3);
-$url_active = request()->segment(2);
+$url = request()->segment(1);
+$url_active = request()->segment(1);
+$url_active1 = request()->segment(2);
 
 if(auth()->user()){
   $institute =  Institute::where('institute.school_id', auth()->user()->school_id)
@@ -65,8 +66,11 @@ if(auth()->user()){
   $theme_settings = App\FrontCms::join('institute', 'institute.school_id', '=', 'front_cms.school_id')
   ->where('institute.school_id',  auth()->user()->school_id)->where('theme_status', 1)->first();
 }else{
-  $theme_settings = App\FrontCms::join('institute', 'institute.school_id', '=', 'front_cms.school_id')
-  ->where('web', $url)->where('theme_status', 1)->first();
+  // if (Request != 'account') {
+     $theme_settings = App\FrontCms::join('institute', 'institute.school_id', '=', 'front_cms.school_id')
+    ->where('web', $url)->where('theme_status', 1)->first();
+  // }
+
   }
 
               
@@ -231,13 +235,13 @@ input[id=username1] {
         @endif
         
           <div class="col-lg-9 d-none d-lg-block">
-            <a href="{{url('school/contact_us/' .$institute->web)}}" class="small mr-3" style="color:#fff"><span class="icon-question-circle-o mr-2"></span> Have a questions?</a> 
+            <a href="{{route('school.contact_us', $institute->web)}}" class="small mr-3" style="color:#fff"><span class="icon-question-circle-o mr-2"></span> Have a questions?</a> 
             <a href="#" class="small mr-3" style="color:#fff"><span class="icon-phone2 mr-2"></span> {{$institute->phoneNo}}</a> 
             <a href="#" class="small mr-3" style="color:#fff"><span class="icon-envelope-o mr-2"></span> {{$institute->email}} </a> 
           </div>
           <div class="col-lg-3 text-right">
-            <a href="{{url('school/login/' .$institute->web)}}" class="small btn btn-bg login mr-3" ><span class="icon-unlock-alt"></span> Log In</a>
-            <a href="{{url('school/register/' .$institute->web)}}" class="small btn btn-bg login px-4 py-2 "><span class="icon-users"></span> Register</a>
+            <a href="{{route('school.login' , $institute->web)}}" class="small btn btn-bg login mr-3" ><span class="icon-unlock-alt"></span> Log In</a>
+            <a href="{{route('school.register' , $institute->web)}}" class="small btn btn-bg login px-4 py-2 "><span class="icon-users"></span> Register</a>
           </div>
         </div>
       </div>
@@ -248,11 +252,11 @@ input[id=username1] {
         <div class="d-flex align-items-center">
           <div class="site-logo">
           @if(Auth()->user())
-          <a href="{{url('school/website')}}" class="d-block">
+          <a href="{{route('school.schoolwebsite', $institute->web)}}" class="d-block">
               <img src="{{asset('institute_logo/' .$institute->image)}}" alt="Image" class="img-fluid" width="80px">
             </a>
           @else
-            <a href="{{url('school/site/' .$institute->web)}}" class="d-block">
+            <a href="{{url('/' .$institute->web)}}" class="d-block">
               <img src="{{asset('institute_logo/' .$institute->image)}}" alt="Image" class="img-fluid" width="80px">
             </a>
           @endif
@@ -262,92 +266,93 @@ input[id=username1] {
               <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
                @if($url_active == 'website')
                <li class="active">
-               @elseif($url_active == 'site')
+                {{-- @endif --}}
+               @elseif($url_active == $institute->web)
                <li class="active">
                @else
                <li>
                @endif
                
                 @if(Auth()->user())
-                  <a href="{{url('school/website')}}" class="nav-link text-left">Home</a>
+                  <a href="{{route('school.schoolwebsite', $institute->web)}}" class="nav-link text-left">Home</a>
                 @else
-                  <a href="{{url('school/site/' .$institute->web)}}" class="nav-link text-left">Home</a>
+                  <a href="{{url('/' .$institute->web)}}" class="nav-link text-left">Home</a>
                 @endif
                 </li>
                 <li class="has-children">
                   <a href="#" class="nav-link text-left">About Us</a>
                   <ul class="dropdown">
-                    @if($url_active == 'our_teachers')
-                    <li class="active">
+                    @if($url_active1 == 'our_teachers')
+                    <li class="active" style="color: #ffffff !important">
                     @else
                     <li>
                     @endif
-                    <a href="{{url('school/our_teachers/' .$institute->web)}}">Our Teachers</a>
+                    <a href="{{route('school.our_teachers', $institute->web)}}">Our Teachers</a>
                     </li>
-                    @if($url_active == 'about_us')
-                    <li class="active">
+                    @if($url_active1 == 'about_us')
+                    <li class="active" style="color: #ffffff !important">
                     @else
                     <li>
                     @endif
-                    <a href="{{url('school/about_us/' .$institute->web)}}">Our School</a></li>
+                    <a href="{{route('school.about_us', $institute->web)}}">Our School</a></li>
                   </ul>
                 </li>
-                <li class="has-children">
+                {{-- <li class="has-children">
                   <a href="#" class="nav-link text-left">Academics</a>
                   <ul class="dropdown">
-                    @if($url_active == 'our_teachers')
+                    @if($url_active1 == 'our_teachers')
                     <li class="active">
                     @else
                     <li>
                     @endif
-                    <a href="{{url('school/our_teachers/' .$institute->web)}}">Our Teachers</a>
+                    <a href="{{route('school.our_teachers', $institute->web)}}">Our Teachers</a>
                     </li>
-                    @if($url_active == 'about_us')
+                    @if($url_active1 == 'about_us')
                     <li class="active">
                     @else
                     <li>
                     @endif
-                    <a href="{{url('school/about_us/' .$institute->web)}}">Our School</a></li>
+                    <a href="{{route('school.about_us' , $institute->web)}}">Our School</a></li>
                   </ul>
-                </li>
-                @if($url_active == 'online_admission')
+                </li> --}}
+                @if($url_active1 == 'online_admission')
                <li class="active">
                @else
                <li>
                @endif
-                  <a href="{{url('school/online_admission/' .$institute->web)}}" class="nav-link text-left">Online Admissions</a>
+                  <a href="{{route('school.online_admission', $institute->web)}}" class="nav-link text-left">Online Admissions</a>
                 </li>
-                @if($url_active == 'gallary')
+                @if($url_active1 == 'gallary')
                <li class="active">
-               <a href="{{url('school/gallary/' .$institute->web)}}" class="nav-link text-left">Gallary</a>
+               <a href="{{route('school.gallary', $institute->web)}}" class="nav-link text-left">Gallary</a>
                <li>
                @else
                <li>
-                  <a href="{{url('school/gallary/' .$institute->web)}}" class="nav-link text-left">Gallary</a>
+                  <a href="{{route('school.gallary', $institute->web)}}" class="nav-link text-left">Gallary</a>
                 </li>
                @endif
 
 
-                @if($url_active == 'events')
+                @if($url_active1 == 'events')
                <li class="active">
                @else
                <li>
                @endif
-                  <a href="{{url('school/events/' .$institute->web)}}" class="nav-link text-left">Event</a>
+                  <a href="{{route('school.events', $institute->web)}}" class="nav-link text-left">Event</a>
                 </li>
-                <!-- @if($url_active == 'contact_us')
+                <!-- @if($url_active1 == 'contact_us')
                <li class="active">
                @else
                <li class="has-children">
                @endif
-                    <a href="{{url('school/news/' .$institute->web)}}" class="nav-link text-left">News</a>
+                    <a href="{{route('school.news', $institute->web)}}" class="nav-link text-left">News</a>
                   </li> -->
-                  @if($url_active == 'contact_us')
+                  @if($url_active1 == 'contact_us')
                <li class="active">
                @else
                <li>
                @endif
-                    <a href="{{url('school/contact_us/' .$institute->web)}}" class="nav-link text-left">Contact Us</a>
+                    <a href="{{route('school.contact_us', $institute->web)}}" class="nav-link text-left">Contact Us</a>
                   </li>
               </ul>                                                                                                                                                                                                                                                                                          </ul>
             </nav>

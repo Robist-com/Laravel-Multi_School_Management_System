@@ -34,6 +34,7 @@ class Teachers extends Migration
             $table->unsignedBigInteger('semester_id')->nullable();
             $table->unsignedBigInteger('faculty_id')->nullable();
             $table->unsignedBigInteger('department_id')->nullable();
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

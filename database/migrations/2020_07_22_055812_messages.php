@@ -20,7 +20,7 @@ class Messages extends Migration
             $table->integer('conversation_id');
             $table->text('message')->nullable();
             $table->tinyInteger('status')->default(1);
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

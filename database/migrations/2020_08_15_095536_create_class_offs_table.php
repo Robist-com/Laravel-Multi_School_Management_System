@@ -19,6 +19,7 @@ class CreateClassOffsTable extends Migration
             $table->enum('oType', ['E', 'O', 'CP']);
             $table->string('description',500)->nullable();
             $table->smallInteger('status')->default(1);
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@ class TeacherMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->user() && $request->user()->role_id != 2) //'super_admin'
+        if ($request->user() && $request->user()->group != 'Teacher') //'super_admin'
             
     {
         return new Response(view('unauthorized')->with('role', 'TEACHERS'));

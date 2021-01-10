@@ -19,7 +19,7 @@ class Departments extends Migration
             $table->string('department_code')->nullable();
             $table->string('department_description')->nullable();
             $table->tinyInteger('department_status')->default(1);
-
+            $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('faculty_id')->nullable();
 
             $table->timestamps();

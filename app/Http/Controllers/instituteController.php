@@ -97,33 +97,50 @@ class instituteController extends Controller {
 		$validator = \Validator::make($request->all(), $rules);
 		if ($validator->fails())
 		{
-			Flash::error('Institution Not Created Check your Fields!.');
+			Flash::error('School Not Created Check your Fields!.');
 
 			return Redirect::to('institute');
 		}
 		else {
 
-			$input = $request->all();
+			// return $input = $request->all();
 
-        $image =  $request->file('logo'); // this request is requesting image file okay.
+				if ($request->logo) {
+						$image =  $request->file('logo'); // this request is requesting image file okay.
 
-        $image_name = rand(1111,9999) . '.' . $image->getClientOriginalExtension();
+						$image_name = rand(1111,9999) . '.' . $image->getClientOriginalExtension();
 
-        $image->move(public_path('institute_logo'), $image_name);
+						$image->move(public_path('institute_logo'), $image_name);
 
-   
-			$institue=new Institute;
-			$institue->name = $request->get('name');
-			$institue->establish = $request->get('establish');
-			$institue->web = $request->get('web');
-			$institue->email = $request->get('email');
-			$institue->phoneNo = $request->get('phoneNo');
-			$institue->address = $request->get('address');
-			$institue->image =  $image_name;
-			$institue->save();
+			 Institute::updateOrCreate([
+
+			'school_id'   => $request->school_id,
+			],[
+					'name'     => $request->get('name'),
+					'establish' => $request->get('establish'),
+					'web'    => $request->get("web"),
+					'email'   => $request->get('email'),
+					'phoneNo'       => $request->get('phoneNo'),
+					'address'   => $request->get('address'),
+					'image'   =>  $image_name,
+			]);
+
+			}else {
+				 Institute::updateOrCreate([
+
+			'school_id'   => $request->school_id,
+			],[
+					'name'     => $request->get('name'),
+					'establish' => $request->get('establish'),
+					'web'    => $request->get("web"),
+					'email'   => $request->get('email'),
+					'phoneNo'       => $request->get('phoneNo'),
+					'address'   => $request->get('address'),
+			]);
+			}
 
 		}
-				Flash::success('Institute  Information saved!.');
+				Flash::success('School  Information saved!.');
 			return Redirect::to('institute');
 
 		}

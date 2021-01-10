@@ -731,7 +731,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-    alert(1)
+    // alert(1)
 })
 //------------------Date Of Birth Change-----------
             $('#dob').datetimepicker({

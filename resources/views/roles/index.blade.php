@@ -10,7 +10,7 @@
 
             <div class="page-title">
               <div class="title_left">
-                <h3>FEE STRUCTURE</h3>
+                <h3>ROLES & PERMISSIONS</h3>
               </div>
 
               <div class="title_right">
@@ -43,13 +43,14 @@
                     </ul>
                     <div class="clearfix"></div>
                   </div>
-                  <div class="x_content collapse">
+                  <div class="x_content">
                   @if(isset($role))
                   {!! Form::model($role, ['route' => ['roles.update', $role->id], 'method' => 'patch' , 'autocomplete' => 'off']) !!}
                   @else
                   {!! Form::open(['route' => 'roles.store'  , 'autocomplete' => 'off']) !!}
                   @endif
                     @include('roles.fields')
+
                     {!! Form::close() !!}
                     
                     @include('roles.table')
@@ -77,7 +78,7 @@
                   @if(isset($role))
                   {!! Form::model($role, ['route' => ['roles.update', $role->id], 'method' => 'patch']) !!}
                   @else
-                  {!! Form::open(['route' => 'roles.store']) !!}
+                  {{-- {!! Form::open(['route' => 'roles.store']) !!} --}}
                   @endif
                     @include('roles.fields')
                     {!! Form::close() !!}
@@ -178,8 +179,8 @@
                 </tbody>
             </table>
 
-                    </div>
-                    </div>
+            </div>
+            </div>
 
             </form>
 

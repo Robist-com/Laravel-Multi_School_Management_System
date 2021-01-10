@@ -21,7 +21,7 @@ class Homeworks extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->tinyInteger('status')->default(0);
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->unsignedBigInteger('semester_id')->nullable();
             $table->unsignedBigInteger('subject_id')->nullable();
             $table->unsignedBigInteger('teacher_id')->nullable();

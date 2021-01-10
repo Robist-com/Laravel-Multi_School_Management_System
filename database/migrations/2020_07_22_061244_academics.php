@@ -17,6 +17,7 @@ class Academics extends Migration
             $table->bigIncrements('academic_id');
             $table->string('academic_year')->nullable();
             $table->string('ip_address')->nullable();
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
         });

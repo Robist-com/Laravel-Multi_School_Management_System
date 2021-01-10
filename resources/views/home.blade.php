@@ -13,6 +13,11 @@ $teacherclass = ClassSchedule::join('classes', 'classes.class_code', '=', 'class
         $template = Institute::where('school_id', auth()->user()->school_id)->first();
 ?>
 
+@if (Auth::user()->group == 'Admin')
+    
+@include('school.school_dashboard')
+
+@endif
 
 @extends($template->template == '0' ? 'layouts.new-layouts.app' : 'layouts.adminTem.app')
 
@@ -20,7 +25,10 @@ $teacherclass = ClassSchedule::join('classes', 'classes.class_code', '=', 'class
 @section('content')
 
 @if($template->template == '0')
-@if(Auth::user()->group == 'Owner' || Auth::user()->group == 'Admin' )
+
+
+
+@if(Auth::user()->group == 'Owner')
 {{-- @include('admins.admin_dashboard') --}}
 
 @include('school.school_dashboard')
@@ -59,6 +67,7 @@ $teacherclass = ClassSchedule::join('classes', 'classes.class_code', '=', 'class
 @endif
 
 @endif
+
 
 <?php 
 
@@ -123,3 +132,4 @@ $month_before2_last_month = date('F', strtotime("-3 month"));
 
 @endsection
 
+{{-- @endif --}}

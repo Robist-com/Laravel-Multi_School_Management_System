@@ -21,7 +21,7 @@
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                  @if(isset($department))
+                  @if(isset($faculty))
                    <h2>Update Class Group</h2>
                    @else
                    <h2>Create Class Group</h2>
@@ -29,15 +29,15 @@
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
-                        <a href="{{route('departments.index')}}"><button type="submit" class="btn btn-round btn-success"><i class="fa fa-plus-circle" aria-hidden="true"> Add </i></button></a>
+                        <a href="{{route('faculties.index')}}"><button type="submit" class="btn btn-round btn-success"><i class="fa fa-plus-circle" aria-hidden="true"> Add </i></button></a>
                     </ul>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                  @if(isset($department))
-                  {!! Form::model($department, ['route' => ['departments.update', $department->department_id], 'method' => 'patch', 'class' => 'form-horizontal form-label-left', 'autocomplete' => 'off']) !!}
+                  @if(isset($faculty))
+                  {!! Form::model($faculty, ['route' => ['faculties.update', $faculty->faculty_id], 'method' => 'patch', 'class' => 'form-horizontal form-label-left', 'autocomplete' => 'off']) !!}
                   @else
-                  {!! Form::open(['route' => 'departments.store', 'class' => 'form-horizontal form-label-left', 'autocomplete' => 'off']) !!}
+                  {!! Form::open(['route' => 'faculties.store', 'class' => 'form-horizontal form-label-left', 'autocomplete' => 'off']) !!}
                   @endif
 
                   @if(auth()->user()->group == "Admin")
@@ -47,7 +47,7 @@
                             <option>Choose School</option>
                             @foreach (auth()->user()->school->all() as $school)
                             <option value="{{ $school->id }}"
-                            @if(isset($department)){{$department->school_id == $school->id ? 'selected' : ''}} @endif >
+                            @if(isset($faculty)){{$faculty->school_id == $school->id ? 'selected' : ''}} @endif >
                             {{$school->name}}</option>
                             @endforeach
                           </select>
@@ -57,49 +57,49 @@
                       <input type="hidden" name="school_id" id="school_id" value="{{auth()->user()->school->id}}">
                   @endif
 
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                     <select name="faculty_id" id="faculty_id" class="form-control select_2_single" id="select_2_single">
                     <option value="0" selected="true" disabled="true" style="margin-right:20px">Choose Student Group</option>
                     @foreach($faculties as $key => $faculty)
-                    <option value="{{$faculty->faculty_id}}" @if(isset($department)) {{$faculty->faculty_id == $department->faculty_id ? 'selected' : ''}}  @endif>{{$faculty->faculty_name}}</option>
+                    <option value="{{$faculty->faculty_id}}" @if(isset($faculty)) {{$faculty->faculty_id == $faculty->faculty_id ? 'selected' : ''}}  @endif>{{$faculty->faculty_name}}</option>
                     @endforeach
                     </select>
                     </div>
-                    </div>
+                    </div> --}}
                   
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text" name="department_name" id="department_name" class="form-control" placeholder="Enter Department"  @if(isset($department)) value="{{$department->department_name}}" @endif>
+                        <input type="text" name="faculty_name" id="faculty_name" class="form-control" placeholder="Enter Group Name"  @if(isset($faculty)) value="{{$faculty->faculty_name}}" @endif>
                     </div>
                     </div>
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text" name="department_code" id="department_code" class="form-control" placeholder="Enter Department Code"  @if(isset($department)) value="{{$department->department_code}}" @endif>
+                        <input type="text" readonly name="faculty_code" id="faculty_code" class="form-control" placeholder="Auto Group Code"  @if(isset($faculty)) value="{{$faculty->faculty_code}}" @endif>
                     </div>
                     </div>
 
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                    {!! Form::textarea('department_description', null, ['class' => 'form-control border', 'cols' => 40, 'rows' =>2, 'placeholder'=> 'Department Description']) !!}
+                    {!! Form::textarea('faculty_description', null, ['class' => 'form-control border', 'cols' => 40, 'rows' =>2, 'placeholder'=> 'Group Description']) !!}
                     </div>
-                    </div>
+                    </div> --}}
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                      @if(isset($department))
-                      {!! Form::hidden('department_status', '0') !!}
-                    {!! Form::checkbox('department_status', '1', null, ['class' => 'flat']) !!} Status
+                      @if(isset($faculty))
+                      {!! Form::hidden('faculty_status', '0') !!}
+                    {!! Form::checkbox('faculty_status', '1', null, ['class' => 'flat']) !!} Status
                     @else
-                    {!! Form::hidden('department_status', '0') !!}
-                    {!! Form::checkbox('department_status', '1', null, ['class' => 'flat']) !!} Status
+                    {!! Form::hidden('faculty_status', '0') !!}
+                    {!! Form::checkbox('faculty_status', '1', null, ['class' => 'flat']) !!} Status
                     @endif
                     </div>
                     </div>
                  
                     <div class="modal-footer">
-                    @if(isset($department))
+                    @if(isset($faculty))
                     {!! Form::submit('Save Changes', ['class' => 'btn btn-dark']) !!}
                     @else
                     <button type="submit" class="btn btn-round btn-dark">Save</button>
@@ -119,7 +119,7 @@
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
-                      <a class="btn btn-success btn-round"  data-toggle="modal" data-target="#department-add-modal"><i class="fa fa-plus-circle" aria-hidden="true"> Add New Student Group</i></a>
+                      <a class="btn btn-success btn-round"  data-toggle="modal" data-target="#faculty-add-modal"><i class="fa fa-plus-circle" aria-hidden="true"> Add New Student Group</i></a>
                     </ul>
                     <div class="clearfix"></div>
                   </div>
@@ -133,10 +133,9 @@
                             <th>
                               <input type="checkbox" id="check-all" class="flat">
                             </th>
-                            <th class="column-title">Group Name</th>
-                            <th class="column-title">Class Group Name</th>
-                            <th class="column-title">Class Group Code</th>
-                            <th class="column-title">Description</th>
+                            {{-- <th class="column-title">Group Name</th> --}}
+                            <th class="column-title">Student Group Name</th>
+                            <th class="column-title">Student Group Code</th>
                             <th class="column-title">Status</th>
                             <th class="column-title no-link last"><span class="nobr">Action</span>
                             </th>
@@ -147,23 +146,23 @@
                         </thead>
 
                         <tbody>
-                        @foreach($departments as $department)
+                        @foreach($faculties as $faculty)
                         <tr class="even pointer">
                           
                           <td class="a-center ">
                             <input type="checkbox" class="flat" name="table_records">
-                            <td>{!! $department->faculty_name !!}</td>
+                            {{-- <td>{!! $faculty->faculty_name !!}</td> --}}
 
                             <div id="wait" style="display:none;width:69px;height:89px;border:none 
                             solid black;position:absolute;top:0%;left:5%;padding:2px; background:none">
                             <img src="{{asset('images/loading.gif')}}"
                             width="64" height="64" /><br>Loading..</div>
 
-                            <td>{!! $department->department_name !!}</td>
-                            <td>{!! $department->department_description !!}</td>
+                            <td>{!! $faculty->faculty_name !!}</td>
+                            <td> <label for="" class="badge badge-success"> {!! $faculty->faculty_code !!}</label></td>
 
                             <td style="text-align:center">
-                                @if($department->department_status == 1)
+                                @if($faculty->faculty_status == 1)
                                 <label for="" style="color:#26B99A"><i class="fa fa-check-circle fa-lg"></i></i></label>
                                 @else
                                 <label for="" style="color:#D9534F"><i class="fa fa-ban fa-lg"></i></label>
@@ -171,11 +170,11 @@
                             </td>
 
                             <td colspan="3">
-                                {!! Form::open(['route' => ['departments.destroy', $department->department_id], 'method' => 'delete']) !!}
+                                {!! Form::open(['route' => ['faculties.destroy', $faculty->faculty_id], 'method' => 'delete']) !!}
                                 <div class='btn-group'>
-                                    <a href="{!! url('print-faculty-single', [$department->department_id]) !!} " target="_blank" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-print"></i></a>
-                                    <a href="{!! route('departments.show', [$department->department_id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
-                                    <a href="{!! route('departments.edit', [$department->department_id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a>
+                                    <a href="{!! url('print-faculty-single', [$faculty->faculty_id]) !!} " target="_blank" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-print"></i></a>
+                                    <a href="{!! route('faculties.show', [$faculty->faculty_id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
+                                    <a href="{!! route('faculties.edit', [$faculty->faculty_id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a>
                                     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
                                 </div>
                                 {!! Form::close() !!}

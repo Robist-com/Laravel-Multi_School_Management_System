@@ -1,5 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 
 
 // use Illuminate\Routing\Route;
@@ -10,20 +14,39 @@ Route::post('post/register/school','LoginController@PostRegisterSchool')->name('
 
 Route::get('school/dashboard3', 'SchoolController@Dashboard3');
 
-//School Website Routes
-Route::get('school/site/{website}','WebsiteController@Website')->name('school.website'); 
-Route::get('school/website','WebsiteController@SchoolWebsite')->name('school.schoolwebsite'); 
-Route::get('school/our_teachers/{website}', 'WebsiteController@OurTeachers')->name('school.our_teachers');
-Route::get('school/our_school/{website}', 'WebsiteController@OurSchool')->name('school.our_school');
-Route::get('school/online_admission/{website}', 'WebsiteController@OnlineAdminssion')->name('school.online_admission');
-Route::get('school/contact_us/{website}', 'WebsiteController@ContactUs')->name('school.contact_us');
-Route::get('school/about_us/{website}', 'WebsiteController@AboutUs')->name('school.about_us');
-Route::get('school/register/{website}', 'WebsiteController@Register')->name('school.register');
-Route::get('school/login/{website}', 'WebsiteController@Login')->name('school.login');
-Route::get('school/gallary/{website}', 'WebsiteController@Gallary')->name('school.gallary');
-Route::get('school/news/{website}', 'WebsiteController@News')->name('school.news');
-Route::get('school/events/{website}', 'WebsiteController@Event')->name('school.events');
+// //School Website Routes
+// Route::get('school/site/{website}','WebsiteController@Website')->name('school.website'); 
+// Route::get('school/website','WebsiteController@SchoolWebsite')->name('school.schoolwebsite'); 
+// Route::get('school/our_teachers/{website}', 'WebsiteController@OurTeachers')->name('school.our_teachers');
+// Route::get('school/our_school/{website}', 'WebsiteController@OurSchool')->name('school.our_school');
+// Route::get('school/online_admission/{website}', 'WebsiteController@OnlineAdminssion')->name('school.online_admission');
+// Route::get('school/contact_us/{website}', 'WebsiteController@ContactUs')->name('school.contact_us');
+// Route::get('school/about_us/{website}', 'WebsiteController@AboutUs')->name('school.about_us');
+// Route::get('school/register/{website}', 'WebsiteController@Register')->name('school.register');
+// Route::get('school/login/{website}', 'WebsiteController@Login')->name('school.login');
+// Route::get('school/gallary/{website}', 'WebsiteController@Gallary')->name('school.gallary');
+// Route::get('school/news/{website}', 'WebsiteController@News')->name('school.news');
+// Route::get('school/events/{website}', 'WebsiteController@Event')->name('school.events');
+// // Route::put('school/update/{id}', 'SchoolController@updateSchool')->name('updateSchool');
+// // School Events 
+// Route::get('school/event/{website}', 'WebsiteController@SchoolEvent')->name('school.event');
+// Route::post('admission/store', 'AdmissionController@Admission_Store')->name('admissions.save');
 
+
+//School Website Routes
+Route::get('/{website}/site','WebsiteController@Website')->name('website'); 
+Route::get('/{website}/home/','WebsiteController@SchoolWebsite')->name('school.schoolwebsite'); 
+Route::get('/{website}/our_teachers/', 'WebsiteController@OurTeachers')->name('school.our_teachers');
+Route::get('/{website}/our_school/', 'WebsiteController@OurSchool')->name('school.our_school');
+Route::get('{website}/online_admission/', 'WebsiteController@OnlineAdminssion')->name('school.online_admission');
+Route::get('{website}/contact_us/', 'WebsiteController@ContactUs')->name('school.contact_us');
+Route::get('{website}/about_us/', 'WebsiteController@AboutUs')->name('school.about_us');
+Route::get('{website}/register/', 'WebsiteController@Register')->name('school.register');
+Route::get('/{website}/login/', 'WebsiteController@Login')->name('school.login');
+Route::get('{website}/gallary/', 'WebsiteController@Gallary')->name('school.gallary');
+Route::get('{website}/news/', 'WebsiteController@News')->name('school.news');
+Route::get('{website}/events/', 'WebsiteController@Event')->name('school.events');
+// Route::put('school/update/{id}', 'SchoolController@updateSchool')->name('updateSchool');
 // School Events 
 Route::get('school/event/{website}', 'WebsiteController@SchoolEvent')->name('school.event');
 Route::post('admission/store', 'AdmissionController@Admission_Store')->name('admissions.save');
@@ -859,7 +882,7 @@ Route::get('get/id_card/{id}', 'IDCARDController@getStudentIDCardDetail')->name(
 Route::match(['get', 'post'], 'school-id_card-update/{id}', 'IDCARDController@updateStudentIDCard')->name('student_idCard.update');
 
 // Design Certifcate Route
-Route::resource('design_certiifcate', 'DesignCertificatesController');
+Route::resource('design_certiifcate', 'DesignCertificatesController')->middleware('auth');
 // ->middleware(['auth','check-subscription']);;
 // Route::get('design/certificate', 'DesignCertificatesController@getStudentIDCard')->name('certificate.index');
 // Route::post('print_preview', 'DesignCertificatesController@printIDCARD')->name('student_idCard.printpreview');
@@ -921,6 +944,7 @@ Route::delete('delete/media_manager/{id}', 'HomeController@deleteMediaManager')-
 Route::post('post/media_manager', 'HomeController@postMediaManager')->name('media.store');
 Route::get('detail/media_manager/{id}', 'HomeController@detailMediaManager')->name('media.detail');
 Route::match(['get', 'post'], 'school-event-update', 'HomeController@updateMediaManager')->name('media.update');
+
 
 
 
@@ -990,21 +1014,44 @@ Route::resource('courses', 'CourseController');
 Route::get('course/status/update', 'CourseController@updateCourseStatus')->name('course.update.status');
 
 
-Route::get('roles/create', 'RoleController@create')->name('roles.create')->middleware('checkPermission:roll_add');
-Route::get('roles/index', 'RoleController@index')->name('roles.index')->middleware('checkPermission:roll_view');
-Route::get('roles/edit', 'RoleController@edit')->name('roles.edit')->middleware('checkPermission:roll_edit');
-Route::post('roles/{id}', 'RoleController@update')->name('roles.update')->middleware('checkPermission:roll_edit');
-Route::get('roles/show/{id}', 'RoleController@show')->name('roles.show')->middleware('checkPermission:roll_view');
-Route::post('roles/{id}', 'RoleController@destroy')->name('roles.destroy')->middleware('checkPermission:roll_delete');
-Route::post('roles/store', 'RoleController@store')->name('roles.store');
+// Route::get('roles/create', 'RoleController@create')->name('roles.create');
+// Route::get('roles/index', 'RoleController@index')->name('roles.index');
+// Route::get('roles/edit', 'RoleController@edit')->name('roles.edit');
+// Route::post('roles/{id}', 'RoleController@update')->name('roles.update');
+// Route::get('roles/show/{id}', 'RoleController@show')->name('roles.show');
+// Route::post('roles/{id}', 'RoleController@destroy')->name('roles.destroy');
+// // Route::post('roles/store', 'RoleController@store')->name('roles.store');
+Route::post('roles/store', 'RolesController@Save')->name('roles');
 
 Route::resource('days', 'DayController');
+Route::resource('roles', 'RoleController');
 // ------------------------- UPDATE DAYS STATUS -----------------
 Route::get('days/status/update', 'DayController@updateDayStatus')->name('days.update.status');
 
 
 Route::resource('admissions', 'AdmissionController');
 Route::resource('admin\admissions', 'Admin\AdmissionController');
+Route::resource('admin\search', 'Admin\AdminSearchController');
+Route::get('admin\searchTeacher', 'Admin\AdminSearchController@searchTeacher')->name('searchTeacher');
+Route::get('admin\searchSchool', 'Admin\AdminSearchController@searchSchool')->name('searchSchool');
+
+Route::get('admin/all/student', function() {
+   return view('admins.search.all-students');
+});
+
+Route::get('admin/report', function() {
+   return view('admins.report.index');
+});
+
+Route::get('admin/all/staff', function() {
+   return view('admins.search.all-staff');
+});
+
+Route::get('admin/all/schools', function() {
+   return view('admins.search.all-schools');
+});
+
+// ------- End Here -----------
 
 Route::get('all/student/list', 'AdmissionController@StudentList');
 Route::get('sort/students', 'AdmissionController@SortStudent');

@@ -70,12 +70,13 @@ aria-hidden="true">
 // {{--------------------------Level Side-------------------------}} 
 $(document).ready(function(){
  
-    // function() {
+        $('#faculty_name').on('keyup', function(){
+
 		var randomString = function(length) {
 			
 			var text = "";
 		
-			var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+			var possible = "FABCDEFGHIJKLMNOPQRSTUVWXYZ01234567891011121314151617181920";
 			
 			for(var i = 0; i < length; i++) {
 			
@@ -84,16 +85,19 @@ $(document).ready(function(){
 			}
 			
 			return text;
-		}
-
-		// random string length
-		var random = randomString(5);
+        }
         
-        alert(random)
-		// insert random string to the field
-		var elem = document.getElementById("department_code").value = random;
-		
-	// });
+        var random = randomString(5);
+        var prix = 'SG';
+        var faculty_name = $("#faculty_name").val();
+        
+           if (faculty_name !== '') {
+           var elem = document.getElementById("faculty_code").value = prix +'-'+ random +'-'+ faculty_name;
+            }else{
+            var elem = document.getElementById("faculty_code").value = '';
+            }
+        });
+        
 
 $('.js-switch').change(function () {
     let status = $(this).prop('checked') === true ? 1 : 0;

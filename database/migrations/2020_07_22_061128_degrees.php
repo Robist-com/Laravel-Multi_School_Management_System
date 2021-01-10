@@ -19,7 +19,7 @@ class Degrees extends Migration
             $table->unsignedBigInteger('semester_id')->nullable();
             $table->string('description')->nullable();
             $table->tinyInteger('status')->default(1);
-
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
 

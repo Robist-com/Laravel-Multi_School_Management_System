@@ -22,7 +22,7 @@ class Parents extends Migration
             $table->string('email')->unique();
             $table->string('username')->nullable();
             $table->string('password')->nullable();
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->unsignedBigInteger('student_id')->nullable();
             $table->timestamps();
             $table->softDeletes();

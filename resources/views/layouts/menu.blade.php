@@ -425,7 +425,7 @@ $teacherclass = ClassSchedule::join('classes', 'classes.class_code', '=', 'class
     </ul>
     </li>
 
-    <li class="treeview">
+    {{-- <li class="treeview">
         <a href="#">
          <i class="fa fa-money"></i> <span>Salaries</span>
         <span class="pull-right-container">
@@ -442,7 +442,7 @@ $teacherclass = ClassSchedule::join('classes', 'classes.class_code', '=', 'class
         <a href="{{ route('salaryTypes.index') }}"><i class="fas fa-angle-double-right"></i><span> Salary Types</span></a>
     </li>
     </ul>
-    </li> 
+    </li>  --}}
 
 @endif
 

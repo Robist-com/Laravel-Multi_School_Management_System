@@ -336,7 +336,7 @@ class TeacherController extends AppBaseController
 			// $subGradeing = Course::select('gradeSystem')->where('course_code',$request->get('subject'))->where('class',$request->get('class'))->first();
             $subGradeing = Course::select('gradeSystem')->where('course_code',$request->get('subject'))->where('class',$request->get('class'))->first();
             
-
+            // dd($subGradeing);
 			if($subGradeing->gradeSystem=="1")
 			{
 				$gparules = GPA::select('gpa','grade','markfrom')->where('for',"1")->get();
@@ -399,7 +399,7 @@ class TeacherController extends AppBaseController
 						$totalmark = $writtens[$i]+$mcqs[$i]+$practicals[$i]+$cas[$i];
 					}
 					$marks->total=$totalmark;
-                    // echo "<pre>d";print_r($gparules->toArray());
+                    echo "<pre>d";print_r($gparules->toArray());
                    
 					foreach ($gparules as $gpa) {
 

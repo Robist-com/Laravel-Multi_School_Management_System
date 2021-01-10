@@ -22,6 +22,10 @@ class Institute extends Migration
             $table->string('phoneNo')->nullable();
             $table->text('address')->nullable();
             $table->string('image')->nullable();
+            $table->tinyInteger('mark_type')->nullable()->default(0);
+            $table->integer('school_id')->unsigned();
+            $table->integer('institute_number')->nullable()->default(0);
+            $table->integer('template')->default(0);
 
             $table->timestamps();
             $table->softDeletes();

@@ -37,17 +37,12 @@ class SchoolController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->group == 'Owner') {
-            $schools = School::join('users','users.id', '=', 'schools.user_id')
-            ->select('schools.*','schools.name as school_name','users.name as user_name')->where('user_id', Auth::user()->id)->get();
-            // dd( $schools);
-            $users = User::all();
+           $schools =  School::with('owner')->where('user_id', auth()->user()->id)->get();
         }else {
-            $schools = School::join('users','users.id', '=', 'schools.user_id')
-            ->select('schools.*','schools.name as school_name','users.name as user_name')->get();
-            $users = User::all();
+            $schools =  School::with('owner')->get();
         }
         
-        return view('school.table', compact('schools','users'));
+        return view('school.table', compact('schools','school'));
     }
 
     public function Dashboard3(Request $request)
@@ -133,8 +128,14 @@ class SchoolController extends Controller
      * @param  \App\School  $school
      * @return \Illuminate\Http\Response
      */
-    public function show(School $school)
+    public function show($id)
     {
+        $school = School::join('institute', 'institute.school_id', '=', 'schools.id')
+                        ->select('institute.*', 'schools.*', 'schools.id as school_id')
+                        ->where('institute.school_id', $id)->first();
+        // dd($school);
+
+        return view('school.show', compact('school'));
        
     }
 
@@ -147,18 +148,18 @@ class SchoolController extends Controller
     public function edit(School $school)
     {
         if (auth()->user()->group == 'Owner') {
-            $schools = School::join('users','users.id', '=', 'schools.user_id')
-            ->select('schools.*','schools.name as school_name','users.name as user_name')->where('schools.user_id', Auth::user()->id)->get();
-            // dd( $schools);
-            $users = User::all();
+           $schools =  School::with('owner')->where('user_id', auth()->user()->id)->get();
+
         }else {
-            $schools = School::join('users','users.id', '=', 'schools.user_id')
-            ->select('schools.*','schools.name as school_name','users.name as user_name')->get();
-            $users = User::all();
+             $schools =  School::with('owner')->get();
+             $users = User::all();
         }
 
         $school = School::join('users','users.id', '=', 'schools.user_id')
             ->select('schools.*','schools.name as school_name','users.name as user_name')->where('schools.id', $school->id)->first();
+            
+        $school =  School::with('owner')->where('user_id', auth()->user()->id)->first();
+           
 
         return view('school.table', compact('schools','school','users'));
     }
@@ -172,11 +173,21 @@ class SchoolController extends Controller
      */
     public function update(Request $request, School $school)
     {
+        dd($school);
         $school->update($request->all());
         // dd($school);
         Flash::success('School Updated Successfully!');
         return redirect(route('school.index'));
     }
+
+    // public function updateSchool(Request $request,  $id)
+    // {
+    //     // dd($id);
+    //     School::find($id)->update($request->all());
+    //     // dd($school);
+    //     Flash::success('School Updated Successfully!');
+    //     return redirect(route('school.index'));
+    // }
 
     /**
      * Remove the specified resource from storage.

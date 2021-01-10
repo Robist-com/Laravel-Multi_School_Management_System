@@ -19,8 +19,11 @@ class CreateSchoolEventsTable extends Migration
             $table->string('place')->nullable();
             $table->date('start_date');
             $table->date('end_date');
+            $table->text('body')->nullable();
             $table->string('image')->nullable();
             $table->unsignedBigInteger('school_id');
+            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('featured')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

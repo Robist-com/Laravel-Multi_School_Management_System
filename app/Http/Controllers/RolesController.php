@@ -44,7 +44,7 @@ class RolesController extends Controller
         // $role = Roles::
         $students = $request->all();
 
-        // echo "<pre>"; print_r($role); die;
+        echo "<pre>"; print_r($role); die;
 
         $students = array(
             'name' => $request->name,
@@ -90,6 +90,11 @@ class RolesController extends Controller
     public function update(Request $request, Roles $roles)
     {
         //
+    }
+
+     public function Save(Request $request)
+    {
+        return $request->all();
     }
 
     /**

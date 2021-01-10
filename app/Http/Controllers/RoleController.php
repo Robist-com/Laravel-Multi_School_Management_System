@@ -59,16 +59,23 @@ class RoleController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateRoleRequest $request)
+    public function store(Request $request)
     {
-        $input = $request->all();
+        // return $request->all();
 
-        $role = $this->roleRepository->create($input);
+         $roles = new Role;
+         $roles->name = ucfirst($request->name);
+         $roles->school_id = $request->school_id;
+         $roles->save();
+        //  return $roles;
+
 
         Flash::success('Role saved successfully.');
 
         return redirect(route('roles.index'));
     }
+
+   
 
     /**
      * Display the specified Role.
@@ -99,7 +106,7 @@ class RoleController extends AppBaseController
      */
     public function edit($id)
     {
-        $role = $this->roleRepository->find($id);
+        $role = Role::find($id);
         $roles = Role::all();
         if (empty($role)) {
             Flash::error('Role not found');
@@ -118,9 +125,9 @@ class RoleController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateRoleRequest $request)
+    public function update($id, Request $request)
     {
-        $role = $this->roleRepository->find($id);
+        $role = Role::find($id);
 
         if (empty($role)) {
             Flash::error('Role not found');
@@ -128,7 +135,7 @@ class RoleController extends AppBaseController
             return redirect(route('roles.index'));
         }
 
-        $role = $this->roleRepository->update($request->all(), $id);
+        $role = Role::update($request->all(), $id);
 
         Flash::success('Role updated successfully.');
 
@@ -146,7 +153,6 @@ class RoleController extends AppBaseController
      */
     public function destroy(Role $role)
     {
-        
 
         if (empty($role)) {
             Flash::error('Role not found');

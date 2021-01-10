@@ -18,7 +18,9 @@ class Classes extends Migration
             $table->string('class_name')->nullable();
             $table->string('class_code')->nullable();
             $table->string('status')->nullable();
+            $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('department_id')->nullable();
+            $table->unsignedBigInteger('grade_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

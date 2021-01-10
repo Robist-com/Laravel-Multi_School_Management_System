@@ -18,7 +18,7 @@ class Levels extends Migration
             $table->string('level')->nullable();
             $table->text('level_description')->nullable();
             $table->tinyInteger('status')->default(1);
-
+            $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('course_id')->nullable();
             $table->unsignedBigInteger('grade_id')->nullable();
 

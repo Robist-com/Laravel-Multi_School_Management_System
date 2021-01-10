@@ -482,6 +482,7 @@ public function Mark_Teacher_Attendance(Request $request)
                                     'courses.id as course_id',
                                    'courses.course_name'
                                     )
+                                    ->groupBy('admissions.id')
                            //->where('admissions.class',$class_id)
                            ->get();
 
@@ -535,7 +536,7 @@ public function Mark_Teacher_Attendance(Request $request)
                      'admissions.id as student_id',
                      'rolls.username as roll_no',
                      'teachers.first_name  as teacher_firstname',
-                    'teachers.last_name  as teacher_lastname',
+                     'teachers.last_name  as teacher_lastname',
                      'teachers.teacher_id',
                      'semesters.id as semester_id',
                      'classes.class_name',
@@ -543,6 +544,7 @@ public function Mark_Teacher_Attendance(Request $request)
                      'classes.id as class_id',
                      'courses.id as course_id',
                     'courses.course_name')
+                    ->groupBy('admissions.id')
             ->get();
 
             // dd( $students); die;

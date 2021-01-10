@@ -18,7 +18,7 @@ class SemesterDetails extends Migration
             $table->unsignedBigInteger('admission_id');
             $table->unsignedBigInteger('course_id');
             $table->unsignedBigInteger('semester_id');
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

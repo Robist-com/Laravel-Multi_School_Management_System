@@ -19,6 +19,7 @@ class ClassRooms extends Migration
             $table->string('classroom_code')->nullable();
             $table->string('classroom_description')->nullable();
             $table->tinyInteger('classroom_status')->default(1);
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
 

@@ -38,6 +38,9 @@ class Admissions extends Migration
             $table->unsignedBigInteger('faculty_id');
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('batch_id');
+            $table->unsignedBigInteger('school_id');
+            $table->tinyInteger('acceptance')->default(0);
+            $table->tinyInteger('online_admission')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

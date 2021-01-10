@@ -1,6 +1,7 @@
 <?php
     header("Content-type: text/css; charset: UTF-8");
-$url = request()->segment(3);
+$url = request()->segment(1);
+// $web = Institute::where()
 if(auth()->user()){
 $theme_settings = App\FrontCms::join('institute', 'institute.school_id', '=', 'front_cms.school_id')
 ->where('institute.school_id',  auth()->user()->school_id)->where('theme_status', 1)->first();
@@ -8,6 +9,8 @@ $theme_settings = App\FrontCms::join('institute', 'institute.school_id', '=', 'f
 $theme_settings = App\FrontCms::join('institute', 'institute.school_id', '=', 'front_cms.school_id')
 ->where('web', $url)->where('theme_status', 1)->first();
 }
+
+// var_dump($theme_settings);die;
 
    $brandColor = "red";
    $linkColor = "#555555";

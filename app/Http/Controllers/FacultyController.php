@@ -33,7 +33,7 @@ class FacultyController extends AppBaseController
      */
     public function index(Request $request)
     {
-                $department = Department::where('school_id', auth()->user()->school->id)->count();
+                $departments = Department::where('school_id', auth()->user()->school->id)->count();
                 // dd($department);
         if (auth()->user()->group == "Owner") {
 
@@ -46,7 +46,7 @@ class FacultyController extends AppBaseController
 
        
             // dd($faculties);
-        return view('faculties.index', compact('department'))
+        return view('faculties.index', compact('departments'))
             ->with('faculties', $faculties);
     }
 

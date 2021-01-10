@@ -22,8 +22,9 @@ class ExpenseController extends Controller
         $expenses = Expense::join('expense_types', 'expense_types.id', '=', 'expenses.expense_type_id')
         ->where('expenses.school_id' , auth()->user()->school_id)->select('expense_types.type', 'expenses.*')->get();
         $e_type = DB::table('expense_types')->where('school_id', auth()->user()->school_id)->get();
+        $incomes  = Income::all();
 
-        return view('admins.expenses.index')->with('expenses', $expenses)->with( 'e_type', $e_type);
+        return view('admins.expenses.index', compact('incomes'))->with('expenses', $expenses)->with( 'e_type', $e_type);
     }
 
     public function saveExpenses(Request $request)

@@ -17,6 +17,9 @@ class Times extends Migration
             $table->bigIncrements('time_id');
             $table->unsignedBigInteger('shift_id')->nullable();
             $table->string('time')->nullable();
+            $table->string('end_time')->nullable();
+            $table->string('status')->default(0);
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

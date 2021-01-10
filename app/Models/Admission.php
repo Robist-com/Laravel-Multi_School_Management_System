@@ -156,5 +156,10 @@ class Admission extends Model
     {
         return $this->belongsTo('App\School');
     }
+
+    public function roll()
+    {
+        return $this->hasOne('App\Roll', 'student_id', 'id');
+    }
     
 }

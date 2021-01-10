@@ -17,13 +17,13 @@ class Permission extends Model
 
     Protected $table = 'permission';
 
-    // Protected $guard = ['permission_name', 'permission_group','permission_type'];
+    Protected $fillable = ['permission_name', 'permission_group','permission_type', 'permission', 'school_id'];
     // Protected $fillable = ['permission', 'role_id'];
 
 
-    protected $casts = [
-        'permission' => 'array'
-    ];
+    // protected $casts = [
+    //     'permission' => 'array'
+    // ];
 
 
     public function role()

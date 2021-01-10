@@ -13,6 +13,7 @@
     use App\School;
 
     $url = request()->segment(2);
+    $url_web = request()->segment(1);
 
     if(Institute::where('school_id') != ''){
     $institute = Institute::where('school_id', auth()->user()->school_id)->get();
@@ -23,6 +24,14 @@
 
     $school = School::where('id', auth()->user()->school_id)->get();
 
+     if(auth()->user()){
+        $institute_web =  Institute::where('institute.school_id', auth()->user()->school_id)
+        ->join('schools', 'schools.id', '=', 'institute.school_id')->first();
+        }
+        else {
+        $institute_web =  Institute::where('web', $url_web)
+        ->join('schools', 'schools.id', '=', 'institute.school_id')->first();
+        }
 
 
     $students = Roll::onlineStudent();
@@ -209,6 +218,10 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+input{
+    text-transform: capitalize !important;
+}
+
     </style>
 
 
@@ -262,7 +275,7 @@ input:checked + .slider:before {
                                 {{$institu->name}}
                                 @endforeach
                                 @else
-                                @foreach(Institute:: where('school_id' , auth()->user()->school->id)->get() as $key =>
+                                @foreach(Institute:: where('school_id' , auth()->user()->school_id)->get() as $key =>
                                 $inst)
                                 {{$inst->name}}
                                 @endforeach
@@ -285,7 +298,7 @@ input:checked + .slider:before {
                                 class="img-circle profile_img">
                             @endforeach
                             @else
-                            @foreach(Institute:: where('school_id' , auth()->user()->school->id)->get() as $key =>
+                            @foreach(Institute:: where('school_id' , auth()->user()->school_id)->get() as $key =>
                             $inst)
                             <img src="{{ asset('institute_logo/' .$inst->image) }}" alt="..."
                                 class="img-circle profile_img">
@@ -325,7 +338,7 @@ input:checked + .slider:before {
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
                                     aria-expanded="false">
-                                    @foreach(Institute:: where('school_id' , auth()->user()->school->id)->get() as $key
+                                    @foreach(Institute:: where('school_id' , auth()->user()->school_id)->get() as $key
                                     => $inst)
                                     <img src="{{ asset('institute_logo/' .$inst->image) }}" alt="">
                                     @endforeach
@@ -341,12 +354,14 @@ input:checked + .slider:before {
                                         </a>
                                     </li>
                                     <li><a href="javascript:;">Help</a></li>
-                                    <li><a href="#"
-                                            onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i
+                                     <?php $school_web = App\Institute::where('school_id', auth()->user()->school_id)->first()?>
+                                    <li><a href="{{url('student/logout/' .$school_web->web)}}"
+                                            onclick1="event.preventDefault();document.getElementById('logout-form').submit();"><i
                                                 class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                                 </ul>
                             </li>
-                            <form id="logout-form" action="{{route('logout')}}" method="POST" style="display: none;">
+                           
+                            <form id="logout-form" action="#" method="POST" style="display: none;">
                                 @csrf
                             </form>
 
@@ -450,7 +465,7 @@ input:checked + .slider:before {
                             </li>
                             @foreach($school as $school) @if($school->is_active == 1)
                             <li>
-                                <a href="{{route('school.schoolwebsite')}}" target="_blank">Visit Site</a>
+                                <a href="{{route('school.online_admission', $institute_web->web)}}" target="_blank">Visit Site</a>
                             </li>
                             @endif
                             @endforeach

@@ -79,190 +79,249 @@ $institute = Institute::where('school_id', auth()->user()->school_id)->first();
 }
 </style>
 
+  <style>
+  .rotate_text {
+    writing-mode: vertical-lr;
+    -webkit-writing-mode: vertical-lr;
+    -ms-writing-mode: vertical-lr;
+    -webkit-transform: rotate(-180deg);
+    -moz-transform: rotate(-180deg);
+    -o-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+}
+
+.rotated_cell {
+    width: 10%;
+    text-align: center !important;
+    vertical-align: bottom;
+    padding: 1px;
+    padding-bottom: 10px;
+    padding-top: 20px;
+    background:#FFE4E1;
+}
+
+.column {
+  float: left;
+  width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+  </style>
+
+  <style>
+
+  html {
+  font-family:arial;
+  font-size: 18px;
+}
+
+.card{
+  border: none !important;
+}
+
+.td{
+  border: 1px solid #726E6D;
+  /* padding: 10px; */
+  font-size: 13px;
+  /* line-height: 1.4px; */
+  /* height: 0.5em !important; */
+}
+
+.td-header{
+  border: 1px solid #726E6D;
+  /* font-size: 13px; */
+  font-weight: bold !important;
+}
+
+.td-bottom{
+  border: 1px solid #726E6D;
+  /* padding: 10px; */
+  font-size: 8px !important;
+  color: black !important;
+  /* line-height: 1.4px; */
+  /* height: 0.5em !important; */
+}
+
+.td-body{
+  border: 1px solid #726E6D;
+  padding: 10px;
+  width: 1em !important;
+  font-size: 13px;
+  line-height: 1px;
+  text-align: center !important;
+  height: 0em !important;
+  font-weight: bold !important;
+}
+
+.td-body1{
+  border: 1px solid #726E6D;
+  padding: 10px;
+  width: 1em !important;
+  font-size: 10px;
+  line-height: 1px;
+  /* text-align: center !important; */
+  height: 0em !important;
+}
+
+.td-footer{
+
+  border-left: 1px solid #726E6D;
+  border-bottom: 1px solid #726E6D;
+  padding: 15px;
+}
+
+.td-footer1{
+
+  /* border-left: 1px solid #726E6D; */
+  border-bottom: 1px solid #726E6D;
+  padding: 15px;
+}
+
+thead{
+  font-weight:bold;
+  text-align:center;
+  /* background: #625D5D; */
+  color:rgb(3, 3, 3);
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.footer {
+  text-align:right;
+  font-weight:bold;
+}
+
+tbody >tr:nth-child(odd) {
+  /* background: #D1D0CE; */
+}
+
+</style>
+
 </head>
 
 <body class="scms-result-print page">
   <button class="btn-print" onclick="printDiv('printableArea')">Print</button>
 <div id="printableArea">
   <div class="wraperResult">
-    <div class="resHdr">
-        
-        {{-- <img src="{{asset('/markssheetcontent/res-logo.png')}}" alt="" class="resLogo">            <div class="schoolIdentity"> --}}
-            <img src="{{asset('institute_logo/'.$institute->image)}}" alt="" class="resLogo"  style="width:90px; margin-left:30px">            <div class="schoolIdentity">
-            {{-- <img src="{{asset('images/markssheet/success.png')}}" alt="" style="width:65%;"> --}}
-                    <b class="markTitle1">{{$institute->name}}</b>
-             <div class="hdrText" style="margin-top:5%">
-                <span>{{$extra[0]}} Examination ({{$student->batch}})</span><br>
-               <center  style=" margin-right:0%; text-transform:uppercase; "> <strong style="font-family:Times New Roman;">{{$student->class}} / Equivalent Result Publication {{$student->batch}} </strong></center>
-            </div><!-- end of hdrText -->
+    <div class="resHdr-bottom">
+
+        <style>
+  .hr-class{
+    border: 2px solid rgb(1, 40, 49) !important;
+  }
+  .signature{
+    border: 1px solid rgb(206, 206, 206) !important;
+    width: 80px !important;
+    float: right;
+  }
+  .signature-director{
+    /* border: 1px solid rgb(105, 103, 103) !important; */
+    width: 120px !important;
+    text-align: center !important;
+    margin-top:5%;
+    color:black !important;
+  }
+  .signa{
+      text-align: center !important;
+      padding: 29%;
+  }
+</style>
+ <div class="container-fluid">
+
+  <table style="width:100%" class="header-title">
+  <tr>
+  <td   style="text-align: left">
+ <span style="line-height:1.6; font-weight: bold; text-transform:uppercase">
+    {{-- <img src="" width="150" alt=""> --}}
+            <img src="{{ $institute->image != '' ? asset('institute_logo/'.$institute->image) : asset('institute_logo/default_logo.jpg') }}" alt="" class="resLogo"  style="width:90px; margin-left:30px">            <div class="schoolIdentity">
+  
+</span>
+  </td>
+  <td   style="text-align: right">
+  
+   <span style="line-height:1.3; font-size:14px; font-weight: bold; text-transform:uppercase; font-family:'Times New Roman', Times, serif">
+  Angle Rue Dumez et Multidor, Maïs Gâté <br>
+  Port-au-Prince, Haïti <br>
+  www.amusarts.net  <br>
+  50937436044 <br>
+  pmucommunucatiion@gmail.com
+  </span>
+  </td>
+
+  </tr>
+  </table>
+  <hr class="hr-class">
+  <div class="" style="text-align: center !important; font-size:15px;">
+            <strong >BULLETIN SCOLAIRE <br>
+          Année Scolaire 2019 -2020</strong>
+  </div>
+  <table style="width:100%" class="header-title">
+  <tr>
+  <td   style="text-align: left">
+ <span style="line-height:1.6;  font-size:12px; font-weight: bold; text-transform:uppercase">
+   <label for="">Nom: </label> &nbsp;
+   <span> {{$student->first_name}} </span> <br>
+
+   <label for="">Prénom: </label> &nbsp;
+   <span> {{$student->last_name}} </span>
+  </span>
+  </td>
+  <td  style="text-align: right">
+   <span style="line-height:1.6;  font-size:12px; font-weight: bold; text-transform:uppercase">
+    <label for="">Class: </label> &nbsp;
+   <span> </span> <br>
+
+   <label for="">Période: </label> &nbsp;
+   <span style="font-weight: bold">  7 Jan - 14 Fév 2020 </span>
+  </span>
+  </td>
+
+  </tr>
+  </table>
            
         </div><!-- end of schoolIdentity -->
     </div><!-- end of resHdr -->
 
     <div class="resContainer">
-        <div class="resTophdr"  style="margin-bottom:40px">
-            <div class="restopleft">
-                                
-            				<img src="{{asset('student_images/'.$student->image)}}" alt="" class="resLogo"  class="rounded-circle1" width="140" height="140" style="border-radius:50%1; margin-top:5%; vertical-alight:middle;">
-            </div><!-- end of restopleft -->
+        {{-- <div class="resTophdr"  style="margin-bottom:40px"> --}}
 
-            <div class="restopleft rgttopleft1">
-                <div><span>POINT</span><i> : </i><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$meritdata->point}}</em></div>
-                <div><span>STUDENT</span><i> : </i><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$student->first_name}} {{$student->last_name}}</em></div>
-                <div><span>FATHER</span><i> : </i><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$student->father_name}}</em></div>
-                <div><span>CLASS</span><i> : </i><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$student->class}}</em></div>
-                <div><span>Class Group</span><i> : </i><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$student->department_name}}</em></div>
-                <div><span>ROLL NO</span><i> : </i><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$student->roll_no}}</em></div>
-                <div><span>GRADE</span><i>: </i><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$student->semester_name}}</em></div>
-                <div><span>MERIT POSITION</span><i>: </i><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$meritdata->position}}TH</em> &nbsp;  <label class="test" >Out of  ( {{$classcount}} ) in class</label> </div>
-                <!--<div><span>PROMOTED CLASS : </span><em>9 (B)</em></div>-->
-            </div><!-- end of restopleft -->
-        </div><!-- end of resTophdr -->
-
-
-        <div class="resmidcontainer">
-            {{-- <h2 class="markTitle">Subject-Wise Grade &amp; Mark Sheet</h2> --}}
-            <h2 class="markTitle">RESULT CARD</h2>
-            <table class="pagetble_middle">
-                <tbody><tr>
-                    <th class="res1" rowspan="2">CODE</th>
-                    <th class="res2 cTitle" rowspan="2">SUBJECT</th>
-
-                    <th class="res8 examtitle" colspan="12">{{$extra[0]}} EXAMINATION MARKS</th>
-                    <!--<th class="res3 examtitle" colspan="6">Final EXAMINATION MARKS</th>-->
-                </tr>
-
-                <tr>
-                <!--<td class="res1">&nbsp;</td>
-                    <td class="res2">&nbsp;</td>
-                    <td class="res1">Total</td>
-                    <td class="res1">GP</td>
-                    <td class="res3">Highest</td>-->
-                    <td class="res7" colspan="2">Theory</td>
-                    <td class="res7" colspan="2">MCQ</td>
-                    <td class="res7" colspan="2">Assign</td>
-                    <td class="res7" colspan="2">Practical</td>
-                    <td class="res5">Obtain Marks</td>
-                    <td class="res5">Total Marks</td>
-                    <td class="res4">POINTS</td>
-                    <td class="res3">Grade</td>
-                    <!--<td class="res3">Written</td>
-                    <td class="res4">MCQ</td>
-                    <td class="res5">SBA</td>
-                    <td class="res3">Total</td>
-                    <td class="res3">GP</td>
-                    <td class="res6">Grade</td>-->
-                </tr>
-
-                <tr>
-                    @if($extra[1])
-
-                    <td>{{$banglaArray[0][0]}}</td>
-                    <td class="cTitle">{{$banglaArray[0][1]}}</td>
-
-                    <td><b>{{$banglaArray[0][2]}}</b></td>
-                    <td rowspan="2"><b>{{$banglaArray[0][2]+$banglaArray[1][2]}}</b></td>
-
-                    <td><b>{{$banglaArray[0][3]}}</b></td>
-                    <td rowspan="2"><b>{{$banglaArray[0][3]+$banglaArray[1][3]}}</b></td>
-
-                    <td><b>{{$banglaArray[0][4]}}</b></td>
-                    <td rowspan="2"><b>{{$banglaArray[0][4]+$banglaArray[1][4]}}</b></td>
-
-                    <td><b>{{$banglaArray[0][5]}}</b></td>
-                    <td rowspan="2"><b>{{$banglaArray[0][5]+$banglaArray[1][5]}}</b></td>
-                    <td rowspan="2"><b>{{$blextra[0]}}</b></td>
-                    <td rowspan="2"><b>{{$blextra[1]}}</b></td>
-                    <td rowspan="2"><b>{{$blextra[2]}}</b></td>
-                    <td rowspan="2"><b>{{$blextra[3]}}</b></td>
-
-
-                    <!--<td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>-->
-                </tr>                    <tr>
-                    <td>{{$banglaArray[1][0]}}</td>
-                    <td class="cTitle">{{$banglaArray[1][1]}}</td>
-
-                    <td><b>{{$banglaArray[1][2]}}</b></td>
-
-                    <td><b>{{$banglaArray[1][3]}}</b></td>
-
-                    <td><b>{{$banglaArray[1][4]}}</b></td>
-
-                    <td><b>{{$banglaArray[1][5]}}</b></td>
-
-
-                    <!--<td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>-->
-                </tr>
-                @endif
-                @if($extra[3])
-                 
-                    <td>{{$englishArray[0][0]}}</td>
-                    <td class="cTitle">{{$englishArray[0][1]}}</td>
-
-                    <td><b>{{$englishArray[0][2]}}</b></td>
-                    <td rowspan="2"><b>{{$englishArray[0][2]+$englishArray[1][2]}}</b></td>
-
-                    <td><b>{{$englishArray[0][3]}}</b></td>
-                    <td rowspan="2"><b>{{$englishArray[0][3]+$englishArray[1][3]}}</b></td>
-
-                    <td><b>{{$englishArray[0][4]}}</b></td>
-                    <td rowspan="2"><b>{{$englishArray[0][4]+$englishArray[1][4]}}</b></td>
-
-                    <td><b>{{$englishArray[0][5]}}</b></td>
-                    <td rowspan="2"><b>{{$englishArray[0][5]+$englishArray[1][5]}}</b></td>
-
-
-                    <td rowspan="2"><b>{{$enextra[0]}}</b></td>
-                    <td rowspan="2"><b>{{$enextra[1]}}</b></td>
-                    <td rowspan="2"><b>{{$enextra[2]}}</b></td>
-                    <td rowspan="2"><b>{{$enextra[3]}}</b></td>
-
-
-                    <!--<td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>-->
-                    </tr>                    <tr>
-                        <td>{{$englishArray[1][0]}}</td>
-                        <td class="cTitle">{{$englishArray[1][1]}}</td>
-
-                        <td><b>{{$englishArray[1][2]}}</b></td>
-
-                        <td><b>{{$englishArray[1][3]}}</b></td>
-
-                        <td><b>{{$englishArray[1][4]}}</b></td>
-
-                        <td><b>{{$englishArray[1][5]}}</b></td>
-
-
-                        <!--<td><b>&nbsp;</b></td>
-                        <td><b>&nbsp;</b></td>
-                        <td><b>&nbsp;</b></td>
-                        <td><b>&nbsp;</b></td>
-                        <td><b>&nbsp;</b></td>
-                        <td><b>&nbsp;</b></td>-->
-                    </tr>
-                @endif
-                
-                @foreach($subcollection as $subject)
-
-                <?php  
-                    //echo "<pre>";print_r($subject);exit;
-                ?>
-                @if(!empty($subject))
-                <tr>
+        <div class="btmcontainer">
+            <div class="overalreport-left overalreportAll">
+                {{-- <h2 class="markTitle"></h2> --}}
+    <table style="margin-top: 5%">
+    <thead>
+      <tr>
+        <td  class="td1" colspan="3" align="right"><b>Période</b> </td>
+        <td  class="td-body rotated_cell" style="text-align: center !important; padding-left: 4% !important" rowspan="3"> <div class="rotate_text"> coefficients</div> </td>
+        <td  class="td-header" colspan="4"> <strong>1er Contrôle</strong> </td>
+        <td  class="td-body rotated_cell" rowspan="3" style="padding-left: 3% !important"> <div class="rotate_text">Mention</div> </td>
+      </tr>
+      <tr>
+        <td  class="td-body" colspan="3">Matières </td>
+        <td  class="td-body1" colspan="1"> 20% </td>
+        <td  class="td-body1" colspan="1"> 20% </td>
+        <td  class="td-body1"> 60% </td>
+        <td  class="td-body1"> 100% </td>
+      </tr>
+      <tr>
+        <td  class="td" colspan="3" style="font-size: 12px; background:#FFE4E1">Langues, Littératures Et Art  </td>
+        <td  class="td-body" style="background:#FFE4E1;"> DT </td>
+        <td  class="td-body" style="background:#FFE4E1;"> TT </td>
+        <td  class="td-body" style="background:#FFE4E1;"> EF </td>
+        <td  class="td-body" style="background:#FFE4E1;"> NT </td>
+      </tr>
+      
+    </thead>
+    <tbody>
+             
+                {{-- <tr>
                  <td>{{$subject->subcode}}</td>
                     <td class="cTitle">{{$subject->subname}}</td>
                     <td colspan="2"><b>{{$subject->written}}</b></td>
@@ -281,197 +340,336 @@ $institute = Institute::where('school_id', auth()->user()->school_id)->first();
                     <td><b>&nbsp;</b></td>
                     <td><b>&nbsp;</b></td>
                     <td><b>&nbsp;</b></td>-->
-                </tr>
-                @endif
+                </tr> --}}
+                
+        @foreach($subcollection as $subject)
 
-              @endforeach
+        @if(!empty($subject))
+      <tr>
+        <td  class="td" rowspan="7"></td>
+        <td  class="td" colspan="2">{{$subject->subname}}</td>
+        <td  class="td-body"> 100</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A </td>
+        <td  class="td-body"> 12.0 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+        @endif
+        @endforeach
+      <tr>
+        {{-- <td  class="td"> </td> --}}
+        <td  class="td" colspan="2">Ethics </td>
+        <td  class="td-body"> 100</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
 
-                <tr>
+      </tr>
+      <tr>
+        {{-- <td  class="td"></td> --}}
+        <td  class="td" colspan="2">Digital Signal Processing </td>
+        <td  class="td-body"> 100</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A </td>
+        <td  class="td-body"> 12 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
 
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td colspan="2"><b>&nbsp;</b></td>
-                    <td colspan="2"><b>&nbsp;</b></td>
-                    <td colspan="2"><b>&nbsp;</b></td>
-                    <td colspan="2"><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <!--<td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>
-                    <td><b>&nbsp;</b></td>-->
-                </tr>
-                <tr class="lastitem">
-                    <td>&nbsp;</td>
-                    <td class="markTotal" colspan="9">Total Marks &amp; POINTS = </td>
-                    
-                    <td><b>{{intval($meritdata->totalNo)}}</b></td>
-                    <td><b>{{$extra[3]}}</b></td>
-                    <td><b>{{$meritdata->point}}</b></td>
-                    <td><b>{{$meritdata->grade}}</b></td>
-                    <!--<td class="res3 markTotal2" colspan="3">Total marks &amp; GPA</td>
-                    <td class="res3"><b>&nbsp;</b></td>
-                    <td class="res3"><b>&nbsp;</b></td>
-                    <td class="res6"><b>&nbsp;</b></td>-->
-                </tr>
+      </tr>
+      <tr>
+        {{-- <td  class="td"> </td> --}}
+        <td  class="td" colspan="2">Combinatorial Algorithms </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> B+ </td>
+        <td  class="td-body"> 9.99</td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
 
-                </tbody></table>
-        </div><!-- end of resmidcontainer -->
+      </tr>
+      <tr>
+        {{-- <td  class="td"></td> --}}
+        <td  class="td" colspan="2">Multi-Variable Calculus </td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+       <tr>
+        {{-- <td  class="td"></td> --}}
+        <td  class="td" colspan="2">Multi-Variable Calculus </td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+       <tr>
+        {{-- <td  class="td"></td> --}}
+        <td  class="td" colspan="2">Multi-Variable Calculus </td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
 
-        <div class="btmcontainer">
-            <div class="overalreport overalreportAll">
-                <h2 class="markTitle">Overall Report</h2>
-                <table class="pagetble" style="height:113px">
-                    <tbody><tr>
-                        <th class="column1" style="width:110px; padding:3px 0 2px">SUBJECTS</th>
-                        <th class="column2" style="width:130px">Total Marks</th>
-                        <th class="column3">POINTS</th>
-                    </tr>
-                    @if($extra[1])
+       <tr>
+        <td  class="td" rowspan="5"></td>
+        <td  class="td" colspan="2">Mathématiques: Algèbre</td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        {{-- <td  class="td"></td> --}}
+        <td  class="td" colspan="2"><b style="font-size: 14px">Mathématiques: Géométrie</b></td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        {{-- <td  class="td"></td> --}}
+        <td  class="td" colspan="2">Sciences Physiques</td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        {{-- <td  class="td"></td> --}}
+        <td  class="td" colspan="2">Informatique</td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        {{-- <td  class="td"></td> --}}
+        <td  class="td" colspan="2">Électricité Bâtiment</td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+
+       <tr>
+        <td  class="td" rowspan="7"></td>
+        <td  class="td" colspan="2"><b style="font-size: 14px">Sciences Expérimentales </b></td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        <td  class="td" colspan="2">Éducation Sexuelle </td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        <td  class="td" colspan="2">Sciences Expérimentales</td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        <td  class="td" colspan="2">Sciences Expérimentales</td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        <td  class="td" colspan="2">Sciences Expérimentales </td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        <td  class="td" colspan="2">Sciences Expérimentales</td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+      <tr>
+        <td  class="td" colspan="2">Sciences Expérimentales </td>
+        <td  class="td-body">200</td>
+        <td  class="td-body"> 3.0 </td>
+        <td  class="td-body"> A- </td>
+        <td  class="td-body"> 10.98 </td>
+        <td  class="td-body"> 200</td>
+        <td  class="td-body"> </td>
+      </tr>
+
+       
+    </tbody>
+    <tfoot>
+      <tr>
+        <td class="td-footer" rowspan="3"></td>
+        <td  class="td-footer1" style="border: none; font-size: 13px; margin-top: 10px; line-height: 2px" colspan="4" class="footer" align="right">Sur</td>
+        <td  class="td"> 2800</td>
+        <td  class="td"> Total</td>
+        <td  class="td" colspan="2" align="center" ><b>2800</b></td>
+      </tr>
+      <tr>
+        <td  class="td-footer1" style="font-size: 13px; margin-top: 3px" colspan="4" rowspan="2" class="footer" align="right">Nombre d’élèves</td>
+        <td  class="td" >10</td>
+        <td  class="td" >Moyenne</td>
+        <td  class="td" colspan="2"></td>
+        {{-- <td  class="td" colspan="2"></td> --}}
+      </tr>
+       <tr>
+        {{-- <td  class="td" colspan="4" rowspan="2" class="footer" align="right">Nombre d’élèves</td> --}}
+        <td  class="td" ></td>
+        <td  class="td" >Place</td>
+        <td  class="td" colspan="2"></td>
+        {{-- <td  class="td" colspan="2"></td> --}}
+      </tr>
+  </table>
+               
+            </div><!-- end of overalreport -->
+
+            <div class="overalreport-right gpagrading-right" style="margin-top:10%">
+                <label class="" style="font-size: 15px; margin-top:2%; font-weight:bold;">Disciplines Générales et Valeurs</label>
+                <table class="pagetble" style="height:181px; font-size:10px !important" >
+                    <thead>
                     <tr>
-                        <td class="column1" style="width:110px; text-align:center">Urdu<?php /*{{$banglaArray[1][1]}}*/ ?></td>
-                        <td class="column2" style="width:130px">{{$blextra[0]}}</td>
-                        <td class="column3"><b>{{$blextra[2]}}</b></td>
+                        <td  colspan="3" align="right" style="border-left: 1px solid #fff !important"></td>
+                        <td  class="td" colspan="6" style="background:#FFE4E1"> <b>Observations</b> </td>
                     </tr>
-                    @endif
-                    @if($extra[3])
-                        <tr>
-                            <td class="column1" style="width:110px; text-align:center">English<?php /*{{$englishArray[1][1]}} */?></td>
-                            <td class="column2" style="width:130px">{{$enextra[0]}}</td>
-                            <td class="column3"><b>{{$enextra[2]}}</b></td>
-                        </tr>
-                    @endif
-                    @foreach($subcollection as $subject)
                     <tr>
-                        <td class="column1" style="width:110px; text-align:center">{{$subject->subname}}</td>
-                        <td class="column2" style="width:130px">{{$subject->total}}</td>
-                        <td class="column3"><b>{{$subject->point}}</b></td>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="3">Retard </td>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="4">  </td>
                     </tr>
-                    @endforeach
+                    <tr>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="3">Absence </td>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="4">  </td>
+                    </tr>
+                    <tr>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="3">Respect + Discipline  </td>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="4"> </td>
+                    </tr>
+                    <tr>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="3"><b>Solidarité + Participation</b> </td>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="4"> </td>
+                    </tr>
+                    <tr>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="3">Esprit de services  </td>
+                        <td  style="font-size:10px !important; text-align:left" class="td" colspan="4"> </td>
+                    </tr>
+                    </thead>
+                </table>
                    
+                    <br>
+                <table style="width: 100% !important; height:106px; border-top: 1px solid gray" class="pagetble" >
+                    <tbody>
+                        <thead >
+                        <tr>
+                            <td  colspan="6" align="left" style="background:#FFE4E1"><b>Moyenne </b></td>
+                            <td  colspan="6" align="left" style="background:#FFE4E1"><b>Observation </b></td>
+                        </tr>
+                        <tr>
+                            <td  class="td" colspan="6" rowspan="3"></td>
+                            <td  class="td" colspan="6" rowspan="3"> </td>
+                        </tr>
+                        </thead>
+                    </table>
+                    <br>
+                    <table class="pagetble" style="height:181px; font-size:10px; border-top: 1px solid gray">
+                    <thead >
                     <tr>
-                        <td class="column1" style="width:110px">&nbsp;</td>
-                        <td class="column2" style="width:130px">&nbsp;</td>
-                        <td class="column3">&nbsp;</td>
+                        <td  colspan="3" align="left" style="background:#FFE4E1"><b>Légende</b></td>
                     </tr>
                     <tr>
-                        <td class="column1" style="width:110px;height:23px;text-align:center">Overall</td>
-                        <td class="column2" style="width:130px;height:23px">{{intval($meritdata->totalNo)}}</td>
-                        <td class="column3" style="height:23px"><b>{{$meritdata->point}}</b></td>
+                        <td  class="td-bottom" colspan="3">Mention  </td>
+                        <td  class="td-bottom" colspan="4"> Équivalence </td>
+                        <td  class="td-bottom" colspan="4"> DT: Devoir total </td>
                     </tr>
-                    </tbody></table>
+                    <tr>
+                        <td  class="td-bottom" colspan="3">EX : Excellent </td>
+                        <td  class="td-bottom" colspan="4"> A= (90-100) </td>
+                        <td  class="td-bottom" colspan="4"> TT=Test total </td>
+                    </tr>
+                    <tr>
+                        <td  class="td-bottom" colspan="3">TB= Très Bien </td>
+                        <td  class="td-bottom" colspan="4"> B= (80-89) </td>
+                        <td  class="td-bottom" colspan="4"> EF: évaluation finale </td>
+                    </tr>
+                    <tr>
+                        <td  class="td-bottom" colspan="3"><b>AB= Assez Bien</b> </td>
+                        <td  class="td-bottom" colspan="4"> C= (70-79)  </td>
+                        <td  class="td-bottom" colspan="4"> Nt=Notes Totales </td>
+                    </tr>
+                    <tr>
+                        <td  class="td-bottom" colspan="3">AB= Assez Bien </td>
+                        <td  class="td-bottom" colspan="4"> D= (50-69)</td>
+                        <td  class="td-bottom" colspan="4"> ITAP: Initiation à la Technologie et aux </td>
+                    </tr>
+                    <tr>
+                        <td  class="td-bottom" colspan="3">TF: Très Faible  </td>
+                        <td  class="td-bottom" colspan="4"> E : (≤49) </td>
+                        <td  class="td-bottom" colspan="4"> Activités Productive</td>
+                    </tr>
+                    </thead>
+                </table>
+                <br>
+                    <strong  class="signa">Signatures</strong><br><br>
+                <label for="">Direction </label>  
+                <div class="" style="float: right;">
+                    <hr class="signature"><br>
+                    <p for="" style="text-align: center !important; margin-top: 2px ">Parents</p>
+                </div>
+
+                
             </div><!-- end of overalreport -->
 
-            <div class="overalreport attendenceReport">
-                <h2 class="markTitle">Attendance Report</h2>
-                <table class="pagetble" style="height:181px">
-                    <tbody><tr>
-                        <th colspan="2">Month : Presence</th>
-                    </tr>
-
-                    @foreach($attendaces as $i => $attendace)
-                    <tr>
-                        <td>{{$attendace->month}} : @if($attendace->attendance_status == 'present') Present @endif</td>
-                        <td>{{$attendace->month}} : @if($attendace->attendance_status == 'absent') Absent @endif</td>
-
-
-                    </tr>
-                  @endforeach
-                  <tr>
-                  <td>Total Paresent : {{$attendaces1}}</td>
-                  <td>Total Absent:  {{$attendaces2}}</td>
-                  </tr>
-                  </tbody></table>
-
-                <h2 class="markTitle">Extra Activities </h2>
-                <table class="pagetble" style="height:106px"><tbody>
-                    <tr><td>{{$extra[4]}}</td></tr>	</tbody></table>
-            </div><!-- end of overalreport -->
-
-            <div class="overalreport gpagrading">
-                <h2 class="markTitle">Grading rules</h2>
-                <table class="pagetble" style="height:181px">
-                    <tbody><tr>
-                        <th class="column1">Range of Marks(%)</th>
-                        <th class="column2">Grade</th>
-                        <th class="column3">Point</th>
-                    </tr>
-                    <tr>
-                        <td class="column1">80 or Above </td>
-                        <td class="column2"> A+</td>
-                        <td class="column3">5.00</td>
-                    </tr>
-                    <tr>
-                        <td class="column1">70 to 79</td>
-                        <td class="column2">A</td>
-                        <td class="column3">4.00</td>
-                    </tr>
-                    <tr>
-                        <td class="column1">60 to 69</td>
-                        <td class="column2">A-</td>
-                        <td class="column3">3.50</td>
-                    </tr>
-                    <tr>
-                        <td class="column1">50 to 59</td>
-                        <td class="column2">B</td>
-                        <td class="column3">3.00</td>
-                    </tr>
-
-                    <tr>
-                        <td class="column1">40 to 49</td>
-                        <td class="column2">C</td>
-                        <td class="column3">2.00</td>
-                    </tr>
-
-                    <tr>
-                        <td class="column1">33 to 39</td>
-                        <td class="column2">D</td>
-                        <td class="column3">1.00</td>
-                    </tr>
-                    <tr class="lastitem">
-                        <td class="column1">Below 33</td>
-                        <td class="column2">F</td>
-                        <td class="column3">0.00</td>
-                    </tr>
-                    </tbody></table>
-
-                <h2 class="markTitle">Achievement</h2>
-                <table class="pagetble" style="height:106px"><tbody>
-                    <tr><th align="center" valign="middle">{{$extra[0]}}</th><th align="center" valign="middle">
-                      @if($meritdata->grade!="F")
-                        @if($meritdata->point>=5.00)
-                        Excellent
-                        @elseif($meritdata->point>=4.00)
-                        Good
-                        @elseif($meritdata->point>=3.00)
-                        Average
-                        @elseif($meritdata->point>=2.00)
-                        Poor
-                        @else
-                        Fail
-                        @endif
-                      @else
-                        Fail
-                      @endif
-
-                    </th></tr>                    </tbody></table>
-            </div><!-- end of overalreport -->
 
         </div><!-- end of resmidcontainer -->
     </div><!-- end of resContainer -->
-    <div class="signatureWraper"  style="margin-bottom:40px"><div class="signatureCont">
-            <div class="sign-grdn"><b>Signature (Guardian)</b></div>
-            <div class="sign-clsT"><b>Signature (Class Teacher)</b></div>
-            <div class="sign-head">
-                <!--<img src="/markssheetcontent/head-sign.png" alt="" style="left:23px;bottom:21px">-->                <b>Signature (Head Master)</b>
-            </div>
-        </div></div><!-- end of signatureWraper -->
-    {{-- <img src="{{asset('/markssheetcontent/certificate-bg.png')}}" alt="" class="result-bg">    </div><!-- end of wraperResult --> --}}
-  </div>
+    <hr class="signature-director" >
+   <div class="" style="text-align: center !important">
+        <label for="" > Ismael JOSEPH <br> Director</label>
+   </div>
+   <div class="" style="text-align: center !important; font-size:11px">
+       <p>"… Faites tout pour la gloire de DIEU” 1 Co 10 :31</p>
+   </div>
+
 
 
    <script>

@@ -15,7 +15,7 @@
   $resultCount = MeritList::where('roll_no', Session::get('studentSession'))->count();
 }
 
-$url = request()->segment(3);
+$url = request()->segment(1);
 
 
 if(auth()->user()){

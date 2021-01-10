@@ -25,6 +25,7 @@ class Transactions extends Migration
             $table->string('description')->nullable();
             $table->string('status')->default('initiated')->nullable();
             $table->date('transaction_date')->nullable();
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

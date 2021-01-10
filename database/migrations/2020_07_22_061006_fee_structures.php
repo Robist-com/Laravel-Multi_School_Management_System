@@ -23,6 +23,7 @@ class FeeStructures extends Migration
             $table->unsignedBigInteger('degree_id')->nullable();
             $table->unsignedBigInteger('faculty_id')->nullable();
             $table->unsignedBigInteger('department_id')->nullable();
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
 

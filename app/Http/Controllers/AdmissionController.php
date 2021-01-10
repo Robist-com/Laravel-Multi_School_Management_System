@@ -314,7 +314,26 @@ if ($request->ajax()) {
      */
     public function store(Request $request)
     {
-        $input = $request->all();
+        // return  $request->all();
+        // $this->validate($request, [
+        //     'first_name' => 'required',
+        //     'last_name' => 'required',
+        //     // 'father_name' => 'required',
+        //     'gender' => 'required',
+        //     'email' => 'required|unique:admissions',
+        //     'phone' => 'required',
+        //     'dob' => 'required',
+        //     // 'nationality' => 'required',
+        //     // 'dateregistered' => 'require',
+        //     'class_code' => 'required',
+        //     // 'user_id' => 'require',
+        //     'semester_id' => 'required',
+        //     'degree_id' => 'required',
+        //     'faculty_id' => 'required',
+        //     'department_id' => 'required',
+        //     'batch_id' => 'required',
+        //     'school_id' => 'required',
+        // ]);
       
 
         $template = Institute::where('school_id', auth()->user()->school_id)->first();
@@ -344,7 +363,7 @@ if ($request->ajax()) {
         $student->mother_name = $request->mother_name;
         $student->gender = $request->gender;
         $student->phone = $request->phone;
-        $student->dob = $request->dob;
+        $student->dob = date('Y-m-d', strtotime($request->dob));
         $student->email = $request->email;
         $student->status = $request->status;
         $student->nationality = $request->nationality;
@@ -357,7 +376,7 @@ if ($request->ajax()) {
         $student->degree_id = $request->degree_id;
         $student->class_code = $request->class_id;
         $student->school_id = $request->school_id;
-        $student->dateregistered = $request->dateregistered;
+        $student->dateregistered = date('Y-m-d');
         $student->batch_id = $request->batch_id;
         $student->acceptance = 'accept';
         $student->user_id = $request->user_id; // is the user who has the role to create students okay.

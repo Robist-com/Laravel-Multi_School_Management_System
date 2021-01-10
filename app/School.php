@@ -8,12 +8,17 @@ class School extends Model
 {
     protected $table = 'schools';
 
-    protected $guarded = [];
+    protected $fillable = ['name', 'email', 'is_active', 'user_id', 'description', 'rating'];
 
 
     public function owner()
     {
        return $this->belongsTo('App\User');
+    }
+
+     public function institute()
+    {
+       return $this->hasMany('App\Institute');
     }
 
     public function admission()

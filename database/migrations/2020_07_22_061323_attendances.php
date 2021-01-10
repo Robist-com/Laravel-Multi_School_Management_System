@@ -18,7 +18,7 @@ class Attendances extends Migration
             $table->string('year')->nullable();
             $table->string('attendance_status')->nullable();
             $table->string('class_id')->nullable();
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('course_id')->nullable();
             $table->unsignedBigInteger('teacher_id')->nullable();

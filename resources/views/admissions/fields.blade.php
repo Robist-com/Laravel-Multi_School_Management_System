@@ -95,11 +95,32 @@ legend>b {
         class="form-horizontal form-label-left">
         @csrf
         <div class="row">
-
+<style>
+    input:read-only{
+        background: rgb(255, 255, 255) !important;
+        border: none !important;
+    }
+</style>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>ADMISSIONS</h2>
+                        <div class="button-group ">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" readonly
+                                name="username" id="username"
+                                value="{{ $rand_username_password}}">
+                        </div>
+                        <input type="text"
+                            class="btn btn-danger btn-sm btn-round col-md-2"
+                            value="{{date('Y')}}" name="year" id="dateregistered">
+                        <input type="text"
+                            class="btn btn-primary btn-sm  btn-round col-md-2"
+                            value="{{date('F')}}" name="month" id="dateregistered">
+                        <input type="text"
+                            class="btn btn-success  btn-sm  btn-round col-md-2"
+                            value="{{date('l')}}" name="day" id="dateregistered">
+                    </div>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>
@@ -108,9 +129,8 @@ legend>b {
                     </div>
                     <div class="x_content">
 
-
                         <!-- Smart Wizard -->
-                        <div id="wizard" class="form_wizard wizard_horizontal">
+                        {{-- <div id="wizard" class="form_wizard wizard_horizontal">
                             <ul class="wizard_steps">
                                 <li>
                                     <a href="#step-1">
@@ -139,18 +159,10 @@ legend>b {
                                         </span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="#step-4">
-                                        <span class="step_no">4</span>
-                                        <span class="step_descr">
-                                            Step 4<br />
-                                            <small>Step 4 Salary Detils</small>
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
 
-                            <div id="step-1">
+                            </ul> --}}
+
+                            {{-- <div id="step-1"> --}}
                                 <div class="row">
                                     {{-- ====================== --}}
                                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -174,27 +186,12 @@ legend>b {
                                                 value="{{auth()->user()->school->id}}">
                                             @endif
                                             <div class="x_title">
-                                                <img src="https://webdevtrick.com/wp-content/uploads/preview-img.jpg" width="50px" height="30px"
+                                                <img src="{{ asset('student_images/profile.jpg') }}" width="50px" height="30px"
                                                     id="preview1" style="pointer-events: none" />
-
-                                                <!-- <input type="file" name="image" id="file-input"
-                                                    accept="image/x-png,image/png,image/jpg,image/jpeg"
-                                                    style="display:none"> -->
 
                                                 <ul class="nav navbar-right panel_toolbox">
                                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                                     </li>
-                                                    <div class="button-group pull-right">
-                                                        <input type="text"
-                                                            class="btn btn-danger btn-sm btn-round col-md-2"
-                                                            value="{{date('Y')}}" name="year" id="dateregistered">
-                                                        <input type="text"
-                                                            class="btn btn-primary btn-sm  btn-round col-md-2"
-                                                            value="{{date('F')}}" name="month" id="dateregistered">
-                                                        <input type="text"
-                                                            class="btn btn-success  btn-sm  btn-round col-md-2"
-                                                            value="{{date('l')}}" name="day" id="dateregistered">
-                                                    </div>
                                                 </ul>
                                                 <div class="clearfix"></div>
                                             </div>
@@ -213,7 +210,7 @@ legend>b {
 
                                                     <div class="container animated bounce">
                                                         <div class="alert"></div>
-                                                        <div id='img_container'><img id="preview" width="120px" height="90px" src="https://webdevtrick.com/wp-content/uploads/preview-img.jpg" alt="your image" title=''/></div> 
+                                                        <div id='img_container'><img id="preview" width="120px" height="90px" src="{{ asset('student_images/profile.jpg') }}" alt="your image" title=''/></div> 
                                                         <div class="input-group"> 
                                                         <div class="custom-file">
                                                         <input type="file" id="inputGroupFile01" class="imgInp custom-file-input btn-choose" aria-describedby="inputGroupFileAddon01" style="display:none">
@@ -238,15 +235,10 @@ legend>b {
 
                                                     {{---------------Roll Number / Username------------------}}
 
-                                                    <div class="col-md-12 col-sm-6 col-xs-12">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" readonly
-                                                                name="username" id="username"
-                                                                value="{{ $rand_username_password}}">
+                                         
                                                             <input type="hidden" name="password" id="password"
                                                                 value="{{ $rand_username_password}}">
-                                                        </div>
-                                                    </div>
+                                                     
                                                     {{---------------Registration Date------------------}}
 
                                                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -275,8 +267,8 @@ legend>b {
                                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                                     <label for="">First Name <b>*</b></label>
                                                     <div class="form-group">
-                                                        <input type="text" name="first_name" id="first_name" class="form-control 
-                        text-capitalize" placeholder="Enter First Name Here">
+                                                        <input type="text" name="first_name" required id="first_name" class="form-control 
+                                                        text-capitalize" placeholder="Enter First Name Here">
                                                     </div>
                                                 </div>
 
@@ -285,15 +277,15 @@ legend>b {
                                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                                     <label for="">Last Name <b>*</b></label>
                                                     <div class="form-group">
-                                                        <input type="text" name="last_name" id="last_name" class="form-control  
-                        text-capitalize" placeholder="Enter Last Name Here">
+                                                        <input type="text" required name="last_name" id="last_name" class="form-control  
+                                                        text-capitalize" placeholder="Enter Last Name Here">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                                     <label for="">Email <b>*</b></label>
                                                     <div class="form-group">
-                                                        <input id="email" name="email"
+                                                        <input id="email" name="email" required
                                                             class="form-control col-md-7 col-xs-12" type="text"
                                                             placeholder="Enter E-mail">
                                                     </div>
@@ -304,7 +296,7 @@ legend>b {
                                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                                     <label for="">Date of Birth <b>*</b></label>
                                                     <div class="form-group">
-                                                        <input type="text" name="dob" id="dob"
+                                                        <input type="text" name="dob" id="dob" 
                                                             class="form-control  text-capitalize"
                                                             placeholder="YYY/MM/DD" autocomplete="off">
                                                     </div>
@@ -422,8 +414,8 @@ legend>b {
                                     </div>
                                 </div>
 
-                            </div>
-                            <div id="step-2">
+                            {{-- </div>
+                            <div id="step-2"> --}}
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="x_panel">
@@ -432,7 +424,6 @@ legend>b {
                                                 <ul class="nav navbar-right panel_toolbox">
                                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                                     </li>
-
                                                 </ul>
                                                 <div class="clearfix"></div>
                                             </div>
@@ -444,7 +435,7 @@ legend>b {
                                                     <label for="">Grade <b>*</b></label>
                                                     <div class="form-group">
                                                         <div class="selectWarapper">
-                                                            <select name="semester_id" id="semester_id"
+                                                            <select name="semester_id" id="semester_id" required
                                                                 class="form-control select_2_single">
                                                                 <option value="0" selected="true" disabled="true">Choose
                                                                     Grade</option>
@@ -463,7 +454,7 @@ legend>b {
                                                     <label for="">Level <b>*</b></label>
                                                     <div class="form-group">
                                                         <div class="selectWarapper">
-                                                            <select name="degree_id" id="degree_id"
+                                                            <select name="degree_id" id="degree_id" required
                                                                 class="form-control select_2_single">
                                                                 <option value="0" selected="true" disabled="true">Choose
                                                                     Level</option>
@@ -479,7 +470,7 @@ legend>b {
                                                         <div class="selectWarapper">
                                                             <select name="faculty_id" id="faculty_id"
                                                                 class="form-control select_2_single">
-                                                                <option value="0" selected="true" disabled="true">Choose
+                                                                <option value="0" selected="true" required disabled="true">Choose
                                                                     Student Group</option>
                                                                 @foreach($faculties as $faculty)
                                                                 <option value="{{$faculty->faculty_id}}">
@@ -495,7 +486,7 @@ legend>b {
                                                     <label for="">Class Group <b>*</b></label>
                                                     <div class="form-group">
                                                         <div class="selectWarapper">
-                                                            <select name="department_id" id="department_id"
+                                                            <select name="department_id" id="department_id" required
                                                                 class="form-control select_2_single">
                                                                 <option value="0" selected="true" disabled="true1">
                                                                     Choose Class Group</option>
@@ -509,7 +500,7 @@ legend>b {
                                                     <label for="">Class <b>*</b></label>
                                                     <div class="form-group">
                                                         <div class="selectWarapper">
-                                                            <select name="class_id" id="class_id"
+                                                            <select name="class_id" id="class_id" required
                                                                 class="form-control select_2_single">
                                                                 <option value="" selected="true" disabled="true">Choose
                                                                     Class</option>
@@ -523,7 +514,7 @@ legend>b {
                                                     <label for="">Academic Year <b>*</b></label>
                                                     <div class="form-group">
                                                         <div class="selectWarapper">
-                                                            <select name="batch_id" id="batch_id"
+                                                            <select name="batch_id" id="batch_id" required
                                                                 class="form-control select_2_single">
                                                                 <option value="0" selected="true" disabled="true">Choose
                                                                     Batch</option>
@@ -541,13 +532,13 @@ legend>b {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            {{-- </div> --}}
                             <!-- </div>
                         </div>
                         </div> -->
 
 
-                            <div id="step-3">
+                            {{-- <div id="step-3"> --}}
 
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -806,79 +797,15 @@ legend>b {
 
 
                             </div>
-                            <div id="step-4">
-                                <div class="row">
-                                    <div class="col-md-12 col-sm-12 col-xs-12">
-                                        <div class="x_panel">
-                                            <div class="x_title">
-                                                <h2>Salary Detail <small>Portal</small></h2>
-                                                <ul class="nav navbar-right panel_toolbox">
-                                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                                    </li>
-                                                    <li class="dropdown">
-                                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                                            role="button" aria-expanded="false"><i
-                                                                class="fa fa-wrench"></i></a>
-                                                        <ul class="dropdown-menu" role="menu">
-                                                            <li><a href="#">Settings 1</a>
-                                                            </li>
-                                                            <li><a href="#">Settings 2</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                                                    </li>
-                                                </ul>
-                                                <div class="clearfix"></div>
-                                            </div>
-                                            <div class="x_content">
-                                                <br />
-
-                                                <div class="form-group">
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <input type="text" id="bank_name" name="bank_name"
-                                                            required="required" class="form-control col-md-7 col-xs-12"
-                                                            placeholder="Enter Bank Name">
-                                                    </div>
-
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <input type="text" id="account_number" name="account_number"
-                                                            required="required" class="form-control col-md-7 col-xs-12"
-                                                            placeholder="Enter Account Number">
-                                                    </div>
-
-                                                    <div class="col-md-2 col-sm-6 col-xs-12">
-                                                        <input type="text" id="salary_amount" name="salary_amount"
-                                                            required="required" class="form-control col-md-7 col-xs-12"
-                                                            placeholder=" Salary Amount">
-                                                    </div>
-
-                                                    <div class="col-md-2 col-sm-6 col-xs-12">
-                                                        <input id="medical_allowance" name="medical_allowance"
-                                                            class=" form-control col-md-7 col-xs-12" type="text"
-                                                            placeholder="Medical Allowance">
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <div class="col-md-12 col-sm-12 col-xs-12 ">
-                                                        <button type="submit"
-                                                            class="btn btn-lg btn-round btn-success pull-right">Register
-                                                            Employee</button>
-                                                    </div>
-                                                </div>
-                                                {{-- </form> --}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <button type="submit" class="pull-right btn btn-success btn-lg"> Save Admission</button>
+                            
                         </div>
                         <!-- End SmartWizard Content -->
                     </div>
                 </div>
             </div>
         </div>
+        
     </form>
 </div>
 

@@ -30,6 +30,11 @@ class Roll extends Model
         return $this->hasMany('App\SemesterDetail');
     }
 
+    public function student()
+    {
+        return $this->belongsTo('App\Model\Admission');
+    }
+
     public function isOnline()
 	{
 		return Cache::has('student-online' . Session::get('studentSession'));

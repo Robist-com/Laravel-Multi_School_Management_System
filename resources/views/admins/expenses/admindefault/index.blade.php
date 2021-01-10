@@ -13,7 +13,7 @@
 
                     <div class="page-title">
               <div class="title_left">
-                <h3>Add Income</h3>
+                <h3>Add expense</h3>
               </div>
 
               <div class="title_right">
@@ -34,24 +34,24 @@
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                  @if(isset($income))
-                   <h2>Update Income</h2>
+                  @if(isset($expense))
+                   <h2>Update expense</h2>
                    @else
-                   <h2>Create Income</h2>
+                   <h2>Create expense</h2>
                    @endif
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
-                        <a href="{{route('income.index')}}"><button type="submit" class="btn btn-round btn-success"><i class="fa fa-plus-circle" aria-hidden="true"> Add </i></button></a>
+                        <a href="{{route('expenses.index')}}"><button type="submit" class="btn btn-round btn-success"><i class="fa fa-plus-circle" aria-hidden="true"> Add </i></button></a>
                     </ul>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                  @if(isset($income))
-                  {!! Form::model($income, ['route' => ['income.update', $income->id], 'method' => 'post', 'class' => 'form-horizontal form-label-left', 'enctype' => 'multipart/form-data']) !!}
+                  @if(isset($expense))
+                  {!! Form::model($expense, ['route' => ['expenses.update', $expense->id], 'method' => 'post', 'class' => 'form-horizontal form-label-left', 'enctype' => 'multipart/form-data']) !!}
                   @csrf
                   @else
-                  {!! Form::open(['route' => 'income.store', 'class' => 'form-horizontal form-label-left', 'enctype' => 'multipart/form-data']) !!}
+                  {!! Form::open(['route' => 'expenses.store', 'class' => 'form-horizontal form-label-left', 'enctype' => 'multipart/form-data']) !!}
                   @csrf
                   @endif
 
@@ -62,23 +62,23 @@
                             <option>Choose School</option>
                             @foreach (auth()->user()->school->all() as $school)
                             <option value="{{ $school->id }}"
-                            @if(isset($income)){{$income->school_id == $school->id ? 'selected' : ''}} @endif >
+                            @if(isset($expense)){{$expense->school_id == $school->id ? 'selected' : ''}} @endif >
                             {{$school->name}}</option>
                             @endforeach
                           </select>
                         </div>
                       </div>
                     @else
-                      <input type="hidden" name="school_id" id="school_id" value="{{auth()->user()->school->id}}">
+                      <input type="hidden" name="school_id" id="school_id" value="{{ auth()->user()->school_id}}">
                   @endif
 
                   <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <label for="">Income Type <b style="color:red">*</b></label>
-                    <select name="income_type_id" id="income_type_id" class="form-control select_2_single" id="select_2_single">
-                    <option value="0" selected="true" disabled="true" style="margin-right:20px">Select Income Type</option>
-                    @foreach($inc_type as $key => $type)
-                    <option value="{{$type->id}}" @if(isset($income)) {{$type->id == $income->income_type_id ? 'selected' : ''}}  @endif>{{$type->type}}</option>
+                        <label for="">expense Type <b style="color:red">*</b></label>
+                    <select name="expense_type_id" id="expense_type_id" class="form-control select_2_single" id="select_2_single">
+                    <option value="0" selected="true" disabled="true" style="margin-right:20px">Select expense Type</option>
+                    @foreach($e_type as $key => $type)
+                    <option value="{{$type->id}}" @if(isset($expense)) {{$type->id == $expense->expense_type_id ? 'selected' : ''}}  @endif>{{$type->type}}</option>
                     @endforeach
                     </select>
                     </div>
@@ -87,49 +87,49 @@
                   
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                    <label for="">Income Name <b style="color:red">*</b></label>
-                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Name"  @if(isset($income)) value="{{$income->name}}" @endif autocomplete="off">
+                    <label for="">expense Name <b style="color:red">*</b></label>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Name"  @if(isset($expense)) value="{{$expense->name}}" @endif autocomplete="off">
                     </div>
                     </div> 
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                    <label for="">Income Invoice Number <b style="color:red">*</b></label>
-                        <input type="text" name="invoice_number" id="invoice_number" class="form-control" placeholder="Enter Invoice Number"  @if(isset($income)) value="{{$income->invoice_number}}" @endif autocomplete="off">
+                    <label for="">expense Invoice Number <b style="color:red">*</b></label>
+                        <input type="text" name="invoice_number" id="invoice_number" class="form-control" placeholder="Enter Invoice Number"  @if(isset($expense)) value="{{$expense->invoice_number}}" @endif autocomplete="off">
                     </div>
                     </div>
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                    <label for="">Income Date <b style="color:red">*</b></label>
-                        <input type="text" name="date" id="date" class="form-control" placeholder="Enter Name"  @if(isset($income)) value="{{$income->date}}" @endif autocomplete="off">
+                    <label for="">expense Date <b style="color:red">*</b></label>
+                        <input type="text" name="date" id="date" class="form-control" placeholder="Enter Name"  @if(isset($expense)) value="{{$expense->date}}" @endif autocomplete="off">
                     </div>
                     </div>
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                    <label for="">Income Amount <b style="color:red">*</b></label>
-                        <input type="number" name="amount" id="amount" class="form-control" placeholder="Enter Name"  @if(isset($income)) value="{{$income->amount}}" @endif autocomplete="off">
+                    <label for="">expense Amount <b style="color:red">*</b></label>
+                        <input type="number" name="amount" id="amount" class="form-control" placeholder="Enter Name"  @if(isset($expense)) value="{{$expense->amount}}" @endif autocomplete="off">
                     </div>
                     </div>
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                    <label for="">Income Document <b style="color:red">*</b></label>
-                        <input type="file" name="file_document" id="file" class="form-control" placeholder="Enter Name"  @if(isset($income)) value="{{$income->file}}" @endif autocomplete="off">
+                    <label for="">expense Document <b style="color:red">*</b></label>
+                        <input type="file" name="file_document" id="file" class="form-control" placeholder="Enter Name"  @if(isset($expense)) value="{{$expense->file}}" @endif autocomplete="off">
                     </div>
                     </div>
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                    <label for="">Income Description <b style="color:red">*</b></label>
+                    <label for="">expense Description <b style="color:red">*</b></label>
                     {!! Form::textarea('description', null, ['class' => 'form-control border', 'cols' => 40, 'rows' =>2, 'placeholder'=> ' Description', 'autocomplete' => 'off']) !!}
                     </div>
                     </div>
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                      @if(isset($income))
+                      @if(isset($expense))
                       {!! Form::hidden('status', 'off') !!}
                     {!! Form::checkbox('status', 'on', null, ['class' => 'flat']) !!} Status
                     @else
@@ -140,7 +140,7 @@
                     </div>
                  
                     <div class="modal-footer">
-                    @if(isset($income))
+                    @if(isset($expense))
                     {!! Form::submit('Save Changes', ['class' => 'btn btn-dark']) !!}
                     @else
                     <button type="submit" class="btn btn-round btn-dark">Save</button>
@@ -156,11 +156,11 @@
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Table Income</h2>
+                    <h2>Table expense</h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
-                      <a class="btn btn-success btn-round"  data-toggle="modal" data-target="#income-type"><i class="fa fa-plus-circle" aria-hidden="true"> Add New Type</i></a>
+                      <a class="btn btn-success btn-round"  data-toggle="modal" data-target="#expense-type"><i class="fa fa-plus-circle" aria-hidden="true"> Add New Type</i></a>
                     </ul>
                     <div class="clearfix"></div>
                   </div>
@@ -189,22 +189,22 @@
                         </thead>
 
                         <tbody>
-                        @foreach($incomes as $income)
+                        @foreach($expenses as $expense)
                         <tr class="even pointer">
                           
                           <td class="a-center ">
                             <input type="checkbox" class="flat" name="table_records">
                             </td>
 
-                            <td class="">{!! $income->name !!}</td>
-                            <td class="">{!! $income->invoice_number !!}</td>
-                            <td class="">{!!date('d/m/Y', strtotime( $income->date)) !!}</td>
+                            <td class="">{!! $expense->name !!}</td>
+                            <td class="">{!! $expense->invoice_number !!}</td>
+                            <td class="">{!!date('d/m/Y', strtotime( $expense->date)) !!}</td>
                                 
-                            <td>{!! $income->type!!}</td>
-                            <td class="">{!! $income->amount !!}</td>
+                            <td>{!! $expense->type!!}</td>
+                            <td class="">{!! $expense->amount !!}</td>
 
                             <!-- <td>
-                                @if($income->status == 'on')
+                                @if($expense->status == 'on')
                                 <label for="" class="text-green">Yes</label>
                                 @else
                                 <label for="">No</label>
@@ -212,19 +212,19 @@
                             </td> -->
 
                             <td >
-                            {!! Form::open(['route' => ['levels.destroy', $income->id], 'method' => 'delete']) !!}
+                            {!! Form::open(['route' => ['levels.destroy', $expense->id], 'method' => 'delete']) !!}
                                 <div class='btn-group'>
-                                <a data-level_id="{{$income->id}}" data-level="{{$income->level}}" 
-                                    data-level_description="{{$income->level_description}}" data-course_id="{{$income->course['course_name']}}"
-                                    data-created_at="{{$income->created_at}}" data-updated_at="{{$income->updated_at}}"
+                                <a data-level_id="{{$expense->id}}" data-level="{{$expense->level}}" 
+                                    data-level_description="{{$expense->level_description}}" data-course_id="{{$expense->course['course_name']}}"
+                                    data-created_at="{{$expense->created_at}}" data-updated_at="{{$expense->updated_at}}"
                                     data-toggle="modal" data-target="#level-show" class='btn btn-default btn-xs'>
                                     <i class="glyphicon glyphicon-eye-open"></i></a>
                                 
-                                    <!-- <a href="{!! route('levels.show', [$income->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a> -->
+                                    <!-- <a href="{!! route('levels.show', [$expense->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a> -->
                                 
-                                    <a data-level_id="{{$income->id}}" data-level="{{$income->level}}" 
-                                    data-level_description="{{$income->level_description}}" data-course_id="{{$income->course['course_name']}}"
-                                    href="{!! route('income.edit', [$income->id]) !!}" class='btn btn-default btn-xs'>
+                                    <a data-level_id="{{$expense->id}}" data-level="{{$expense->level}}" 
+                                    data-level_description="{{$expense->level_description}}" data-course_id="{{$expense->course['course_name']}}"
+                                    href="{!! route('expense.edit', [$expense->id]) !!}" class='btn btn-default btn-xs'>
                                     <i class="glyphicon glyphicon-edit"></i></a>
                                 
                                     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
@@ -243,15 +243,15 @@
 
 
 
-        <div class="modal fade" id="income-type" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        <div class="modal fade" id="expense-type" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true">
             <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title"><span class="fa fa-head">Add New Income Type</span> </h4>
+            <h4 class="modal-title"><span class="fa fa-head">Add New expense Type</span> </h4>
             </div>
-            <form action="{{route('incometype.store')}}" method="POST" id="frm-level-create" enctype="multipart/form-data">
+            <form action="{{route('expensestype.store')}}" method="POST" id="frm-level-create" enctype="multipart/form-data">
                 @csrf
             <div class="modal-body">
             @if(auth()->user()->group == "Admin")
@@ -261,25 +261,25 @@
                             <option>Choose School</option>
                             @foreach (auth()->user()->school->all() as $school)
                             <option value="{{ $school->id }}"
-                            @if(isset($income)){{$income->school_id == $school->id ? 'selected' : ''}} @endif >
+                            @if(isset($expense)){{$expense->school_id == $school->id ? 'selected' : ''}} @endif >
                             {{$school->name}}</option>
                             @endforeach
                           </select>
                         </div>
                       </div>
                     @else
-                      <input type="hidden" name="school_id" id="school_id" value="{{auth()->user()->school->id}}">
+                      <input type="hidden" name="school_id" id="school_id" value="{{ auth()->user()->school_id}}">
                   @endif
 <!-- Level Field -->
                 <div class="form-group">
-                    <label for="">Income Type <b style="color:red">*</b></label>
-                    {!! Form::text('type', null, ['class' => 'form-control', 'placeholder' => 'Enter Income Type']) !!}
+                    <label for="">Expense Type <b style="color:red">*</b></label>
+                    {!! Form::text('type', null, ['class' => 'form-control', 'placeholder' => 'Enter Expense Type']) !!}
                 </div>
                 <!-- Submit Field -->
                 </div>
                 <div class="modal-footer">
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
-                {!! Form::submit('Create Income Type', ['class' => 'btn btn-success']) !!}
+                {!! Form::submit('Create expense Type', ['class' => 'btn btn-success']) !!}
                 </div>
                 </form>
                 </div>
@@ -295,7 +295,7 @@ aria-hidden="true">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title"><span class="fa fa-level-up">Add New Level</span> </h4>
             </div>
-            <form action="{{route('levels.update','$income->id')}}" method="post"> 
+            <form action="{{route('levels.update','$expense->id')}}" method="post"> 
             @csrf
             @method('PUT')
             <!-- <form action="{{route('levels.store')}}" method="POST" id="frm-level-create"> -->

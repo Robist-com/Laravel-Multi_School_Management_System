@@ -78,6 +78,7 @@
                     <th>Course</th>
                     <th>Grade</th>
                     <th>Date</th>
+                    <th>Day</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -86,7 +87,7 @@
             @if($attendances->where('attendance_date', $date)->where('teacher_id', $class_name->teacher_id))
             @foreach ($attendances as $key => $item)
             <tr>
-                <td><img src="{{asset('student_images/'.$item->image)}}" alt=""
+                <td><img src="{{$item->image != '' ? asset('student_images/'.$item->image) : asset('student_images/profile.jpg')}}" alt=""
                     class="rounded-circle" width="50" height="50" style="border-radius:50%; vertical-alight:middle;"></td>
                 <td>{{$item->roll_no}}</td>
                 <td>{{$item->student_first_name ." ". $item->student_last_name}}</td>
@@ -104,7 +105,8 @@
                 <td> {{$item->class_name}}</td>
                 <td> {{$item->course_name}}</td>
                 <td> {{$item->semester_name}}</td>
-                <td> {{$item->attendance_date}}</td>
+                <td> {{date('d/m/Y', strtotime($item->attendance_date))}}</td>
+                <td> {{date('l', strtotime($item->created_at))}}</td>
                 <td colspan="3">
                     {{-- here is the edit route link to edit the attendance okay by class okay --}}
                 <a href="{!! url('teacher/edit/attendance/'.$item->attendance_date. '/' .$item->class_code.

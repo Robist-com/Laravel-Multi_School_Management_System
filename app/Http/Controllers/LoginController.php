@@ -170,7 +170,7 @@ class LoginController extends Controller
             return redirect(route('home'))->with("message","Welcome " . $user->name . ". You are successfully logged in to the School Timetable Managemet System.")->with("alert-class","alert-success");
         } else {
             // Authentication fails...
-            return redirect(route('login'))->with("message","Login failed. Incorrect user name and password.")->with("alert-class","alert-danger");
+            return redirect()->back()->with("message","Login failed. Incorrect user name and password.")->with("alert-class","alert-danger");
         }
     }
 

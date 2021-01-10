@@ -16,7 +16,7 @@ class Shifts extends Migration
         Schema::create('shifts', function (Blueprint $table) {
             $table->bigIncrements('shift_id');
             $table->string('shift');
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

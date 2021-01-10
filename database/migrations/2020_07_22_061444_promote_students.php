@@ -17,7 +17,7 @@ class PromoteStudents extends Migration
             $table->bigIncrements('id');
             $table->string('class_code')->nullable();
             $table->string('status')->default('current');
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('grade_id')->nullable();
             $table->timestamps();

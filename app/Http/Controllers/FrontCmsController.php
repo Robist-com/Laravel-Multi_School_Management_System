@@ -84,14 +84,14 @@ class FrontCmsController extends Controller
     public function update(Request $request,  $id)
     {
         $front_cms_id = FrontCms::find($id);
-        // dd($request->theme_name);
+        // dd($request->all());
         $front_cms_save = FrontCms::where('school_id', auth()->user()->school_id)
             ->update([
             'head_background_color' => $request->header_bg_color, 
             'footer_background_color'=> $request->footer_bg_color,'head_fore_color' => $request->header_fg_color,
             'footer_fore_color' => $request->footer_fg_color,
             'facebook_link' => $request->facebook_link,'instagram_link' => $request->instagram_link,
-            'twiter_link' => $request->twitter_link,'linkedin_link' => $request->linkedin_link,
+            'twitter_link' => $request->twitter_link,'linkedin_link' => $request->linkedin_link,
             'youtube_link' => $request->youtube_link,'whatsapp_link' => $request->whatsapp_link,
             'icon' => $request->social_icon,
             'theme_name' => $request->theme_name,

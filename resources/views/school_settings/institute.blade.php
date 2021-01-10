@@ -1,12 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.new-layouts.app')
 @section('style')
-<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+{{-- <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet"> --}}
 @stop
 @section('content')
 
 <section class="content-header">
-        <h1 class="pull-right">
-        <i class="glyphicon glyphicon-cog">INSTITUTION SETTINGS</i>
+        <h1 class="pull-left">
+        <i class="glyphicon glyphicon-cog">SCHOOL SETTINGS</i>
         </h1>
             <h1> </h1>
 </section >
@@ -17,8 +17,8 @@
         @include('adminlte-templates::common.errors')
 
         <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
+        {{-- <div class="card"> --}}
+            <div class="x_panel">
  
                         <form role="form" action="{{url('/institute')}}" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -81,16 +81,17 @@
                                     </div>
                                 <div class="col-md-4">
                                         <div class="form-group">
+                                                <img src="{{ $institute->image != '' ? asset('institute_logo/' .$institute->image) : asset('institute_logo/default_logo.jpg') }}" alt="" width="50">
                                             <label for="type">Logo</label>
                                                 <input type="file" class="form-control"  name="logo">
-
+                                                <input type="hidden" name="school_id" id="" value="{{ $institute->school_id }}">
                                             </div>
                                         </div>
                             </div>
                             </div>
 
 
-                          @if(Auth::user()->login=='3939919@gmail.com')
+                          @if(Auth::user()->group=='Owner')
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-4">
@@ -115,14 +116,15 @@
 
                 </div>
                 </div>
-        <div class="text-center">
+                {{-- </div> --}}
+        {{-- <div class="text-center">
         
         </div>
-    </div>
+    </div> --}}
 
 
 @stop
-@section('scripts')
+{{-- @section('scripts')
 <script type="text/javascript">
 $(function() {
     $('#toggle-one').bootstrapToggle();
@@ -130,4 +132,4 @@ $(function() {
     iOSCheckbox.defaults.checkedLabel='Auto';
     iOSCheckbox.defaults.uncheckedLabel='Manual';
 </script>
-@stop
+@stop --}}

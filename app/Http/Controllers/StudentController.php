@@ -415,11 +415,12 @@ class StudentController extends Controller
             $student = $request->all();
             $studentCount = Roll::where(['username'=> $student['username'],
             'password'=> $student['password']])->count(); // to check if the student is match okay
-
+           
             $studentaccess = Roll::join('admissions', 'admissions.id', '=','rolls.student_id' )
-                                        ->where('status', 1)
-                                        ->where('rolls.username', Session::get('studentSession'))
+                                        ->where('admissions.status', 1)
+                                        // ->where('rolls.username', Session::get('studentSession'))
                                         ->count();
+            //  return $studentaccess;
 // dd( $studentaccess);
             if ($studentaccess) {
 
@@ -864,7 +865,7 @@ class StudentController extends Controller
         //  dd($url);
          
 
-        return redirect(url('school/login/' .$url))->with('flash_message_success', 'Logged out successfully.');
+        return redirect(route('website', $url))->with('flash_message_success', 'Logged out successfully.');
         session::flush();
     }
 

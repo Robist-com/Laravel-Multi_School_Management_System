@@ -20,7 +20,7 @@ class Gpa extends Migration
             $table->double('gpa')->nullable();
             $table->integer('markfrom')->nullable();
             $table->integer('markto')->nullable();
-
+            $table->unsignedBigInteger('school_id');
             $table->timestamps();
             $table->softDeletes();
 

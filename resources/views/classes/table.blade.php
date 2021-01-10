@@ -122,7 +122,7 @@
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Table design <small>Custom design</small></h2>
+                    <h2>Classes List </h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
@@ -211,8 +211,20 @@
                         </tbody>
                       </table>
                     </div>
-							<div class="view_data btn btn-info"></div>
+                  {{-- <div class="view_data btn btn-info"></div> --}}
 						
+                   <div class="row">
+                     <div class="col-md-6 ">
+                        @if (count($semesters) == 0)
+                    <span><i class="fa fa-info"></i> <marquee behavior="" direction="">Grade Table is Empty Please create Grades to able to create Class</marquee> <a href="{{ route('semesters.index') }}" class="btn btn-sm btn-dark"> Create Grade</a> </span>
+                    @endif
+                     </div>
+                     <div class="col-md-6 pull-right">
+                       @if(count($departments) == 0)
+                    <span class="pull-right"><i class="fa fa-info pull-right"></i> <marquee behavior="" direction="">Student Group is Empty Please create group to able to create Exam</marquee> <a href="{{ route('departments.index') }}" class="btn btn-sm btn-dark"> Create Group</a> </span>
+                    @endif
+                     </div>
+                   </div>
                   </div>
                 </div>
               </div>

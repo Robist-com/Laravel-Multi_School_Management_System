@@ -70,19 +70,19 @@
                   
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text" name="department_name" id="department_name" class="form-control" placeholder="Enter Department"  @if(isset($department)) value="{{$department->department_name}}" @endif>
+                        <input type="text" name="department_name" id="department_name" class="form-control" placeholder="Enter Class Group"  @if(isset($department)) value="{{$department->department_name}}" @endif>
                     </div>
                     </div>
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text" name="department_code" id="department_code" class="form-control" placeholder="Enter Department Code"  @if(isset($department)) value="{{$department->department_code}}" @endif>
+                        <input type="text" readonly name="department_code" id="department_code" class="form-control" placeholder="Enter Class Group Code"  @if(isset($department)) value="{{$department->department_code}}" @endif>
                     </div>
                     </div>
 
                     <div class="form-group">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                    {!! Form::textarea('department_description', null, ['class' => 'form-control border', 'cols' => 40, 'rows' =>2, 'placeholder'=> 'Department Description']) !!}
+                    {!! Form::textarea('department_description', null, ['class' => 'form-control border', 'cols' => 40, 'rows' =>2, 'placeholder'=> 'Class Group Description']) !!}
                     </div>
                     </div>
 
@@ -136,7 +136,7 @@
                             <th class="column-title">Group Name</th>
                             <th class="column-title">Class Group Name</th>
                             <th class="column-title">Class Group Code</th>
-                            <th class="column-title">Description</th>
+                            {{-- <th class="column-title">Description</th> --}}
                             <th class="column-title">Status</th>
                             <th class="column-title no-link last"><span class="nobr">Action</span>
                             </th>
@@ -160,7 +160,7 @@
                             width="64" height="64" /><br>Loading..</div>
 
                             <td>{!! $department->department_name !!}</td>
-                            <td>{!! $department->department_description !!}</td>
+                            <td>{!! $department->department_code !!}</td>
 
                             <td style="text-align:center">
                                 @if($department->department_status == 1)

@@ -13,8 +13,6 @@
         @include('school.admindefault.table')
             <!-- </div> -->
 
- 
-
 @else
 
         @include('school.adminbsb.table')

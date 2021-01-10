@@ -104,3 +104,5 @@
     <!-- <link href="{{asset('admin-panel/assets/libs/fullcalendar/dist/fullcalendar.min.css')}}" rel="stylesheet" />
     <link href="{{asset('admin-panel/assets/extra-libs/calendar/calendar.css')}}" rel="stylesheet" />  -->
     <!-- Custom CSS -->
+
+     @livewireStyles

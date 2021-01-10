@@ -2,40 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Batch;
-use App\Models\Classes;
-use App\Models\ClassRoom;
-use App\Models\Course;
+use DB;
+use Flash;
+use Image;
+use App\User;
+use App\School;
+use App\Message;
+use App\ContactUs;
+use App\Institute;
+use Carbon\Carbon;
 use App\Models\Day;
-use App\Models\Level;
-use App\Models\Semester;
-use App\Models\Shift;
+use App\SchoolNews;
+use App\StudentFee;
 use App\Models\Time;
-use App\Models\ClassSchedule;
-use App\Models\Admission;
-use App\Models\Attendance;
+use App\MediaManager;
+use App\Models\Batch;
+use App\Models\Level;
+use App\Models\Shift;
+use App\School_Event;
+use App\SchoolBanner;
+use App\VideoManager;
+use App\Models\Course;
+use App\Models\Classes;
+use App\Models\Faculty;
 use App\Models\Teacher;
+use App\Models\Semester;
+use App\Models\Admission;
+use App\Models\ClassRoom;
+use App\Models\Attendance;
 use App\Models\Department;
 use App\Models\Transaction;
-use App\Models\Faculty;
 use App\Models\FeeStructure;
-use App\StudentFee;
+use Illuminate\Http\Request;
+use App\Models\ClassSchedule;
 use App\Models\ClassAssigning;
-use Carbon\Carbon;
-use DB;
-use App\School_Event;
-use Flash;
-use App\Institute;
-use App\Message;
-use App\MediaManager;
-use App\VideoManager;
-use App\SchoolBanner;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB as FacadesDB;
-use App\SchoolNews;
-use App\ContactUs;
-use Image;
+
 class HomeController extends Controller
 {
     // public function construct()
@@ -322,10 +325,19 @@ class HomeController extends Controller
                                             return view('school.home.staff');
                                         }
 
-                                // dd( $batchCount);
-                                // return view('home', compact('batchCount'));
-                                return view('home', compact('batchCount','transactionsCount','transactions','student_fees',
-                                'studentsCount','classCount','courseCount','dayCount','feeCount',
+     
+                                if (auth()->user()->group == 'Admin') {
+                                    
+                                        $schoolsCount = School::count();
+                                        $activeschools = School::join('institute', 'institute.school_id', 'schools.id')->where('is_active', 1)
+                                                         ->select('institute.*', 'schools.id as school_id', 'schools.*')->get();
+                                        $inactiveschools = School::join('institute', 'institute.school_id', 'schools.id')->where('is_active', 0)
+                                                                    ->select('institute.*', 'schools.id as school_id', 'schools.*')->get();
+
+                                        $StaffusersCount = User::where('school_id', 0)->count();
+
+                                        return view('admin_home', compact('batchCount','transactionsCount','transactions','student_fees',
+                                'schoolsCount','inactiveschools','activeschools','StaffusersCount','feeCount',
                                 'levelCount','semesterCount','shiftCount','timeCount','feeStructureCount',
                                 'classroomCount','teachersCount','classschedulCount',
                                 'class_name','students_in_charge_total',
@@ -346,6 +358,29 @@ class HomeController extends Controller
                                 'facultyCount','departmentCount'))
                                 ->with('teachertimetables', $teachertimetables)
                                 ->with($data)->with('studentAdmission', $studentAdmission);
+                            }
+                            return view('home', compact('batchCount','transactionsCount','transactions','student_fees',
+                            'studentsCount','classCount','courseCount','dayCount','feeCount',
+                            'levelCount','semesterCount','shiftCount','timeCount','feeStructureCount',
+                            'classroomCount','teachersCount','classschedulCount',
+                            'class_name','students_in_charge_total',
+                            // 'current_session_puplished_result_count',
+                            'last_month_attendance','month_before_last_attendance','month_before2_last_attendance',
+                            'current_month_attendance_present','current_month_attendance_absent',
+                            'current_month_attendance_late','current_month_attendance_sick',
+
+                            'last_month_attendance_present','last_month_attendance_absent','last_month_attendance_late','last_month_attendance_sick',
+                            'month_before_last_attendance_present','month_before_last_attendance_absent','month_before_last_attendance_late','month_before_last_attendance_sick',
+                            'month_before2_last_attendance_present','month_before2_last_attendance_absent','month_before2_last_attendance_late','month_before2_last_attendance_sick',
+
+                            'online_admission','offline_admission',
+                            
+                            'repeated_students','current_session_repeated_students',
+                            'last_session_repeated_students', 'year_before_last_session_repeated_students','top_staff',
+
+                            'facultyCount','departmentCount'))
+                            ->with('teachertimetables', $teachertimetables)
+                            ->with($data)->with('studentAdmission', $studentAdmission);
         // $batchCount = Batch::where('school_id', auth()->user()->school_id)->count(); 
         // dd( $batchCount);
         // return view('home', compact('batchCount'));

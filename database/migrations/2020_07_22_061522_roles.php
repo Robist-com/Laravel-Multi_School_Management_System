@@ -16,6 +16,7 @@ class Roles extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
+            $table->unsignedBigInteger('school_id');
 
             $table->timestamps();
             $table->softDeletes();

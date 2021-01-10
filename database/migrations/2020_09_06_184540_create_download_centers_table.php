@@ -15,6 +15,7 @@ class CreateDownloadCentersTable extends Migration
     {
         Schema::create('download_centers', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
         });
     }

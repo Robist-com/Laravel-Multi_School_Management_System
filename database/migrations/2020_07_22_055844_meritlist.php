@@ -23,7 +23,7 @@ class Meritlist extends Migration
             $table->decimal('totalNo',5,2)->nullable();
             $table->string('grade')->nullable();
             $table->decimal('point',3,2)->nullable();
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

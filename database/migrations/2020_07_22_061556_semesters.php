@@ -20,7 +20,7 @@ class Semesters extends Migration
             $table->string('semester_duration')->nullable();
             $table->string('semester_description')->nullable();
             $table->string('status')->default('off');
-
+            $table->unsignedBigInteger('school_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

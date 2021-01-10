@@ -3,7 +3,10 @@
 <div class=" col-lg-6">
    <div class="input-group">
    <span class="input-group-addon">Full Name</span>
-   {!! Form::text('name', null, ['class' => 'form-control']) !!} 
+   {!! Form::text('name', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!} 
+        @if (auth()->user()->group == 'Owner')
+            <input type="hidden" name="school_id" id="" value="{{ auth()->user()->school_id }}">
+        @endif
    </div>
    <br>
    </div>
@@ -11,8 +14,8 @@
 <!-- Email Field -->
 <div class=" col-lg-6">
 <div class="input-group">
-   <span class="input-group-addon">@Email</span>
-    {!! Form::email('email', null, ['class' => 'form-control']) !!} 
+   <span class="input-group-addon"> E-mail</span>
+    {!! Form::email('email', null, ['class' => 'form-control' , 'autocomplete' => 'off']) !!} 
 </div>
 <br>
 </div>

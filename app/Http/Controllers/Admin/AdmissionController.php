@@ -25,6 +25,7 @@ use DB;
 use Validator;
 use App\InvoiceDetails;
 use App\Models\FeeStructure;
+use App\School;
 use App\StudentFee;
 use Illuminate\Support\Facades\Auth;
 
@@ -73,11 +74,12 @@ class AdmissionController extends AppBaseController
                     ->select('admissions.batch_id', 'batches.id', DB::raw('COUNT(*) as count'))
                     ->groupBy('admissions.batch_id','batches.id')
                     ->where('school_id', Auth::user()->school->id)->paginate(10);
+                    $school_id = School::where('id', auth()->user()->school_id)->first();
                     
                     if(count($admissions)!=0){
-                        $rand_username_password = mt_rand(111609300011 .$student_id +1, 111609300011 .$student_id +1);
+                        $rand_username_password = mt_rand($school_id. 111609300011 .$student_id +1,  $school_id. 111609300011 .$student_id +1);
                         }elseif(count($admissions)==0){
-                            $rand_username_password = mt_rand(1116093000111 .$student_id , 1116093000111 .$student_id );
+                            $rand_username_password = mt_rand($school_id. 1116093000111 .$student_id , $school_id. 1116093000111 .$student_id );
                         }
 
 
@@ -212,7 +214,26 @@ public function OnlineAdmission(Request $request)
      */
     public function store(Request $request)
     {
-        $input = $request->all();
+       return  $request->all();
+        $this->validate($request, [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'father_name' => 'required',
+            'gender' => 'required',
+            'email' => 'required|unique:admissions',
+            'phone' => 'required',
+            'dob' => 'required',
+            'nationality' => 'required',
+            // 'dateregistered' => 'require',
+            'class_code' => 'required',
+            // 'user_id' => 'require',
+            'semester_id' => 'required',
+            'degree_id' => 'required',
+            'faculty_id' => 'required',
+            'department_id' => 'required',
+            'batch_id' => 'required',
+            'school_id' => 'required',
+        ]);
 
     //    but we will use the simples way of this now let's remove this
          $file = $request->file('image');
@@ -231,7 +252,7 @@ public function OnlineAdmission(Request $request)
             $student->mother_name = $request->mother_name;
             $student->gender = $request->gender;
             $student->phone = $request->phone;
-            $student->dob = $request->dob;
+            $student->dob = date('Y-m-d', strtotime($request->dob));
             $student->email = $request->email;
             $student->status = $request->status;
             $student->nationality = $request->nationality;
@@ -258,7 +279,7 @@ public function OnlineAdmission(Request $request)
              $request->username,'password'=> $request->password, 'semester_id'=> $request->semester_id]);
 
             PromoteStudent::insert(['student_id' => $student_id,'grade_id' => $request->semester_id,
-            'class_code'=> $request->class_id, 'status' =>'current']);
+            'class_code'=> $request->class_id, 'status' =>'current', 'school_id' => auth()->user()->school->id]);
 
             //  dump($request->all()); die;
 

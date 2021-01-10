@@ -15,6 +15,8 @@ class CreateDesignCertificatesTable extends Migration
     {
         Schema::create('design_certificates', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('certificate_to')->nullable();
+            $table->string('certificate_type')->nullable();
             $table->string('certificate_frame_width')->default('1085px');
             $table->string('certificate_frame_height')->default('760px');
             $table->string('certificate_frame_margin')->default('30px auto');
@@ -49,6 +51,8 @@ class CreateDesignCertificatesTable extends Migration
             $table->string('certificate_background_box_shodow')->default('');
             $table->string('certificate_background_border_radius')->default('');
             $table->string('certificate_background_overflow')->default('');
+            $table->unsignedBigInteger('school_id')->nullable();
+            
 
             
             $table->timestamps();

@@ -13,7 +13,7 @@
     background-color:#fff;
     overflow:hidden;
 
-    border:1px solid #000;
+    /* border:1px solid #000; */
 }
 .wraperResult tbody, .wraperResult td, .wraperResult th, .wraperResult tr{border-color:#000}
 img.result-bg{
@@ -49,6 +49,17 @@ img.result-bg{
     width:660px;
     height:138px;
     padding:53px 0 70px  0;
+    margin:0 auto;
+    /*background:url(../images/reshdr-bg.png) no-repeat center bottom;*/
+    position:relative;
+    z-index:2;
+    text-align:center;
+}
+
+.resHdr-bottom{
+    width:660px;
+    height:138px;
+    padding:15px 0 70px  0;
     margin:0 auto;
     /*background:url(../images/reshdr-bg.png) no-repeat center bottom;*/
     position:relative;
@@ -194,14 +205,40 @@ table.std-information .right{
 .attendenceReport .markTitle{background:url(../images/hdrtitle3.gif) no-repeat;}
 .gpagrading .markTitle{background:url(../images/hdrtitle4.gif) no-repeat;}*/
 .overalreport{
-    width:306px;
+    width:256px;
     padding:0;
     margin:0 6px 0 0;
+    overflow:hidden;
+    float:right;
+}
+
+.overalreport-right{
+    width:396px;
+    padding:0;
+    margin:0 6px 0 0;
+    overflow:hidden;
+    float:right;
+}
+.overalreport-left{
+    width:500px;
+    padding:10;
+    /* margin:3px 6px 0 0; */
     overflow:hidden;
     float:left;
 }
 .attendenceReport{width:202px}
 .gpagrading{width:192px; margin-right:0; float:right}
+.pagetble, .pagetble_middle{
+    border:1px solid #000;
+    margin:0;
+    padding:0;
+    border-top:0;
+    border-spacing:0;
+    border-collapse:collapse;
+}
+
+.attendenceReport{width:202px}
+.gpagrading-right{width:212px; margin-right:0; float:right}
 .pagetble, .pagetble_middle{
     border:1px solid #000;
     margin:0;

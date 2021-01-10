@@ -25,11 +25,14 @@ class Marks extends Migration
             $table->integer('written')->nullable();
             $table->integer('mcq')->nullable();
             $table->integer('practical')->nullable();
+            $table->integer('homework')->nullable();
+            $table->integer('class_assign')->nullable();
             $table->integer('ca')->nullable();
             $table->integer('total')->nullable();
             $table->string('grade')->nullable();
             $table->decimal('point',3,2)->nullable();
             $table->string('Absent')->nullable();
+            $table->integer('school_id')->unsigned();
 
             $table->timestamps();
             $table->softDeletes();

@@ -13,9 +13,9 @@
         @include('flash::message')
         @include('adminlte-templates::common.errors')
 
-        {!! Form::open(['route' => 'courses.store']) !!}
+        {!! Form::open(['route' => 'courses.store', 'autocomplete' => 'off']) !!}
 
-        @include('courses.fields')
+        {{-- @include('courses.fields') --}}
 
         {!! Form::close() !!}
 
