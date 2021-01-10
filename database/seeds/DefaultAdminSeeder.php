@@ -152,6 +152,35 @@ class DefaultAdminSeeder extends Seeder
                 'school_id'=> '1'
                 ]);
 
+                $banners = array(
+                    array(
+                "name" => "Opening Banner",
+                "status" => "1",
+                "banner_image" => "1602925253.PNG",
+                'school_id'=> '1'
+                    ),
+                          array(
+                "name" => "Event Banner",
+                "status" => "1",
+                "banner_image" => "1602926727.PNG",
+                'school_id'=> '1'
+                          ),
+                                array(
+                "name" => "University Banner",
+                "status" => "1",
+                "banner_image" => "1602927629.PNG",
+                'school_id'=> '1'
+                                ),
+                                      array(
+                "name" => "Teacaher Banner",
+                "status" => "1",
+                "banner_image" => "1602927341.PNG",
+                'school_id'=> '1'
+                )
+                );
+
+                DB::table('school_banners')->insert($banners);
+
                 // "theme_name" => "theme_blue"
                 // "header_bg_color" => "#03A9F4"
                 // "header_fg_color" => "#ffffff"
