@@ -77,7 +77,9 @@
     <td colspan="12" class=" bordered-td">
     <div class="alert alert-danger text-center" style="font-weight:bolder">
           No TimeTble Found for this Teacher!
-          <a href="{{ route('classSchedules.index') }}"><button class="btn btn-success btn-lg pull-right">Assign TimeTable</button></a>
+          @if (auth()->user()->group == "Owner")
+          <a href="{{ route('classSchedules.index') }}"><button class="btn btn-success btn-sm pull-right">Assign TimeTable</button></a>
+          @endif
     </div>
    </td>
     </tr>
