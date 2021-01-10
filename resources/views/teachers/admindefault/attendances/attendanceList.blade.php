@@ -84,6 +84,9 @@
             </thead>
             <tbody>
                 {{-- {{$class_name}} --}}
+                @if (count($attendances) > 0)
+                    
+                
             @if($attendances->where('attendance_date', $date)->where('teacher_id', $class_name->teacher_id))
             @foreach ($attendances as $key => $item)
             <tr>
@@ -123,6 +126,7 @@
                         </h1>
                     </td>
                 </tr>
+                @endif
                 @endif
 
             </tbody>
