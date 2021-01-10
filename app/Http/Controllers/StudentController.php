@@ -42,7 +42,7 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        // $student = $request->all();
+    //    return $student = $request->all();
 
         $studentCount =Roll::where(['username' => Session::get('studentSession')])->count();
             // dd($studentCount); die;
@@ -52,6 +52,13 @@ class StudentController extends Controller
         // if($studentCount > 0){
         //     Session::put('studentSession', $student['username']);
         // }
+
+       $school = Institute::where('web', '!=', '')->count();
+       $schoolOwner = Institute::first();
+
+      if ($school > 0) {
+        return redirect(route('website', $schoolOwner->web))->with('flash_message_success', 'Logged out successfully.');
+      }  
       return view('welcome', compact('studentCount'));
         // but let's make one function inside the roll model okay
         // we will make the to chek if the current is online okay.
@@ -396,6 +403,12 @@ class StudentController extends Controller
 
     public function studentLogin(Request $request){
 
+         $school = Institute::where('web', '!=', '')->count();
+       $schoolOwner = Institute::first();
+
+      if ($school > 0) {
+        return redirect(route('school.login', $schoolOwner->web))->with('flash_message_success', 'Logged out successfully.');
+      } 
         return view('students.login');
     }
 

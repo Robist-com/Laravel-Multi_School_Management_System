@@ -4,46 +4,49 @@ namespace App\Http\Controllers;
 
 use DB;
 use PDF;
+use Exam;
 use Flash;
 use App\GPA;
+use Session;
 use App\Roll;
+use DateTime;
 use Response;
 use App\Marks;
 use App\HomeWork;
-use App\StudentUploadHomeWork;
-use Session;
+use App\Institute;
+use Carbon\Carbon;
 use App\Models\User;
+use App\Ictcore_fees;
 use App\Models\Batch;
+use App\Models\Level;
 use App\Models\Course;
+use App\Models\Status;
 use App\Models\Classes;
 use App\Models\Faculty;
+// use Excel;  // because this one is the same with this one okay
 use App\Models\Teacher;
 use App\Models\Semester;
 use App\Models\Admission;
 use App\Models\Attendance;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\ClassSchedule;
-// use Excel;  // because this one is the same with this one okay
 use App\Imports\TeacherImport;
-use App\Institute;
+use App\StudentUploadHomeWork;
 use App\Exports\Teacher_Export;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Repositories\TeacherRepository;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Laracasts\Flash\Flash as FlashFlash;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\CreateTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
-use App\Models\Department;
-use App\Models\Level;
-use Carbon\Carbon;
-use Exam;
 use Illuminate\Support\Facades\DB as FacadesDB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Laracasts\Flash\Flash as FlashFlash;
-use DateTime;
+
 class TeacherController extends AppBaseController
 {
     /** @var  TeacherRepository */
@@ -463,7 +466,7 @@ class TeacherController extends AppBaseController
     public function GetMarkList()
 	{
 
-		$formdata = new foobar4;
+		$formdata = new Ictcore_fees;
 		$formdata->class="";
 		$formdata->department="";
 		$formdata->shift="";
@@ -574,7 +577,7 @@ class TeacherController extends AppBaseController
             $class = Roll::all();
 			// dd($marks); die;
 
-			$formdata = new foobar4;
+			$formdata = new Ictcore_fees;
 			$formdata->class=$request->get('class');
 			$formdata->department=$request->get('department');
 			$formdata->shift=$request->get('shift');
@@ -780,12 +783,15 @@ class TeacherController extends AppBaseController
         ->first();
             
                     //   dd( $exam_term); die;
+       
         $enable_grade = Semester::where('status', "on")->where('school_id', auth()->user()->school_id)->get();
-        $class_grade = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')->
+      return  $class_grade = ClassSchedule::join('classes', 'classes.class_code', '=', 'class_schedule.class_id')->
         where('teacher_id', Auth::user()->teacher_id)->where('class_schedule.class_id',$class_name->class_code)->get();
+        
         // dd($class_grade);
         return view('teachers.results.result', compact('isGenerated','class_name','class_assign','class_assign1','enable_grade','class_grade','exam_term'));
-
+       
+        
     }
     
 

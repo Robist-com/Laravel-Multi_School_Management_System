@@ -87,6 +87,13 @@ class LoginController extends Controller
      */
     public function login()
     {
+       $school = Institute::where('web', '!=', '')->count();
+       $schoolOwner = Institute::first();
+
+      if ($school > 0) {
+        return redirect(route('school.login', $schoolOwner->web))->with('flash_message_success', 'Logged out successfully.');
+      } 
+
         return view('auth.login');
     }
 
