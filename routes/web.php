@@ -425,6 +425,9 @@ Route::get('/getMessages', function(){
 | contains the "web" middleware group. Now create something great!
 |
 */
+// if (condition) {
+//    # code...
+// }
 Route::get('/', 'StudentController@index');
 
 Route::get('/inboxes', 'InboxController@index')->name('inbox');
