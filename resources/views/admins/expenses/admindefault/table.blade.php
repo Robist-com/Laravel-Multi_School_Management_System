@@ -34,16 +34,16 @@
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
-                        <a href="{{route('incometype.index')}}"><button type="submit" class="btn btn-round btn-success"><i class="fa fa-plus-circle" aria-hidden="true"> Add </i></button></a>
+                        <a href="{{route('expensestype.index')}}"><button type="submit" class="btn btn-round btn-success"><i class="fa fa-plus-circle" aria-hidden="true"> Add </i></button></a>
                     </ul>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
                   @if(isset($income_type))
-                  {!! Form::model($income_type, ['route' => ['incometype.update', $income_type->id], 'method' => 'post', 'class' => 'form-horizontal form-label-left', 'enctype' => 'multipart/form-data']) !!}
+                  {!! Form::model($income_type, ['route' => ['expensestype.update', $income_type->id], 'method' => 'post', 'class' => 'form-horizontal form-label-left', 'enctype' => 'multipart/form-data']) !!}
                   @csrf
                   @else
-                  {!! Form::open(['route' => 'incometype.store', 'class' => 'form-horizontal form-label-left', 'enctype' => 'multipart/form-data']) !!}
+                  {!! Form::open(['route' => 'expensestype.store', 'class' => 'form-horizontal form-label-left', 'enctype' => 'multipart/form-data']) !!}
                   @csrf
                   @endif
 
@@ -129,7 +129,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                        @foreach($incomes_type as $income)
+                        @foreach($expense_type as $income)
                         <tr class="even pointer">
                           <td class="a-center ">
                             <input type="checkbox" class="flat" name="table_records">
@@ -148,7 +148,7 @@
                                     <!-- <a href="{!! route('levels.show', [$income->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a> -->
                                 
                                     <a data-level_id="{{$income->id}}" data-level="{{$income->type}}" 
-                                    href="{!! route('incometype.edit', [$income->id]) !!}" class='btn btn-default btn-xs'>
+                                    href="{!! route('expensestype.edit', [$income->id]) !!}" class='btn btn-default btn-xs'>
                                     <i class="glyphicon glyphicon-edit"></i></a>
                                 
                                     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
